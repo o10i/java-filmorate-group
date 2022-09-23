@@ -60,58 +60,10 @@ public class FilmControllerTest {
         assertEquals(film2.getReleaseDate(), film3.getReleaseDate(), "ReleaseDates don't match.");
     }
 
-    @Test
-    public void shouldCheckUpFilmNameValidation() {
-        final Film film = filmController.create(
-                Film.builder()
-                        .name("TestName")
-                        .description("TestDescription")
-                        .releaseDate(LocalDate.of(2022, 1, 1))
-                        .duration(140)
-                        .build()
-        );
-        final List<Film> films = filmController.findAll();
-
-        assertNotNull(films, "List films is empty.");
-        assertEquals(1, films.size(), "Wrong list size. Film has not been saved.");
-
-        assertThrows(ValidationFilmNameException.class, () -> filmController.create(
-                Film.builder()
-                        .name("TestName")
-                        .description("TestDescription")
-                        .releaseDate(LocalDate.of(2022, 1, 1))
-                        .duration(140)
-                        .build()
-        ), "Film with the same name already exists.");
-
-        assertThrows(ValidationFilmNameException.class, () -> filmController.create(
-                Film.builder()
-                        .name("")
-                        .description("TestDescription")
-                        .releaseDate(LocalDate.of(2022, 1, 1))
-                        .duration(140)
-                        .build()
-        ), "Name must not be empty.");
-    }
-
-    @Test
-    public void shouldCheckUpDescriptionValidation() {
-
-        assertThrows(ValidationDescriptionException.class, () -> filmController.create(
-                Film.builder()
-                        .name("TestName")
-                        .description("Have you ever heard of Hachiko the dog? No? Neither had I until we visited Tokyo." +
-                                " If you ever go to Japan then odds are you will hear about him. Hachiko is a national " +
-                                "hero to the Japanese! A dog so famous there have been several movies made about him.")
-                        .releaseDate(LocalDate.of(2022, 1, 1))
-                        .duration(140)
-                        .build()
-        ), "Description must be less then 200 symbols.");
-    }
 
     @Test
     public void shouldCheckUpReleaseDateValidation() {
-        assertThrows(ValidationReleaseDateException.class, () -> filmController.create(
+        assertThrows(ValidationException.class, () -> filmController.create(
                 Film.builder()
                         .name("TestName")
                         .description("TestDescription")
@@ -136,7 +88,7 @@ public class FilmControllerTest {
         assertNotNull(films, "List films is empty.");
         assertEquals(1, films.size(), "Wrong list size. Film has not been saved.");
 
-        assertThrows(ValidationIdException.class, () -> filmController.update(
+        assertThrows(ValidationException.class, () -> filmController.update(
                 Film.builder()
                         .id(5)
                         .name("Name")
@@ -146,7 +98,7 @@ public class FilmControllerTest {
                         .build()
         ), "Film with the same id doesn't exist.");
 
-        assertThrows(ValidationIdException.class, () -> filmController.update(
+        assertThrows(ValidationException.class, () -> filmController.update(
                 Film.builder()
                         .name("Name")
                         .description("Description")
@@ -155,25 +107,4 @@ public class FilmControllerTest {
                         .build()
         ), "Film id must not be empty.");
     }
-
-    @Test
-    public void shouldCheckUpDurationValidation() {
-        assertThrows(ValidationDurationException.class, () -> filmController.update(
-                Film.builder()
-                        .name("Name")
-                        .description("Description")
-                        .releaseDate(LocalDate.of(2020, 1, 1))
-                        .duration(-55)
-                        .build()
-        ), "Duration must be positive number.");
-    }
-
-    @Test
-    public void shouldCheckUpEmptyValidation() {
-        assertThrows(ValidationException.class, () -> filmController.create(null), "Object Film is empty.");
-    }
-
-
-
-
 }

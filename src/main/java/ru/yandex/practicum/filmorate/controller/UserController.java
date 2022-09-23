@@ -6,7 +6,6 @@ import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,14 +32,11 @@ public class UserController {
         users.values().forEach((us)->{
             if (user.getEmail().equals(us.getEmail())) {
                 log.debug("email: " + user.getEmail());
-                throw new ValidationEmailException("User with the same email address already exists.");
+                throw new ValidationException("User with the same email address already exists.");
             }
-        });
-
-        users.values().forEach((us)->{
             if (user.getLogin().equals(us.getLogin())) {
                 log.debug("login: " + user.getLogin());
-                throw new ValidationLoginException("User with the same login already exists.");
+                throw new ValidationException("User with the same login already exists.");
             }
         });
 
@@ -54,37 +50,24 @@ public class UserController {
     public User update(@Valid @RequestBody User user) {
         validator(user);
         if (user.getId() == null) {
-            throw new ValidationIdException("Your id must not be empty.");
+            throw new ValidationException("Your id must not be empty.");
         }
-        users.values().forEach((us)->{
-            if (user.getId() == us.getId()) {
-                users.put(user.getId(), user);
-            } else {
-                log.debug("Id: " + user.getId());
-                throw new ValidationIdException("User with the same id doesn't exist.");
-            }
-        });
+        if (users.containsKey(user.getId())) {
+            users.put(user.getId(), user);
+        } else {
+            log.debug("Id: " + user.getId());
+            throw new ValidationException("User with the same id doesn't exist.");
+        }
         return user;
     }
 
     private void validator(User user) {
-        if(user == null) {
-            throw new ValidationException("Object User is empty.");
-        }
-        if(user.getEmail().isBlank() || !user.getEmail().contains("@") || user.getEmail() == null) {
-            log.debug("email: " + user.getEmail());
-            throw new ValidationEmailException("Your email address must not be empty or must contains 'at' symbol. Try again.");
-        }
-        if(user.getLogin().isBlank() || user.getLogin() == null || user.getLogin().contains(" ")) {
+        if(user.getLogin().contains(" ")) {
             log.debug("login: " + user.getLogin());
-            throw new ValidationLoginException("Your login must not be empty or contains space symbols. Try again.");
+            throw new ValidationException("Your login must not contains space symbols. Try again.");
         }
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
-        }
-        if(user.getBirthday().isAfter(LocalDate.now())) {
-            log.debug("birthday: " + user.getBirthday());
-            throw new ValidationBirthdayException("Birthday must no to be in the future ;)");
         }
     }
 

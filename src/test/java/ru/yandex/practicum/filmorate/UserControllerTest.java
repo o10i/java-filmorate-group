@@ -76,7 +76,7 @@ public class UserControllerTest {
         assertNotNull(users, "List users is empty. User has not been saved.");
         assertEquals(1, users.size(), "Wrong list size. User has not been saved.");
 
-        assertThrows(ValidationEmailException.class, () -> userController.create(
+        assertThrows(ValidationException.class, () -> userController.create(
                         User.builder()
                         .login("TestLogin")
                         .name("name")
@@ -84,24 +84,6 @@ public class UserControllerTest {
                         .birthday(LocalDate.of(2022, 1, 1))
                         .build()
                 ), "User with the same email address already exists.");
-
-        assertThrows(ValidationEmailException.class, () -> userController.create(
-                        User.builder()
-                        .login("TestLogin")
-                        .name("name")
-                        .email("mail.ru")
-                        .birthday(LocalDate.of(2022, 1, 1))
-                        .build()
-                ), "Your email address must contains 'at' symbol.");
-
-        assertThrows(ValidationEmailException.class, () -> userController.create(
-                        User.builder()
-                        .login("TestLogin")
-                        .name("name")
-                        .email("")
-                        .birthday(LocalDate.of(2022, 1, 1))
-                        .build()
-                ), "Your email address must not be empty.");
 
     }
 
@@ -120,7 +102,7 @@ public class UserControllerTest {
         assertNotNull(users, "List users is empty. User has not been saved.");
         assertEquals(1, users.size(), "Wrong list size. User has not been saved.");
 
-        assertThrows(ValidationLoginException.class, () -> userController.create(
+        assertThrows(ValidationException.class, () -> userController.create(
                         User.builder()
                         .login("Test")
                         .name("name")
@@ -129,24 +111,14 @@ public class UserControllerTest {
                         .build()
                 ), "User with the same login already exists.");
 
-        assertThrows(ValidationLoginException.class, () -> userController.create(
-                        User.builder()
-                        .login("")
-                        .name("name")
-                        .email("mail@yandex.ru")
-                        .birthday(LocalDate.of(2022, 1, 1))
-                        .build()
-                ), "Your login must not be empty.");
-
-        assertThrows(ValidationLoginException.class, () -> userController.create(
+        assertThrows(ValidationException.class, () -> userController.create(
                         User.builder()
                         .login("Test login")
                         .name("name")
                         .email("mail@yandex.ru")
                         .birthday(LocalDate.of(2022, 1, 1))
                         .build()
-                ), "Your login must not be empty or contains space symbols.");
-
+                ), "Your login must not contains space symbols.");
     }
 
     @Test
@@ -163,18 +135,6 @@ public class UserControllerTest {
     }
 
     @Test
-    public void shouldCheckUpBirthdayValidation() {
-        assertThrows(ValidationBirthdayException.class, () -> userController.create(
-                        User.builder()
-                        .login("Test")
-                        .name("name")
-                        .email("mail@yandex.ru")
-                        .birthday(LocalDate.of(2032, 1, 1))
-                        .build()
-                ), "Birthday must no to be in the future ;)");
-    }
-
-    @Test
     public void shouldCheckUpIdValidation() {
         final User user = userController.create(
                 User.builder()
@@ -188,7 +148,7 @@ public class UserControllerTest {
         assertNotNull(users, "List users is empty. User has not been saved.");
         assertEquals(1, users.size(), "Wrong list size. User has not been saved.");
 
-        assertThrows(ValidationIdException.class, () -> userController.update(
+        assertThrows(ValidationException.class, () -> userController.update(
                         User.builder()
                         .id(5)
                         .login("TestLogin")
@@ -198,7 +158,7 @@ public class UserControllerTest {
                         .build()
                 ), "User with the same id doesn't exist.");
 
-        assertThrows(ValidationIdException.class, () -> userController.update(
+        assertThrows(ValidationException.class, () -> userController.update(
                                 User.builder()
                                 .login("testLogin")
                                 .name("testName")
@@ -207,11 +167,4 @@ public class UserControllerTest {
                                 .build()
                 ), "Your id must not be empty.");
     }
-
-    @Test
-    public void shouldCheckUpEmptyValidation() {
-        assertThrows(ValidationException.class, () -> userController.create(null), "Object User is empty.");
-    }
-
-
 }
