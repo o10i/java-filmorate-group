@@ -1,16 +1,31 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Past;
 import java.time.LocalDate;
 
 @Data
+@Builder
 public class User {
+
    private Integer id;
-   private final String email;
-   private final String login;
+   @NonNull
+   @NotBlank
+   @Email
+   private String email;
+   @NonNull
+   @NotBlank
+   private String login;
    private String name;
-   private final LocalDate birthday; // "2001-04-03"
+   @Past
+   @DateTimeFormat(pattern = "yyyy-MM-dd")
+   private LocalDate birthday;
+
 
 }
