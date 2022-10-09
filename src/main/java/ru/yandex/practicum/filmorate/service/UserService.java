@@ -86,7 +86,7 @@ public class UserService {
     }
 
     private void validatorId(Long id) {
-        if (userStorage.findUserById(id) == null) {
+        if (userStorage.findUserById(id) == null || id == null) {
             throw new UserNotFoundException(String.format("User with %d id not found", id));
         }
     }

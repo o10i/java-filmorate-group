@@ -73,7 +73,7 @@ public class FilmService {
     }
 
     private void validatorId(Long id) {
-        if (filmStorage.findFilmById(id) == null) {
+        if (filmStorage.findFilmById(id) == null || id == null) {
             throw new FilmNotFoundException(String.format("Film with %d id not found", id));
         }
     }
