@@ -1,74 +1,63 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @Slf4j
 @RestController
-@RequestMapping("/users")
 public class UserController {
 
-    private int baseId = 0;
-    private final Map<Integer, User> users = new HashMap<>(); // Id - User
+    private final UserService userService;
 
-    @GetMapping
+    @Autowired
+    public UserController (UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping("/users")
     public List<User> findAll() {
-        log.debug("Count of users: " + users.size());
-        return new ArrayList<>(users.values());
+        return userService.findAll();
     }
 
-    @PostMapping
+    @PostMapping("/users")
     public User create(@Valid @RequestBody User user)  {
-        validator(user);
-        users.values().forEach((us)->{
-            if (user.getEmail().equals(us.getEmail())) {
-                log.debug("email: " + user.getEmail());
-                throw new ValidationException("User with the same email address already exists.");
-            }
-            if (user.getLogin().equals(us.getLogin())) {
-                log.debug("login: " + user.getLogin());
-                throw new ValidationException("User with the same login already exists.");
-            }
-        });
-
-        user.setId(++baseId);
-        log.debug("User to save: " + user.toString());
-        users.put(user.getId(), user);
-        return user;
+        return userService.create(user);
     }
 
-    @PutMapping
+    @PutMapping("/users")
     public User update(@Valid @RequestBody User user) {
-        validator(user);
-        if (user.getId() == null) {
-            throw new ValidationException("Your id must not be empty.");
-        }
-        if (users.containsKey(user.getId())) {
-            users.put(user.getId(), user);
-        } else {
-            log.debug("Id: " + user.getId());
-            throw new ValidationException("User with the same id doesn't exist.");
-        }
-        return user;
+        return userService.update(user);
     }
 
-    private void validator(User user) {
-        if(user.getLogin().contains(" ")) {
-            log.debug("login: " + user.getLogin());
-            throw new ValidationException("Your login must not contains space symbols. Try again.");
-        }
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
+    @GetMapping("/users/{id}")
+    public User getUserById(@PathVariable("id") Long id) {
+        return userService.findUserById(id);
     }
 
+    @PutMapping("/users/{id}/friends/{friendId}")
+    public void addFriend(@PathVariable("id") Long userId, @PathVariable("friendId") Long friendId) {
+        userService.addFriend(userId, friendId);
+    }
+
+    @DeleteMapping("/users/{id}/friends/{friendId}")
+    public void deleteFriend(@PathVariable("id") Long userId, @PathVariable("friendId") Long friendId) {
+        userService.deleteFriend(userId, friendId);
+    }
+
+    @GetMapping("/users/{id}/friends")
+    public List<User> getFriends(@PathVariable("id") Long id) {
+        return userService.getAllFriends(id);
+    }
+
+    @GetMapping("/users/{id}/friends/common/{otherId}")
+    public List<User> getCommonFriends(@PathVariable("id") Long userId, @PathVariable("otherId") Long friendId) {
+        return userService.getCommonFriends(userId, friendId);
+    }
 }

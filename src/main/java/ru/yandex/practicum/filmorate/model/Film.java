@@ -6,11 +6,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Builder
 public class Film {
-    private Integer id;
+    private Long id;
     @NotBlank
     private final String name;
     @Size(max = 200)
@@ -19,5 +21,6 @@ public class Film {
     private final LocalDate releaseDate;
     @Positive
     private final int duration;
-    public static final LocalDate FILM_BIRTH = LocalDate.of(1895, 12, 28);
+    private final Set<Long> likes = new HashSet<>();
+
 }

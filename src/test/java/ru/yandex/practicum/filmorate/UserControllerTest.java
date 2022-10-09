@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,11 +18,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UserControllerTest {
 
-    private UserController userController;
+    private UserService userController;
 
     @BeforeEach
     void tearDown() {
-        userController = new UserController();
+        userController = new UserService(new InMemoryUserStorage());
     }
 
     @Test
@@ -150,7 +153,7 @@ public class UserControllerTest {
 
         assertThrows(ValidationException.class, () -> userController.update(
                         User.builder()
-                        .id(5)
+                        .id(5L)
                         .login("TestLogin")
                         .name("name")
                         .email("mail@mail.ru")

@@ -6,6 +6,8 @@ import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,11 +17,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FilmControllerTest {
 
-    private FilmController filmController;
+    private FilmService filmController;
 
     @BeforeEach
     public void tearDown() {
-        filmController = new FilmController();
+        filmController = new FilmService(new InMemoryFilmStorage());
     }
 
     @Test
@@ -90,7 +92,7 @@ public class FilmControllerTest {
 
         assertThrows(ValidationException.class, () -> filmController.update(
                 Film.builder()
-                        .id(5)
+                        .id(5L)
                         .name("Name")
                         .description("Description")
                         .releaseDate(LocalDate.of(2020, 1, 1))
