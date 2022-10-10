@@ -1,7 +1,9 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Email;
@@ -13,18 +15,19 @@ import java.util.Set;
 
 @Data
 @Builder
+@FieldDefaults(level= AccessLevel.PRIVATE)
 public class User {
 
-   private Long id;
+   Long id;
    @NotBlank
    @Email
-   private String email;
+   String email;
    @NotBlank
-   private String login;
-   private String name;
+   String login;
+   String name;
    @PastOrPresent
    @DateTimeFormat(pattern = "yyyy-MM-dd")
-   private LocalDate birthday;
-   private final Set<Long> friends = new HashSet<>();
+   LocalDate birthday;
+   final Set<Long> friends = new HashSet<>();
 
 }
