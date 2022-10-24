@@ -2,24 +2,24 @@ package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.controller.FilmController;
-import ru.yandex.practicum.filmorate.exception.*;
+import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FilmControllerTest {
 
-    private FilmController filmController;
+    private FilmService filmController;
 
     @BeforeEach
     public void tearDown() {
-        filmController = new FilmController();
+        filmController = new FilmService(new InMemoryFilmStorage());
     }
 
     @Test
@@ -88,9 +88,9 @@ public class FilmControllerTest {
         assertNotNull(films, "List films is empty.");
         assertEquals(1, films.size(), "Wrong list size. Film has not been saved.");
 
-        assertThrows(ValidationException.class, () -> filmController.update(
+        assertThrows(FilmNotFoundException.class, () -> filmController.update(
                 Film.builder()
-                        .id(5)
+                        .id(5L)
                         .name("Name")
                         .description("Description")
                         .releaseDate(LocalDate.of(2020, 1, 1))
@@ -98,7 +98,7 @@ public class FilmControllerTest {
                         .build()
         ), "Film with the same id doesn't exist.");
 
-        assertThrows(ValidationException.class, () -> filmController.update(
+        assertThrows(FilmNotFoundException.class, () -> filmController.update(
                 Film.builder()
                         .name("Name")
                         .description("Description")

@@ -3,23 +3,24 @@ package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.controller.UserController;
-import ru.yandex.practicum.filmorate.exception.*;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UserControllerTest {
 
-    private UserController userController;
+    private UserService userController;
 
     @BeforeEach
     void tearDown() {
-        userController = new UserController();
+        userController = new UserService(new InMemoryUserStorage());
     }
 
     @Test
@@ -148,9 +149,9 @@ public class UserControllerTest {
         assertNotNull(users, "List users is empty. User has not been saved.");
         assertEquals(1, users.size(), "Wrong list size. User has not been saved.");
 
-        assertThrows(ValidationException.class, () -> userController.update(
+        assertThrows(UserNotFoundException.class, () -> userController.update(
                         User.builder()
-                        .id(5)
+                        .id(5L)
                         .login("TestLogin")
                         .name("name")
                         .email("mail@mail.ru")
@@ -158,7 +159,7 @@ public class UserControllerTest {
                         .build()
                 ), "User with the same id doesn't exist.");
 
-        assertThrows(ValidationException.class, () -> userController.update(
+        assertThrows(UserNotFoundException.class, () -> userController.update(
                                 User.builder()
                                 .login("testLogin")
                                 .name("testName")
