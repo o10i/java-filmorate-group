@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -50,5 +51,27 @@ public class InMemoryUserStorage implements UserStorage{
         return users.get(userId);
     }
 
+    public void addFriend(Long userId, Long friendId) {
+        findUserById(userId).getFriends().add(friendId);
+        findUserById(friendId).getFriends().add(userId);
+    }
+
+    public void deleteFriend(Long userId, Long friendId) {
+        findUserById(userId).getFriends().remove(friendId);
+        findUserById(friendId).getFriends().remove(userId);
+    }
+
+    public List<User> getAllFriends (Long userId) {
+        return findUserById(userId).getFriends().stream()
+                .map(this::findUserById)
+                .collect(Collectors.toList());
+    }
+
+    public List<User> getCommonFriends(Long userId, Long friendId) {
+        return findUserById(userId).getFriends().stream()
+                .filter(id -> findUserById(friendId).getFriends().contains(id))
+                .map(this::findUserById)
+                .collect(Collectors.toList());
+    }
 
 }

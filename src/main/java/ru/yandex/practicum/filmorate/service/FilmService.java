@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
@@ -22,7 +23,7 @@ public class FilmService {
     private static final LocalDate FILM_BIRTH = LocalDate.of(1895, 12, 28);
 
     @Autowired
-    public FilmService (FilmStorage filmStorage) {
+    public FilmService (@Qualifier("filmDbStorage") FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
 
@@ -48,22 +49,16 @@ public class FilmService {
 
     public void addLike (Long userId, Long filmId) {
         validatorId(filmId);
-        findFilmById(filmId).getLikes().add(userId);
+        filmStorage.addLike(userId, filmId);
     }
 
     public void deleteLike (Long userId, Long filmId) {
         validatorId(filmId);
-        if(!findFilmById(filmId).getLikes().contains(userId)) {
-            throw new UserNotFoundException(String.format("User with %d id not found", userId));
-        }
-        findFilmById(filmId).getLikes().remove(userId);
+        filmStorage.deleteLike(userId, filmId);
     }
 
     public List<Film> getTopFilms (Integer count) {
-        return findAll().stream()
-                .sorted((f0, f1) -> Integer.compare(f1.getLikes().size(), f0.getLikes().size()))
-                .limit(count)
-                .collect(Collectors.toList());
+        return filmStorage.getTopFilms(count);
     }
     private void validator(Film film) {
         if (film.getReleaseDate().isBefore(FILM_BIRTH)) {

@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -9,7 +10,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Service
 @Slf4j
@@ -18,7 +19,7 @@ public class UserService {
     private final UserStorage userStorage;
 
     @Autowired
-    public UserService (UserStorage userStorage) {
+    public UserService (@Qualifier("userDbStorage") UserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
@@ -45,34 +46,25 @@ public class UserService {
     public void addFriend(Long userId, Long friendId) {
         validatorId(userId);
         validatorId(friendId);
+        userStorage.addFriend(userId, friendId);
 
-        findUserById(userId).getFriends().add(friendId);
-        findUserById(friendId).getFriends().add(userId);
     }
 
     public void deleteFriend(Long userId, Long friendId) {
         validatorId(userId);
         validatorId(friendId);
-
-        findUserById(userId).getFriends().remove(friendId);
-        findUserById(friendId).getFriends().remove(userId);
+        userStorage.deleteFriend(userId, friendId);
     }
 
     public List<User> getAllFriends (Long userId) {
         validatorId(userId);
-        return findUserById(userId).getFriends().stream()
-                .map(this::findUserById)
-                .collect(Collectors.toList());
+        return userStorage.getAllFriends(userId);
     }
 
     public List<User> getCommonFriends(Long userId, Long friendId) {
         validatorId(userId);
         validatorId(friendId);
-
-        return findUserById(userId).getFriends().stream()
-                .filter(id -> findUserById(friendId).getFriends().contains(id))
-                .map(this::findUserById)
-                .collect(Collectors.toList());
+        return userStorage.getCommonFriends(userId, friendId);
     }
 
     private void validator(User user) {
