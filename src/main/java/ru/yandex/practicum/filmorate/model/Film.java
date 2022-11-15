@@ -1,8 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -12,8 +10,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-@Data
+
 @Builder
+@Getter
+@Setter
 @FieldDefaults(level= AccessLevel.PRIVATE)
 public class Film {
     Long id;

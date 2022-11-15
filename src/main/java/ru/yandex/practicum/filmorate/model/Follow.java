@@ -1,13 +1,14 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 
 import javax.validation.constraints.NotNull;
 
-@Data
+@Builder
+@Getter
+@Setter
 @FieldDefaults(level= AccessLevel.PRIVATE)
 public class Follow {
     @NotNull
