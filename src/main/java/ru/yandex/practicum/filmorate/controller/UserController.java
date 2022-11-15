@@ -28,13 +28,11 @@ public class UserController {
 
     @PostMapping
     public User create(@Valid @RequestBody User user)  {
-        validator(user);
         return userService.create(user);
     }
 
     @PutMapping
     public User update(@Valid @RequestBody User user) {
-        validator(user);
         return userService.update(user);
     }
 
@@ -43,12 +41,4 @@ public class UserController {
         return userService.findUserById(id);
     }
 
-    private void validator(User user) {
-        if(user.getLogin().contains(" ")) {
-            throw new ValidationException("Your login must not contains space symbols. Try again.");
-        }
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-    }
 }

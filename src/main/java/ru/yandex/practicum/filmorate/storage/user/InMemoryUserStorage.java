@@ -33,7 +33,6 @@ public class InMemoryUserStorage implements UserStorage{
                 throw new ValidationException("User with the same login already exists.");
             }
         });
-
         user.setId(++baseId);
         log.debug("User to save: " + user.toString());
         users.put(user.getId(), user);

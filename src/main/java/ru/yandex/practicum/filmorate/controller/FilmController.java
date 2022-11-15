@@ -19,7 +19,6 @@ import java.util.List;
 @RequestMapping("/films")
 public class FilmController {
 
-    private static final LocalDate FILM_BIRTH = LocalDate.of(1895, 12, 28);
     private final FilmService filmService;
 
     private final LikeService likeService;
@@ -36,13 +35,11 @@ public class FilmController {
 
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
-        validator(film);
         return filmService.create(film);
     }
 
     @PutMapping
     public Film update(@Valid @RequestBody Film film)  {
-        validator(film);
         return filmService.update(film);
     }
 
@@ -64,11 +61,5 @@ public class FilmController {
     @GetMapping("/popular")
     public List<Film> getTopFilms (@RequestParam(defaultValue = "10") @Positive Integer count) {
         return likeService.getTopFilms(count);
-    }
-
-    private void validator(Film film) {
-        if (film.getReleaseDate().isBefore(FILM_BIRTH)) {
-            throw new ValidationException("December 28, 1895 is considered the birthday of cinema.");
-        }
     }
 }
