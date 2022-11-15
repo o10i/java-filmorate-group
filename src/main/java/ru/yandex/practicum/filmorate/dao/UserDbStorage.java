@@ -66,39 +66,7 @@ public class UserDbStorage implements UserStorage {
         }
     }
 
-    @Override
-    public void addFriend(Long userId, Long friendId) {
-        String sqlQuery = "INSERT INTO FOLLOW(USER_ID, FRIEND_ID) " +
-                "values (?, ?)";
-        jdbcTemplate.update(sqlQuery,
-                userId,
-                friendId);
-    }
-
-    @Override
-    public void deleteFriend(Long userId, Long friendId) {
-        String sqlQuery = "DELETE FROM FOLLOW WHERE USER_ID = ? AND FRIEND_ID = ?";
-        jdbcTemplate.update(sqlQuery, userId, friendId);
-    }
-
-    @Override
-    public List<User> getAllFriends(Long userId) {
-        String sqlQuery = "SELECT * " +
-                "FROM USERS AS U " +
-                "INNER JOIN FOLLOW AS F ON U.ID = F.FRIEND_ID " +
-                "WHERE F.USER_ID = ?";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToUser, userId);
-    }
-
-    @Override
-    public List<User> getCommonFriends(Long userId, Long friendId) {
-        String sqlQuery = "SELECT * FROM USERS AS U " +
-                "INNER JOIN FOLLOW AS F ON U.ID = F.FRIEND_ID " +
-                "WHERE USER_ID = ? AND FRIEND_ID IN (SELECT FRIEND_ID FROM FOLLOW WHERE USER_ID = ?) ";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToUser, userId, friendId);
-    }
-
-    private User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {
+    public User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {
         return User.builder()
                 .id(resultSet.getLong("id"))
                 .email(resultSet.getString("email"))

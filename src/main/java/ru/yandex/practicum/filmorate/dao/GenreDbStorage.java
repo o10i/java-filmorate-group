@@ -1,23 +1,19 @@
 package ru.yandex.practicum.filmorate.dao;
 
-
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.MPA;
-import ru.yandex.practicum.filmorate.model.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-@Component
-public class DataDbStorage {
-
+@Repository
+public class GenreDbStorage {
     private final JdbcTemplate jdbcTemplate;
 
-    public DataDbStorage(JdbcTemplate jdbcTemplate) {
+    public GenreDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -40,39 +36,25 @@ public class DataDbStorage {
         }
     }
 
-    public List<MPA> findAllMPA() {
-        String sqlQuery = "SELECT * FROM RATING";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToMPA);
+    public void addFilmsGenre (Long filmId, Long genreId) {
+        String sqlQuery = "MERGE INTO FILM_GENRE KEY(FILM_ID, GENRE_ID) VALUES (?, ?)";
+        jdbcTemplate.update(sqlQuery, filmId, genreId);
+    }
+    public void deleteFilmsGenre(Long filmId) {
+        String sqlQuery = "DELETE FROM FILM_GENRE WHERE FILM_ID + ?";
+        jdbcTemplate.update(sqlQuery, filmId);
     }
 
-    public MPA findMPAById(Long MPAId) {
-        SqlRowSet MPARows = jdbcTemplate.queryForRowSet("SELECT * FROM RATING WHERE id = ?", MPAId);
-
-        if(MPARows.next()) {
-            MPA mpa = MPA.builder()
-                    .id(MPARows.getLong("id"))
-                    .name(MPARows.getString("name"))
-                    .build();
-            return mpa;
-        } else {
-            return null;
-        }
+    public List <Genre> findFilmGenre (Long filmId) {
+        String sqlQuery = "SELECT * FROM genre as g " +
+                "INNER JOIN film_genre as fg ON g.id = fg.genre_id " +
+                "WHERE FILM_ID = ?";
+        return jdbcTemplate.query(sqlQuery, this::mapRowToGenre, filmId);
     }
-
-
     private Genre mapRowToGenre(ResultSet resultSet, int nowNum) throws SQLException {
         return Genre.builder()
                 .id(resultSet.getLong("id"))
                 .name(resultSet.getString("name"))
                 .build();
     }
-
-    private MPA mapRowToMPA(ResultSet resultSet, int nowNum) throws SQLException {
-        return MPA.builder()
-                .id(resultSet.getLong("id"))
-                .name(resultSet.getString("name"))
-                .build();
-    }
-
-
 }

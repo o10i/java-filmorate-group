@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS follow (
+    PRIMARY KEY (user_id, friend_id),
     user_id integer NOT NULL REFERENCES users (id),
     friend_id integer NOT NULL REFERENCES users (id)
 );
@@ -28,16 +29,18 @@ CREATE TABLE IF NOT EXISTS movie (
     release_date date,
     duration integer,
     rate integer,
-    MPA integer REFERENCES MPA (id) REFERENCES MPA (id)
+    mpa_id integer REFERENCES MPA (id)
 );
 
 CREATE TABLE IF NOT EXISTS film_genre (
+    PRIMARY KEY (film_id, genre_id),
     film_id integer NOT NULL REFERENCES movie (id),
     genre_id integer NOT NULL REFERENCES genre (id)
 );
 
 
 CREATE TABLE IF NOT EXISTS likes (
+    PRIMARY KEY (film_id, user_id),
     film_id integer NOT NULL REFERENCES movie (id),
     user_id integer NOT NULL REFERENCES users (id)
 );

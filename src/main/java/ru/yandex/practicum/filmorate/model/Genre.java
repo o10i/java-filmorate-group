@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
-import javax.validation.constraints.NotBlank;
 
 
 @Data
@@ -13,6 +12,6 @@ import javax.validation.constraints.NotBlank;
 @FieldDefaults(level= AccessLevel.PRIVATE)
 public class Genre {
     Long id;
-    @NotBlank
+
     final String name;
 }

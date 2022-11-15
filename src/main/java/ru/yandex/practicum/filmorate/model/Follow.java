@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @FieldDefaults(level= AccessLevel.PRIVATE)
 public class Follow {
     @NotNull
-    final Long friendIdOne;
+    final Long userId;
     @NotNull
-    final Long friendIdTwo;
+    final Long friendId;
 }

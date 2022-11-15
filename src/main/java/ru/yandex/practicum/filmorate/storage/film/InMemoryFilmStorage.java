@@ -2,14 +2,12 @@ package ru.yandex.practicum.filmorate.storage.film;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 
 @Component
@@ -40,21 +38,8 @@ public class InMemoryFilmStorage implements FilmStorage{
         return films.get(filmId);
     }
 
-    public void addLike (Long userId, Long filmId) {
-        findFilmById(filmId).getLikes().add(userId);
-    }
-
-    public void deleteLike (Long userId, Long filmId) {
-        if(!findFilmById(filmId).getLikes().contains(userId)) {
-            throw new UserNotFoundException(String.format("User with %d id not found", userId));
-        }
-        findFilmById(filmId).getLikes().remove(userId);
-    }
-
-    public List<Film> getTopFilms (Integer count) {
-        return findAll().stream()
-                .sorted((f0, f1) -> Integer.compare(f1.getLikes().size(), f0.getLikes().size()))
-                .limit(count)
-                .collect(Collectors.toList());
+    @Override
+    public List<Film> getTopFilms(Integer count) {
+        return null;
     }
 }

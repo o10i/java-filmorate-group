@@ -31,8 +31,6 @@ public class User {
    @DateTimeFormat(pattern = "yyyy-MM-dd")
    LocalDate birthday;
 
-   final Set<Long> friends = new HashSet<>();
-
    public Map<String, Object> toMap() {
       Map<String, Object> values = new HashMap<>();
       values.put("name", name);
