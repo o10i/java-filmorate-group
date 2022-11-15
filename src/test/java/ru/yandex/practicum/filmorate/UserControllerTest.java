@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class UserControllerTest {
 
-    private UserService userController;
+    /*private UserService userController;
 
     @BeforeEach
     void tearDown() {
@@ -167,5 +167,5 @@ public class UserControllerTest {
                                 .birthday(LocalDate.of(2022, 1, 1))
                                 .build()
                 ), "Your id must not be empty.");
-    }
+    }*/
 }

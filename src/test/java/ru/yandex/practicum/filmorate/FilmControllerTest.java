@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class FilmControllerTest {
 
-    private FilmService filmController;
+   /* private FilmService filmController;
 
     @BeforeEach
     public void tearDown() {
@@ -106,5 +106,5 @@ public class FilmControllerTest {
                         .duration(140)
                         .build()
         ), "Film id must not be empty.");
-    }
+    }*/
 }
