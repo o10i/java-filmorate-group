@@ -3,26 +3,25 @@ DELETE FROM LIKES;
 DELETE FROM FOLLOW;
 DELETE FROM MOVIE;
 DELETE FROM USERS;
+DELETE FROM MPA;
 
 ALTER TABLE MOVIE ALTER COLUMN ID RESTART WITH 1;
 ALTER TABLE USERS ALTER COLUMN ID RESTART WITH 1;
 
-MERGE INTO RATING KEY (ID)
+MERGE INTO MPA (id, name)
         VALUES ( 1, 'G' ),
                ( 2, 'PG' ),
-               ( 3, 'PG13' ),
+               ( 3, 'PG-13' ),
                ( 4, 'R' ),
-               ( 5, 'NC17' );
+               ( 5, 'NC-17' );
 
-MERGE INTO GENRE KEY (ID)
-    VALUES ( 1, 'Action' ),
-           ( 2, 'Comedy' ),
-           ( 3, 'Drama' ),
-           ( 4, 'Fantasy' ),
-           ( 5, 'Horror' ),
-           ( 6, 'Mystery' ),
-           ( 7, 'Romance' ),
-           ( 8, 'Thriller' );
+MERGE INTO GENRE (id, name)
+    VALUES (1, 'Комедия'),
+           (2, 'Драма'),
+           (3, 'Мультфильм'),
+           (4, 'Фантастика'),
+           (5, 'Триллер'),
+           (6, 'Боевик');
 
 
 

@@ -1,14 +1,17 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
 
 
 @Builder
@@ -26,19 +29,7 @@ public class Film {
     @Positive
     int duration;
     int rate;
-
     Mpa mpa;
 
-    Set<Genre> genres;
-
-    public Map<String, Object> toMap() {
-        Map<String, Object> values = new HashMap<>();
-        values.put("name", name);
-        values.put("description", description);
-        values.put("releaseDate", releaseDate);
-        values.put("duration", duration);
-        values.put("rate", rate);
-        values.put("mpa", mpa);
-        return values;
-    }
+    List<Genre> genres;
 }

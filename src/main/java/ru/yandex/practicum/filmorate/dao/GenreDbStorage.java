@@ -1,15 +1,18 @@
 package ru.yandex.practicum.filmorate.dao;
 
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.model.Genre;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Repository
+@Component
 public class GenreDbStorage {
     private final JdbcTemplate jdbcTemplate;
 
@@ -23,22 +26,27 @@ public class GenreDbStorage {
     }
 
     public Genre findGenreById(Long genreId) {
-        SqlRowSet genreRows = jdbcTemplate.queryForRowSet("SELECT * FROM GENRE WHERE id = ?", genreId);
-
-        if(genreRows.next()) {
-            Genre genre = Genre.builder()
-                    .id(genreRows.getLong("id"))
-                    .name(genreRows.getString("name"))
-                    .build();
-            return genre;
-        } else {
-            return null;
-        }
+        String sqlQuery = "SELECT * FROM GENRE WHERE id = ?";
+        return jdbcTemplate.query(sqlQuery, this::mapRowToGenre, genreId)
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new DataNotFoundException(String.format("Genre with %d id not found", genreId)));
     }
 
-    public void addFilmsGenre (Long filmId, Long genreId) {
-        String sqlQuery = "MERGE INTO FILM_GENRE KEY(FILM_ID, GENRE_ID) VALUES (?, ?)";
-        jdbcTemplate.update(sqlQuery, filmId, genreId);
+    public void addFilmsGenre (Long filmId, List<Genre> genres) {
+        List<Genre> genresUniq = genres.stream().distinct().collect(Collectors.toList());
+        jdbcTemplate.batchUpdate(
+                "INSERT INTO films_genres (genre_id, film_id) VALUES (?, ?);",
+                new BatchPreparedStatementSetter() {
+                    public void setValues(PreparedStatement statement, int i) throws SQLException {
+                        statement.setLong(1, genresUniq.get(i).getId());
+                        statement.setLong(2, filmId);
+                    }
+                    public int getBatchSize() {
+                        return genresUniq.size();
+                    }
+                }
+        );
     }
     public void deleteFilmsGenre(Long filmId) {
         String sqlQuery = "DELETE FROM FILM_GENRE WHERE FILM_ID + ?";
@@ -48,7 +56,7 @@ public class GenreDbStorage {
     public List <Genre> findFilmGenre (Long filmId) {
         String sqlQuery = "SELECT * FROM genre as g " +
                 "INNER JOIN film_genre as fg ON g.id = fg.genre_id " +
-                "WHERE FILM_ID = ?";
+                "WHERE fg.FILM_ID = ?";
         return jdbcTemplate.query(sqlQuery, this::mapRowToGenre, filmId);
     }
     private Genre mapRowToGenre(ResultSet resultSet, int nowNum) throws SQLException {

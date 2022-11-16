@@ -3,9 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.LikeDbStorage;
-import ru.yandex.practicum.filmorate.model.Film;
-
-import java.util.List;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 
 @Service
 public class LikeService {
@@ -21,16 +19,20 @@ public class LikeService {
     }
 
     public void addLike (Long userId, Long filmId) {
-        filmService.validatorId(filmId);
+        filmService.findFilmById(filmId);
+        validator(userId, filmId);
         likeDbStorage.addLike(userId, filmId);
     }
 
     public void deleteLike (Long userId, Long filmId) {
-        filmService.validatorId(filmId);
+        filmService.findFilmById(filmId);
+        validator(userId, filmId);
         likeDbStorage.deleteLike(userId, filmId);
     }
 
-    public List<Film> getTopFilms(Integer count) {
-        return filmService.getTopFilms(count);
+    private void validator (Long userId, Long filmId) {
+        if (likeDbStorage.LikeFromUser(filmId, userId) == 0) {
+            throw new UserNotFoundException(String.format("User with %d id not found", filmId));
+        }
     }
 }

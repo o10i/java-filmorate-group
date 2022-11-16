@@ -4,7 +4,6 @@ package ru.yandex.practicum.filmorate.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.GenreDbStorage;
-import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.util.List;
@@ -23,14 +22,15 @@ public class GenreService {
         return genreDbStorage.findAllGenre();
     }
 
-    public Genre findGenreById(Long genreId){
-        validatorGenre(genreId);
+    public Genre findGenreById(Long genreId) {
         return genreDbStorage.findGenreById(genreId);
     }
 
-    private void validatorGenre(Long genreId) {
-        if (genreDbStorage.findGenreById(genreId) == null || genreId == null) {
-            throw new DataNotFoundException(String.format("Genre with %d id not found", genreId));
-        }
+    public void addFilmsGenre (Long filmId, List<Genre> genres) {
+        genreDbStorage.addFilmsGenre(filmId, genres);
+    }
+
+    public void deleteFilmsGenre(Long filmId){
+        genreDbStorage.deleteFilmsGenre(filmId);
     }
 }

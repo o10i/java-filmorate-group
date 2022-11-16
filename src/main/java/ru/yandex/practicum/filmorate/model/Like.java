@@ -9,6 +9,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level= AccessLevel.PRIVATE)
 public class Like {
 
-    final Long filmId;
-    final Long userId;
+    Long filmId;
+    Long userId;
 }
