@@ -21,25 +21,25 @@ public class FollowService {
     }
 
     public void addFriend(Long userId, Long friendId) {
-        userService.validatorId(userId);
-        userService.validatorId(friendId);
+        userService.findUserById(userId);
+        userService.findUserById(friendId);
         followDbStorage.addFriend(userId, friendId);
     }
 
     public void deleteFriend(Long userId, Long friendId) {
-        userService.validatorId(userId);
-        userService.validatorId(friendId);
+        userService.findUserById(userId);
+        userService.findUserById(friendId);
         followDbStorage.deleteFriend(userId, friendId);
     }
 
     public List<User> getAllFriends (Long userId) {
-        userService.validatorId(userId);
+        userService.findUserById(userId);
         return followDbStorage.getAllFriends(userId);
     }
 
     public List<User> getCommonFriends(Long userId, Long friendId) {
-        userService.validatorId(userId);
-        userService.validatorId(friendId);
+        userService.findUserById(userId);
+        userService.findUserById(friendId);
         return followDbStorage.getCommonFriends(userId, friendId);
     }
 }

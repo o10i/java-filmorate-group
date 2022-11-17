@@ -22,12 +22,12 @@ public class GenreDbStorage {
 
     public List<Genre> findAllGenre() {
         String sqlQuery = "SELECT * FROM GENRE";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToGenre);
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToGenre(rs));
     }
 
     public Genre findGenreById(Long genreId) {
         String sqlQuery = "SELECT * FROM GENRE WHERE id = ?";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToGenre, genreId)
+        return jdbcTemplate.query(sqlQuery,(rs, rowNum) -> mapRowToGenre(rs), genreId)
                 .stream()
                 .findFirst()
                 .orElseThrow(() -> new DataNotFoundException(String.format("Genre with %d id not found", genreId)));
@@ -36,11 +36,11 @@ public class GenreDbStorage {
     public void addFilmsGenre (Long filmId, List<Genre> genres) {
         List<Genre> genresUniq = genres.stream().distinct().collect(Collectors.toList());
         jdbcTemplate.batchUpdate(
-                "INSERT INTO films_genres (genre_id, film_id) VALUES (?, ?);",
+                "MERGE INTO film_genre key(FILM_ID,genre_id) values (?, ?)",
                 new BatchPreparedStatementSetter() {
                     public void setValues(PreparedStatement statement, int i) throws SQLException {
-                        statement.setLong(1, genresUniq.get(i).getId());
-                        statement.setLong(2, filmId);
+                        statement.setLong(1, filmId);
+                        statement.setLong(2, genresUniq.get(i).getId());
                     }
                     public int getBatchSize() {
                         return genresUniq.size();
@@ -48,18 +48,35 @@ public class GenreDbStorage {
                 }
         );
     }
+
+   /* public void addGenres (List<Film> films) {
+        final Map<Long, Film> filmById = films.stream().collect(Collectors.toMap(Film::getId, identity()));
+
+        String inSql = String.join(",", Collections.nCopies(films.size(), "?"));
+
+        List<Film> filmsWith = jdbcTemplate.query(
+                String.format("SELECT GENRE_ID FROM FILM_GENRE WHERE FILM_ID IN (%s)", inSql),
+                filmById.values().toArray(),
+                (rs, rowNum) -> Film.builder()
+                        .id(rs.getLong("id"))
+                        .name((rs.getString("name")))
+                        .releaseDate((rs.getDate("release_date")).toLocalDate())
+                        .description(rs.getString("description"))
+                        .duration(rs.getInt("duration"))
+                        .rate(rs.getInt("rate"))
+                        .mpa(Mpa.builder()
+                                .id(rs.getLong("mpa.id"))
+                                .name(rs.getString("mpa.name"))
+                                .build())
+                        .genres((rs.getLong("id")))
+                        .build();
+    }*/
     public void deleteFilmsGenre(Long filmId) {
         String sqlQuery = "DELETE FROM FILM_GENRE WHERE FILM_ID + ?";
         jdbcTemplate.update(sqlQuery, filmId);
     }
 
-    public List <Genre> findFilmGenre (Long filmId) {
-        String sqlQuery = "SELECT * FROM genre as g " +
-                "INNER JOIN film_genre as fg ON g.id = fg.genre_id " +
-                "WHERE fg.FILM_ID = ?";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToGenre, filmId);
-    }
-    private Genre mapRowToGenre(ResultSet resultSet, int nowNum) throws SQLException {
+    public static Genre mapRowToGenre(ResultSet resultSet) throws SQLException {
         return Genre.builder()
                 .id(resultSet.getLong("id"))
                 .name(resultSet.getString("name"))

@@ -7,8 +7,8 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS follow (
-    user_id integer NOT NULL REFERENCES users (id),
-    friend_id integer NOT NULL REFERENCES users (id),
+    user_id integer NOT NULL,
+    friend_id integer NOT NULL,
     PRIMARY KEY (friend_id, user_id)
 );
 
@@ -33,14 +33,16 @@ CREATE TABLE IF NOT EXISTS movie (
 );
 
 CREATE TABLE IF NOT EXISTS film_genre (
-    film_id integer NOT NULL REFERENCES movie (id),
-    genre_id integer NOT NULL REFERENCES genre (id),
+    film_id integer NOT NULL,
+    genre_id integer NOT NULL,
+    CONSTRAINT IF NOT EXISTS "film_id_foreign" FOREIGN KEY (film_id) REFERENCES movie (id),
+    CONSTRAINT IF NOT EXISTS "genre_id_foreign" FOREIGN KEY (genre_id) REFERENCES genre (id),
     PRIMARY KEY (film_id, genre_id)
 );
 
 
 CREATE TABLE IF NOT EXISTS likes (
-    film_id integer NOT NULL REFERENCES movie (id),
-    user_id integer NOT NULL REFERENCES users (id),
+    film_id integer NOT NULL,
+    user_id integer NOT NULL,
     PRIMARY KEY (film_id, user_id)
 );

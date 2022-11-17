@@ -6,6 +6,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
@@ -15,6 +16,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static ru.yandex.practicum.filmorate.dao.GenreDbStorage.mapRowToGenre;
 
 
 @Component
@@ -22,11 +26,8 @@ public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private final GenreDbStorage genreDbStorage;
-
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, GenreDbStorage genreDbStorage) {
+    public FilmDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.genreDbStorage = genreDbStorage;
     }
 
     @Override
@@ -82,15 +83,15 @@ public class FilmDbStorage implements FilmStorage {
 
         return jdbcTemplate.query(sqlQuery,this::mapRowToFilm, filmId)
                 .stream()
-                .findAny()
+                .findFirst()
                 .orElseThrow(() -> new FilmNotFoundException(String.format("Film with %d id not found", filmId)));
 
     }
     public List<Film> getTopFilms(Integer count) {
         String sqlQuery = "SELECT * " +
                 "FROM MOVIE AS m " +
-                "INNER JOIN likes AS l ON m.id = l.film_id " +
-                "INNER JOIN MPA ON m.mpa_id = MPA.id " +
+                "INNER JOIN MPA ON MPA.id = m.mpa_id " +
+                "LEFT JOIN likes AS l ON l.film_id = m.id " +
                 "GROUP BY m.id " +
                 "ORDER BY COUNT(l.user_id) DESC " +
                 "LIMIT ?";
@@ -98,11 +99,11 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, count);
     }
 
-    public Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
+    private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
         return Film.builder()
                 .id(resultSet.getLong("id"))
                 .name((resultSet.getString("name")))
-                .releaseDate((resultSet.getDate("releaseDate")).toLocalDate())
+                .releaseDate((resultSet.getDate("release_date")).toLocalDate())
                 .description(resultSet.getString("description"))
                 .duration(resultSet.getInt("duration"))
                 .rate(resultSet.getInt("rate"))
@@ -110,7 +111,15 @@ public class FilmDbStorage implements FilmStorage {
                         .id(resultSet.getLong("mpa.id"))
                         .name(resultSet.getString("mpa.name"))
                         .build())
-                .genres(genreDbStorage.findFilmGenre(resultSet.getLong("id")))
+                .genres(getGenreOfFilm(resultSet.getLong("id")))
                 .build();
+    }
+
+    private List<Genre> getGenreOfFilm (Long filmId) {
+        String sqlQuery = "SELECT * FROM genre WHERE id IN(Select genre_id from film_genre where film_id = ?)";
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) ->  mapRowToGenre(rs), filmId)
+                .stream()
+                .distinct()
+                .collect(Collectors.toList());
     }
 }

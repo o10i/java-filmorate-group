@@ -2,6 +2,11 @@ package ru.yandex.practicum.filmorate.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.model.Like;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 
 @Component
@@ -24,8 +29,15 @@ public class LikeDbStorage {
         jdbcTemplate.update(sqlQuery, filmId, userId);
     }
 
-    public int LikeFromUser(Long filmId, Long userId) {
-        String sqlQuery = "SELECT COUNT(user_id) FROM likes WHERE film_id = ? AND user_id = ?;";
-        return jdbcTemplate.queryForObject(sqlQuery, Integer.class, filmId, userId);
+    public List<Like> getLikes(Long userId, Long filmId) {
+        String sqlQuery = "SELECT * FROM LIKES WHERE USER_ID = ? AND FILM_ID = ?";
+        return jdbcTemplate.query(sqlQuery, this::mapRowToLike, userId, filmId);
+    }
+
+    private Like mapRowToLike(ResultSet resultSet, int nowNum) throws SQLException {
+        return Like.builder()
+                .filmId(resultSet.getLong("film_id"))
+                .userId(resultSet.getLong("user_id"))
+                .build();
     }
 }

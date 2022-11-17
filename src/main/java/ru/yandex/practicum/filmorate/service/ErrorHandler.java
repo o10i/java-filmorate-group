@@ -21,48 +21,50 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationException(final ValidationException e) {
-        log.debug(e.getMessage());
+        log.error(e.getLocalizedMessage(), e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleControllerArgumentNotValidException(ConstraintViolationException e){
+        log.error(e.getLocalizedMessage(), e.getMessage());
         return new ErrorResponse("Controller argument not valid");
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
-        log.debug("Method argument not valid");
+        log.error(e.getLocalizedMessage(), e.getMessage());
         return new ErrorResponse("Method argument not valid");
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleFilmNotFoundException(final FilmNotFoundException e) {
-        log.debug(e.getMessage());
+        log.error(e.getLocalizedMessage(), e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleUserNotFoundException(final UserNotFoundException e) {
-        log.debug(e.getMessage());
+        log.error(e.getLocalizedMessage(), e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleDataNotFoundException(final DataNotFoundException e) {
-        log.debug(e.getMessage());
+        log.error(e.getLocalizedMessage(), e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleServerException(final Throwable e) {
-        log.debug("An Unexpected Error Occurred");
+        log.error(e.getLocalizedMessage(), e.getMessage());
+
         return new ErrorResponse("An Unexpected Error Occurred");
     }
 }
