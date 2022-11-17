@@ -2,15 +2,20 @@ package ru.yandex.practicum.filmorate.dao;
 
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.util.function.UnaryOperator.identity;
 
 @Component
 public class GenreDbStorage {
@@ -33,44 +38,36 @@ public class GenreDbStorage {
                 .orElseThrow(() -> new DataNotFoundException(String.format("Genre with %d id not found", genreId)));
     }
 
-    public void addFilmsGenre (Long filmId, List<Genre> genres) {
-        List<Genre> genresUniq = genres.stream().distinct().collect(Collectors.toList());
+    public void addFilmsGenre (Long filmId, LinkedHashSet<Genre> genres) {
+        List<Genre> genreList = new ArrayList<>(genres);
         jdbcTemplate.batchUpdate(
                 "MERGE INTO film_genre key(FILM_ID,genre_id) values (?, ?)",
                 new BatchPreparedStatementSetter() {
                     public void setValues(PreparedStatement statement, int i) throws SQLException {
                         statement.setLong(1, filmId);
-                        statement.setLong(2, genresUniq.get(i).getId());
+                        statement.setLong(2, genreList.get(i).getId());
                     }
                     public int getBatchSize() {
-                        return genresUniq.size();
+                        return genreList.size();
                     }
                 }
         );
     }
 
-   /* public void addGenres (List<Film> films) {
-        final Map<Long, Film> filmById = films.stream().collect(Collectors.toMap(Film::getId, identity()));
-
+    public void addGenres (List<Film> films) {
         String inSql = String.join(",", Collections.nCopies(films.size(), "?"));
 
-        List<Film> filmsWith = jdbcTemplate.query(
-                String.format("SELECT GENRE_ID FROM FILM_GENRE WHERE FILM_ID IN (%s)", inSql),
-                filmById.values().toArray(),
-                (rs, rowNum) -> Film.builder()
-                        .id(rs.getLong("id"))
-                        .name((rs.getString("name")))
-                        .releaseDate((rs.getDate("release_date")).toLocalDate())
-                        .description(rs.getString("description"))
-                        .duration(rs.getInt("duration"))
-                        .rate(rs.getInt("rate"))
-                        .mpa(Mpa.builder()
-                                .id(rs.getLong("mpa.id"))
-                                .name(rs.getString("mpa.name"))
-                                .build())
-                        .genres((rs.getLong("id")))
-                        .build();
-    }*/
+        final Map<Long, Film> filmById = films.stream().collect(Collectors.toMap(Film::getId, identity()));
+
+        final String sqlQuery = "SELECT * FROM GENRE AS g, FILM_GENRE AS fg WHERE fg.GENRE_ID = g.ID AND fg.FILM_ID in ("
+                + inSql + ")";
+
+        jdbcTemplate.query(sqlQuery, (rs) -> {
+            final Film film = filmById.get(rs.getLong("FILM_ID"));
+            film.getGenres().add(mapRowToGenre(rs));
+        }, films.stream().map(Film::getId).toArray());
+
+    }
     public void deleteFilmsGenre(Long filmId) {
         String sqlQuery = "DELETE FROM FILM_GENRE WHERE FILM_ID + ?";
         jdbcTemplate.update(sqlQuery, filmId);

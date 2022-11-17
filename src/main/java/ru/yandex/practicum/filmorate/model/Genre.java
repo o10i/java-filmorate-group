@@ -6,8 +6,7 @@ import lombok.experimental.FieldDefaults;
 
 
 @Builder
-@Getter
-@Setter
+@Data
 @FieldDefaults(level= AccessLevel.PRIVATE)
 public class Genre {
 

@@ -62,17 +62,6 @@ public class FilmDbTest {
                         .build())
                 .build()
         );
-        assertThrows(FilmNotFoundException.class, () -> filmDbStorage.update(Film.builder()
-                .id(-5L)
-                .name("Name")
-                .description("Description")
-                .releaseDate(LocalDate.of(2022, 1, 1))
-                .duration(100)
-                .rate(5)
-                .mpa(Mpa.builder()
-                        .id(2L)
-                        .build())
-                .build()));
     }
 
     @Test

@@ -6,7 +6,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
@@ -14,11 +13,9 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-
-import static ru.yandex.practicum.filmorate.dao.GenreDbStorage.mapRowToGenre;
 
 
 @Component
@@ -72,7 +69,7 @@ public class FilmDbStorage implements FilmStorage {
                 , film.getMpa().getId()
                 , film.getId());
 
-        return findFilmById(film.getId());
+        return film;
     }
 
     @Override
@@ -111,15 +108,7 @@ public class FilmDbStorage implements FilmStorage {
                         .id(resultSet.getLong("mpa.id"))
                         .name(resultSet.getString("mpa.name"))
                         .build())
-                .genres(getGenreOfFilm(resultSet.getLong("id")))
+                .genres(new LinkedHashSet<>())
                 .build();
-    }
-
-    private List<Genre> getGenreOfFilm (Long filmId) {
-        String sqlQuery = "SELECT * FROM genre WHERE id IN(Select genre_id from film_genre where film_id = ?)";
-        return jdbcTemplate.query(sqlQuery, (rs, rowNum) ->  mapRowToGenre(rs), filmId)
-                .stream()
-                .distinct()
-                .collect(Collectors.toList());
     }
 }

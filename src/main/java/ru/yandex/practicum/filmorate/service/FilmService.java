@@ -26,7 +26,9 @@ public class FilmService {
     }
 
     public List<Film> findAll() {
-        return filmStorage.findAll();
+        List<Film> films = filmStorage.findAll();
+        genreService.addGenres(films);
+        return films;
     }
 
     public Film create(Film film) {
@@ -49,11 +51,15 @@ public class FilmService {
     }
 
     public Film findFilmById (Long filmId) {
-        return filmStorage.findFilmById(filmId);
+        Film film = filmStorage.findFilmById(filmId);
+        genreService.addGenres(List.of(film));
+        return film;
     }
 
     public List<Film> getTopFilms(Integer count) {
-        return filmStorage.getTopFilms(count);
+        List<Film> films = filmStorage.getTopFilms(count);
+        genreService.addGenres(films);
+        return films;
     }
 
     private void validator(Film film) {

@@ -4,8 +4,10 @@ package ru.yandex.practicum.filmorate.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.GenreDbStorage;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 
 @Service
@@ -26,11 +28,15 @@ public class GenreService {
         return genreDbStorage.findGenreById(genreId);
     }
 
-    public void addFilmsGenre (Long filmId, List<Genre> genres) {
+    public void addFilmsGenre (Long filmId, LinkedHashSet<Genre> genres) {
         genreDbStorage.addFilmsGenre(filmId, genres);
     }
 
     public void deleteFilmsGenre(Long filmId){
         genreDbStorage.deleteFilmsGenre(filmId);
+    }
+
+    public void addGenres(List<Film> films) {
+        genreDbStorage.addGenres(films);
     }
 }
