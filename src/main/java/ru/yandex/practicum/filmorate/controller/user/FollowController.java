@@ -1,22 +1,19 @@
-package ru.yandex.practicum.filmorate.controller;
+package ru.yandex.practicum.filmorate.controller.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.user.User;
 import ru.yandex.practicum.filmorate.service.FollowService;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/users/{id}/friends")
+@RequiredArgsConstructor
 public class FollowController {
 
     private final FollowService followService;
 
-    @Autowired
-    public FollowController(FollowService followService) {
-        this.followService = followService;
-    }
 
     @PutMapping("/{friendId}")
     public void addFriend(@PathVariable("id") Long userId, @PathVariable("friendId") Long friendId) {

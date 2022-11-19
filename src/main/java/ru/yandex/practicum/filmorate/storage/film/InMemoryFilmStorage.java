@@ -1,8 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.film.Film;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +10,6 @@ import java.util.Map;
 
 
 @Component
-@Slf4j
 public class InMemoryFilmStorage implements FilmStorage{
 
     private long baseId = 0;
@@ -19,7 +17,6 @@ public class InMemoryFilmStorage implements FilmStorage{
 
 
     public List<Film> findAll() {
-        log.debug("Count of films: " + films.size());
         return new ArrayList<>(films.values());
     }
 

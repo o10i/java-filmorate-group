@@ -1,18 +1,17 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.model.film;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Builder
-@Getter
-@Setter
+@Data
 @FieldDefaults(level= AccessLevel.PRIVATE)
-public class Mpa {
+public class Like {
+
     @NotNull
-    Long id;
-    @NotBlank
-    String name;
+    Long filmId;
+    @NotNull
+    Long userId;
 }

@@ -1,13 +1,11 @@
-package ru.yandex.practicum.filmorate.dao;
+package ru.yandex.practicum.filmorate.storage.genre;
 
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.model.film.Film;
+import ru.yandex.practicum.filmorate.model.film.Genre;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,7 +16,7 @@ import java.util.stream.Collectors;
 import static java.util.function.UnaryOperator.identity;
 
 @Component
-public class GenreDbStorage {
+public class GenreDbStorage implements GenreStorage {
     private final JdbcTemplate jdbcTemplate;
 
     public GenreDbStorage(JdbcTemplate jdbcTemplate) {
@@ -54,7 +52,7 @@ public class GenreDbStorage {
         );
     }
 
-    public void addGenres (List<Film> films) {
+    public void loadGenres(List<Film> films) {
         String inSql = String.join(",", Collections.nCopies(films.size(), "?"));
 
         final Map<Long, Film> filmById = films.stream().collect(Collectors.toMap(Film::getId, identity()));

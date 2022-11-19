@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.model.film;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -27,6 +27,7 @@ public class Film {
     @Positive
     int duration;
     int rate;
+
     Mpa mpa;
 
     LinkedHashSet<Genre> genres;

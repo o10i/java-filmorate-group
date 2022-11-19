@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.yandex.practicum.filmorate.dao.UserDbStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.user.User;
 
 
 import java.time.LocalDate;
@@ -67,12 +67,5 @@ public class UserDbTest {
                 .birthday(LocalDate.of(2022, 1, 1))
                 .build()
         );
-        assertThrows(UserNotFoundException.class, () -> userStorage.update(User.builder()
-                .id(-1L)
-                .email("a@ya.ru")
-                .login("l")
-                .name("y")
-                .birthday(LocalDate.of(2022, 1, 1))
-                .build()));
     }
 }

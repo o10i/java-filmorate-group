@@ -1,15 +1,15 @@
-package ru.yandex.practicum.filmorate.dao;
+package ru.yandex.practicum.filmorate.storage.follow;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.user.User;
 
 import java.util.List;
 
-import static ru.yandex.practicum.filmorate.dao.UserDbStorage.mapRowToUser;
+import static ru.yandex.practicum.filmorate.storage.user.UserDbStorage.mapRowToUser;
 
 @Component
-public class FollowDbStorage {
+public class FollowDbStorage implements FollowStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -21,9 +21,7 @@ public class FollowDbStorage {
     public void addFriend(Long userId, Long friendId) {
         String sqlQuery = "INSERT INTO FOLLOW(USER_ID, FRIEND_ID) " +
                 "values (?, ?)";
-        jdbcTemplate.update(sqlQuery,
-                userId,
-                friendId);
+        jdbcTemplate.update(sqlQuery, userId, friendId);
     }
 
     public void deleteFriend(Long userId, Long friendId) {

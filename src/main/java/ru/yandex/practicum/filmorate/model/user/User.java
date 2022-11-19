@@ -1,9 +1,6 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.model.user;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -15,8 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Builder
-@Getter
-@Setter
+@Data
 @FieldDefaults(level= AccessLevel.PRIVATE)
 public class User {
 

@@ -1,17 +1,16 @@
-package ru.yandex.practicum.filmorate.dao;
+package ru.yandex.practicum.filmorate.storage.user;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
-import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+import ru.yandex.practicum.filmorate.model.user.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-@Component
+@Repository("userStorage")
 public class UserDbStorage implements UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
@@ -30,7 +29,8 @@ public class UserDbStorage implements UserStorage {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("users")
                 .usingGeneratedKeyColumns("id");
-        return findUserById(simpleJdbcInsert.executeAndReturnKey(user.toMap()).longValue());
+        user.setId(simpleJdbcInsert.executeAndReturnKey(user.toMap()).longValue());
+        return user;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class UserDbStorage implements UserStorage {
                 , user.getName()
                 , user.getBirthday()
                 , user.getId());
-        return findUserById(user.getId());
+        return user;
     }
 
     @Override

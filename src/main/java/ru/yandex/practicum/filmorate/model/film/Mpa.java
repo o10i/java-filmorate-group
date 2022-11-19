@@ -1,18 +1,17 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.model.film;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Builder
-@Getter
-@Setter
+@Data
 @FieldDefaults(level= AccessLevel.PRIVATE)
-public class Follow {
+public class Mpa {
     @NotNull
-    final Long userId;
-    @NotNull
-    final Long friendId;
+    Long id;
+    @NotBlank
+    String name;
 }
