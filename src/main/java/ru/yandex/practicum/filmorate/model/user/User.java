@@ -1,8 +1,6 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.model.user;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -10,11 +8,11 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
-@Data
 @Builder
+@Data
 @FieldDefaults(level= AccessLevel.PRIVATE)
 public class User {
 
@@ -28,6 +26,14 @@ public class User {
    @PastOrPresent
    @DateTimeFormat(pattern = "yyyy-MM-dd")
    LocalDate birthday;
-   final Set<Long> friends = new HashSet<>();
+
+   public Map<String, Object> toMap() {
+      Map<String, Object> values = new HashMap<>();
+      values.put("name", name);
+      values.put("email", email);
+      values.put("login", login);
+      values.put("birthday", birthday);
+      return values;
+   }
 
 }

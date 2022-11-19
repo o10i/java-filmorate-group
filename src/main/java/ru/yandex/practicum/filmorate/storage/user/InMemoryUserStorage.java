@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.storage.user;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.user.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +22,6 @@ public class InMemoryUserStorage implements UserStorage{
         return new ArrayList<>(users.values());
     }
 
-
     public User create(User user) {
         users.values().forEach((us)->{
             if (user.getEmail().equals(us.getEmail())) {
@@ -34,9 +33,7 @@ public class InMemoryUserStorage implements UserStorage{
                 throw new ValidationException("User with the same login already exists.");
             }
         });
-
         user.setId(++baseId);
-        log.debug("User to save: " + user.toString());
         users.put(user.getId(), user);
         return user;
     }
@@ -49,6 +46,5 @@ public class InMemoryUserStorage implements UserStorage{
     public User findUserById(Long userId) {
         return users.get(userId);
     }
-
 
 }

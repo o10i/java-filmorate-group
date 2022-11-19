@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.model.film;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -6,24 +6,29 @@ import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedHashSet;
 
-@Data
+
 @Builder
+@Data
 @FieldDefaults(level= AccessLevel.PRIVATE)
 public class Film {
     Long id;
     @NotBlank
-    final String name;
+    String name;
     @Size(max = 200)
-    final String description;
+    String description;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    final LocalDate releaseDate;
+    LocalDate releaseDate;
     @Positive
-    final int duration;
-    final Set<Long> likes = new HashSet<>();
+    int duration;
+    int rate;
 
+    Mpa mpa;
+
+    LinkedHashSet<Genre> genres;
 }
