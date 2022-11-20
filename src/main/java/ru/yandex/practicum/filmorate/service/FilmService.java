@@ -21,7 +21,7 @@ public class FilmService {
 
     public List<Film> findAll() {
         List<Film> films = filmStorage.findAll();
-        genreService.addGenres(films);
+        genreService.loadGenres(films);
         return films;
     }
 
@@ -46,13 +46,13 @@ public class FilmService {
 
     public Film findFilmById (Long filmId) {
         Film film = filmStorage.findFilmById(filmId);
-        genreService.addGenres(List.of(film));
+        genreService.loadGenres(List.of(film));
         return film;
     }
 
     public List<Film> getTopFilms(Integer count) {
         List<Film> films = filmStorage.getTopFilms(count);
-        genreService.addGenres(films);
+        genreService.loadGenres(films);
         return films;
     }
 

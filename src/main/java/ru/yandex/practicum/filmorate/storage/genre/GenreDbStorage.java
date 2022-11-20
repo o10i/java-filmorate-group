@@ -64,7 +64,6 @@ public class GenreDbStorage implements GenreStorage {
             final Film film = filmById.get(rs.getLong("FILM_ID"));
             film.getGenres().add(mapRowToGenre(rs));
         }, films.stream().map(Film::getId).toArray());
-
     }
     public void deleteFilmsGenre(Long filmId) {
         String sqlQuery = "DELETE FROM FILM_GENRE WHERE FILM_ID + ?";

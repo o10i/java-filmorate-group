@@ -32,7 +32,7 @@ public class GenreService {
         genreStorage.deleteFilmsGenre(filmId);
     }
 
-    public void addGenres(List<Film> films) {
+    public void loadGenres(List<Film> films) {
         genreStorage.loadGenres(films);
     }
 }
