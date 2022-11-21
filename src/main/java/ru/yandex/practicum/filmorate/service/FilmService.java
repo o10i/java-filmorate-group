@@ -56,6 +56,12 @@ public class FilmService {
         return films;
     }
 
+    public List<Film> getCommonFilms (Long userId, Long friendId) {
+        List<Film> films = filmStorage.getCommonFilms(userId,friendId);
+        genreService.loadGenres(films);
+        return films;
+    }
+
     private void validator(Film film) {
         if (film.getReleaseDate().isBefore(FILM_BIRTH)) {
             throw new ValidationException("December 28, 1895 is considered the birthday of cinema.");

@@ -95,6 +95,15 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, count);
     }
 
+    @Override
+    public List<Film> getCommonFilms(long userId, long friendId) {
+        String sqlQuery = "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 " +
+                "INNER JOIN MPA ON (MPA.id = m.mpa_id)" +
+                "WHERE l1.user_id = ? AND l2.user_id = ? " +
+                "AND m.id = l1.film_id AND m.id = l2.film_id";
+        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, userId, friendId);
+    }
+
     private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
         return Film.builder()
                 .id(resultSet.getLong("id"))

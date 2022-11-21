@@ -43,4 +43,10 @@ public class FilmController {
     public List<Film> getTopFilms (@RequestParam(defaultValue = "10") @Positive Integer count) {
         return filmService.getTopFilms(count);
     }
+
+    @GetMapping("/common")
+    public List<Film> getCommonFilms(@RequestParam(value = "userId") Long userId,
+                                     @RequestParam(value = "friendId") Long friendId) {
+        return filmService.getCommonFilms(userId, friendId);
+    }
 }
