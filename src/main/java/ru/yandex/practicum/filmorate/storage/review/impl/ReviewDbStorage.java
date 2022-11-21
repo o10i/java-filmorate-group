@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.model.review.Review;
 import ru.yandex.practicum.filmorate.model.user.User;
-import ru.yandex.practicum.filmorate.storage.review.ReviewDao;
-import ru.yandex.practicum.filmorate.storage.review.ReviewLikeDao;
+import ru.yandex.practicum.filmorate.storage.review.ReviewStorage;
+import ru.yandex.practicum.filmorate.storage.review.ReviewLikeStorage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,9 +18,9 @@ import java.util.HashSet;
 
 @Repository
 @RequiredArgsConstructor
-public class ReviewDaoImpl implements ReviewDao {
+public class ReviewDbStorage implements ReviewStorage {
     private final JdbcTemplate jdbcTemplate;
-    private final ReviewLikeDao reviewLikeDao;
+    private final ReviewLikeStorage reviewLikeStorage;
 
     @Override
     public void create(Review review) {
@@ -43,7 +43,7 @@ public class ReviewDaoImpl implements ReviewDao {
     }
 
     @Override
-    public Review get(long reviewId) {
+    public Review get(Long reviewId) {
         String sqlQuery = "SELECT * FROM reviews WHERE id = ?";
         try {
             return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToReview, reviewId);
@@ -59,13 +59,13 @@ public class ReviewDaoImpl implements ReviewDao {
     }
 
     @Override
-    public void delete(long reviewId) {
+    public void delete(Long reviewId) {
         String sqlQuery = "DELETE FROM reviews WHERE id = ?";
         jdbcTemplate.update(sqlQuery, reviewId);
     }
 
     @Override
-    public Collection<Review> getList(long filmId, int count) {
+    public Collection<Review> getAll(Long filmId, Integer count) {
         if (filmId == -1) {
             String sqlQuery = "SELECT * FROM reviews LIMIT ?";
             return jdbcTemplate.query(sqlQuery, this::mapRowToReview, count);
@@ -75,27 +75,27 @@ public class ReviewDaoImpl implements ReviewDao {
     }
 
     @Override
-    public void addLike(long reviewId, User user) {
+    public void addLike(Long reviewId, User user) {
         get(reviewId);
-        reviewLikeDao.addLike(reviewId, user.getId());
+        reviewLikeStorage.addLike(reviewId, user.getId());
     }
 
     @Override
-    public void addDislike(long reviewId, User user) {
+    public void addDislike(Long reviewId, User user) {
         get(reviewId);
-        reviewLikeDao.addDislike(reviewId, user.getId());
+        reviewLikeStorage.addDislike(reviewId, user.getId());
     }
 
     @Override
-    public void removeLike(long reviewId, User user) {
+    public void removeLike(Long reviewId, User user) {
         get(reviewId);
-        reviewLikeDao.removeLike(reviewId, user.getId());
+        reviewLikeStorage.removeLike(reviewId, user.getId());
     }
 
     @Override
-    public void removeDislike(long reviewId, User user) {
+    public void removeDislike(Long reviewId, User user) {
         get(reviewId);
-        reviewLikeDao.removeDislike(reviewId, user.getId());
+        reviewLikeStorage.removeDislike(reviewId, user.getId());
     }
 
     private Review mapRowToReview(ResultSet rs, int rowNum) throws SQLException {
@@ -104,7 +104,7 @@ public class ReviewDaoImpl implements ReviewDao {
                 .positive(rs.getBoolean("is_positive"))
                 .filmId(rs.getLong("film_id"))
                 .userId(rs.getLong("user_id"))
-                .useful(reviewLikeDao.getUseful(rs.getLong("id")))
+                .useful(reviewLikeStorage.getUseful(rs.getLong("id")))
                 .build();
     }
 }

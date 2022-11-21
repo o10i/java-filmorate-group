@@ -51,8 +51,7 @@ CREATE TABLE IF NOT EXISTS reviews (
     content text NOT NULL,
     is_positive boolean NOT NULL,
     film_id integer REFERENCES movie (id) ON DELETE CASCADE,
-    user_id integer REFERENCES users (id) ON DELETE CASCADE,
-    useful integer NOT NULL
+    user_id integer REFERENCES users (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS review_like (

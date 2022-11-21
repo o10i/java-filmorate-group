@@ -3,16 +3,16 @@ package ru.yandex.practicum.filmorate.storage.review.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.storage.review.ReviewLikeDao;
+import ru.yandex.practicum.filmorate.storage.review.ReviewLikeStorage;
 
 @Repository
 @RequiredArgsConstructor
-public class ReviewLikeDaoImpl implements ReviewLikeDao {
+public class ReviewLikeDbStorage implements ReviewLikeStorage {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public long getUseful(long reviewId) {
-        int result = 0;
+    public Long getUseful(Long reviewId) {
+        long result = 0;
         String sqlQuery = "SELECT * FROM review_like WHERE review_id = ?";
         var rs = jdbcTemplate.queryForRowSet(sqlQuery, reviewId);
         while (rs.next()) {
@@ -26,7 +26,7 @@ public class ReviewLikeDaoImpl implements ReviewLikeDao {
     }
 
     @Override
-    public void addLike(long reviewId, long userId) {
+    public void addLike(Long reviewId, Long userId) {
         if (contains(reviewId, userId, true)) {
             return;
         }
@@ -35,7 +35,7 @@ public class ReviewLikeDaoImpl implements ReviewLikeDao {
     }
 
     @Override
-    public void addDislike(long reviewId, long userId) {
+    public void addDislike(Long reviewId, Long userId) {
         if (contains(reviewId, userId, false)) {
             return;
         }
@@ -44,13 +44,13 @@ public class ReviewLikeDaoImpl implements ReviewLikeDao {
     }
 
     @Override
-    public void removeLike(long reviewId, long userId) {
+    public void removeLike(Long reviewId, Long userId) {
         String sqlQuery = "DELETE FROM review_like WHERE review_id = ? AND user_id = ? AND is_positive = ?";
         jdbcTemplate.update(sqlQuery, reviewId, userId, true);
     }
 
     @Override
-    public void removeDislike(long reviewId, long userId) {
+    public void removeDislike(Long reviewId, Long userId) {
         String sqlQuery = "DELETE FROM review_like WHERE review_id = ? AND user_id = ? AND is_positive = ?";
         jdbcTemplate.update(sqlQuery, reviewId, userId, false);
     }
