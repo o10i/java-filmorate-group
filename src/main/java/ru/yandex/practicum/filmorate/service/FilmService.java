@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.film.Film;
+import ru.yandex.practicum.filmorate.model.film.SortType;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.time.LocalDate;
@@ -12,15 +13,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FilmService {
-
     private static final LocalDate FILM_BIRTH = LocalDate.of(1895, 12, 28);
-
     private final FilmStorage filmStorage;
-
     private final GenreService genreService;
+    private final DirectorService directorService;
 
     public List<Film> findAll() {
         List<Film> films = filmStorage.findAll();
+        directorService.loadDirectors(films);
         genreService.loadGenres(films);
         return films;
     }
@@ -31,6 +31,9 @@ public class FilmService {
         if (film.getGenres() != null) {
             genreService.addFilmsGenre(filmWithId.getId(), film.getGenres());
         }
+        if (film.getDirectors() != null) {
+            directorService.addFilmsDirector(filmWithId.getId(), film.getDirectors());
+        }
         return filmWithId;
     }
 
@@ -40,13 +43,22 @@ public class FilmService {
         if (film.getGenres() != null) {
             genreService.deleteFilmsGenre(film.getId());
             genreService.addFilmsGenre(film.getId(), film.getGenres());
+        } else {
+            genreService.deleteFilmsGenre(film.getId());
+        }
+        if (film.getDirectors() != null) {
+            directorService.deleteFilmsDirector(film.getId());
+            directorService.addFilmsDirector(film.getId(), film.getDirectors());
+        } else {
+            directorService.deleteFilmsDirector(film.getId());
         }
         return filmStorage.update(film);
     }
 
-    public Film findFilmById (Long filmId) {
+    public Film findFilmById(Long filmId) {
         Film film = filmStorage.findFilmById(filmId);
         genreService.loadGenres(List.of(film));
+        directorService.loadDirectors(List.of(film));
         return film;
     }
 
@@ -60,6 +72,19 @@ public class FilmService {
         if (film.getReleaseDate().isBefore(FILM_BIRTH)) {
             throw new ValidationException("December 28, 1895 is considered the birthday of cinema.");
         }
+    }
+
+    public List<Film> getSortedDirectorFilms(Long directorId, SortType sortType) {
+        directorService.findDirectorById(directorId);
+        List<Film> films;
+        if (sortType == SortType.YEAR) {
+            films = filmStorage.getDirectorFilmsSortedByYear(directorId);
+        } else {
+            films = filmStorage.getDirectorFilmsSortedByLikes(directorId);
+        }
+        directorService.loadDirectors(films);
+        genreService.loadGenres(films);
+        return films;
     }
 }
 

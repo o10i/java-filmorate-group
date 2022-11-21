@@ -95,6 +95,20 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, count);
     }
 
+    public List<Film> getDirectorFilmsSortedByYear(Long directorId) {
+        String sqlQuery = "SELECT * FROM MOVIE M LEFT JOIN MPA ON MPA.ID = M.MPA_ID " +
+                "WHERE M.ID IN (SELECT FILM_ID FROM FILM_DIRECTOR WHERE DIRECTOR_ID = ?) ORDER BY M.RELEASE_DATE";
+        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, directorId);
+    }
+
+    public List<Film> getDirectorFilmsSortedByLikes(Long directorId) {
+        String sqlQuery = "SELECT * FROM MOVIE M LEFT JOIN MPA ON MPA.ID = M.MPA_ID " +
+                "LEFT JOIN LIKES L ON L.FILM_ID = M.ID " +
+                "WHERE M.ID IN (SELECT FILM_ID FROM FILM_DIRECTOR WHERE DIRECTOR_ID = ?) " +
+                "GROUP BY M.ID ORDER BY COUNT(L.USER_ID) DESC";
+        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, directorId);
+    }
+
     private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
         return Film.builder()
                 .id(resultSet.getLong("id"))
@@ -108,6 +122,7 @@ public class FilmDbStorage implements FilmStorage {
                         .name(resultSet.getString("mpa.name"))
                         .build())
                 .genres(new LinkedHashSet<>())
+                .directors(new LinkedHashSet<>())
                 .build();
     }
 }

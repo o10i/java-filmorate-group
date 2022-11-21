@@ -15,7 +15,7 @@ import java.util.LinkedHashSet;
 
 @Builder
 @Data
-@FieldDefaults(level= AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Film {
     Long id;
     @NotBlank
@@ -27,10 +27,7 @@ public class Film {
     @Positive
     int duration;
     int rate;
-
     Mpa mpa;
-
     LinkedHashSet<Genre> genres;
-
-
+    LinkedHashSet<Director> directors;
 }
