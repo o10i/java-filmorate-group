@@ -50,9 +50,9 @@ public class DirectorDbStorage implements DirectorStorage {
     @Override
     public Director updateDirector(Director director) {
         String sqlQuery = "UPDATE DIRECTORS SET NAME = ? WHERE ID = ?";
-        jdbcTemplate.update(sqlQuery,
-                director.getName(),
-                director.getId());
+        if (jdbcTemplate.update(sqlQuery, director.getName(), director.getId()) == 0) {
+            throw new DataNotFoundException(String.format("Director with %d id not found", director.getId()));
+        }
         return director;
     }
 

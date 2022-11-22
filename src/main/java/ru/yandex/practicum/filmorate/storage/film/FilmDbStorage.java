@@ -58,16 +58,18 @@ public class FilmDbStorage implements FilmStorage {
         String sqlQuery = "UPDATE MOVIE SET " +
                 "NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ? , DURATION = ?, RATE = ?, MPA_ID = ? " +
                 "WHERE ID = ?";
-
-        jdbcTemplate.update(sqlQuery
+        if (jdbcTemplate.update(sqlQuery
                 , film.getName()
                 , film.getDescription()
                 , film.getReleaseDate()
                 , film.getDuration()
                 , film.getRate()
                 , film.getMpa().getId()
-                , film.getId());
-
+                , film.getId())
+                == 0)
+        {
+            throw new FilmNotFoundException(String.format("Film with %d id not found", film.getId()));
+        }
         return film;
     }
 
@@ -77,12 +79,13 @@ public class FilmDbStorage implements FilmStorage {
                 "INNER JOIN MPA ON m.mpa_id = MPA.id " +
                 "WHERE m.id = ?";
 
-        return jdbcTemplate.query(sqlQuery,this::mapRowToFilm, filmId)
+        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, filmId)
                 .stream()
                 .findFirst()
                 .orElseThrow(() -> new FilmNotFoundException(String.format("Film with %d id not found", filmId)));
 
     }
+
     public List<Film> getTopFilms(Integer count) {
         String sqlQuery = "SELECT * " +
                 "FROM MOVIE AS m " +
@@ -96,16 +99,29 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     public List<Film> getDirectorFilmsSortedByYear(Long directorId) {
-        String sqlQuery = "SELECT * FROM MOVIE M LEFT JOIN MPA ON MPA.ID = M.MPA_ID " +
-                "WHERE M.ID IN (SELECT FILM_ID FROM FILM_DIRECTOR WHERE DIRECTOR_ID = ?) ORDER BY M.RELEASE_DATE";
+        String sqlQuery = "SELECT * " +
+                "FROM MOVIE M " +
+                "LEFT JOIN MPA ON MPA.ID = M.MPA_ID " +
+                "WHERE M.ID IN (" +
+                "SELECT FILM_ID " +
+                "FROM FILM_DIRECTOR " +
+                "WHERE DIRECTOR_ID = ?) " +
+                "ORDER BY M.RELEASE_DATE";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, directorId);
     }
 
     public List<Film> getDirectorFilmsSortedByLikes(Long directorId) {
-        String sqlQuery = "SELECT * FROM MOVIE M LEFT JOIN MPA ON MPA.ID = M.MPA_ID " +
+        String sqlQuery = "SELECT * " +
+                "FROM MOVIE M " +
+                "LEFT JOIN MPA ON MPA.ID = M.MPA_ID " +
                 "LEFT JOIN LIKES L ON L.FILM_ID = M.ID " +
-                "WHERE M.ID IN (SELECT FILM_ID FROM FILM_DIRECTOR WHERE DIRECTOR_ID = ?) " +
-                "GROUP BY M.ID ORDER BY COUNT(L.USER_ID) DESC";
+                "WHERE M.ID IN (" +
+                "SELECT FILM_ID " +
+                "FROM FILM_DIRECTOR " +
+                "WHERE DIRECTOR_ID = ?) " +
+                "GROUP BY M.ID " +
+                "ORDER BY COUNT(L.USER_ID) " +
+                "DESC";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, directorId);
     }
 

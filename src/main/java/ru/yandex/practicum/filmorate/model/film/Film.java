@@ -18,7 +18,7 @@ import java.util.LinkedHashSet;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Film {
     Long id;
-    @NotBlank
+    @NotBlank(message = "Название фильма не может быть пустым.")
     String name;
     @Size(max = 200)
     String description;
