@@ -100,7 +100,9 @@ public class FilmDbStorage implements FilmStorage {
         String sqlQuery = "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 " +
                 "INNER JOIN MPA ON (MPA.id = m.mpa_id)" +
                 "WHERE l1.user_id = ? AND l2.user_id = ? " +
-                "AND m.id = l1.film_id AND m.id = l2.film_id";
+                "AND m.id = l1.film_id AND m.id = l2.film_id " +
+                "GROUP BY m.id " +
+                "ORDER BY COUNT(l1.user_id) DESC";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, userId, friendId);
     }
 

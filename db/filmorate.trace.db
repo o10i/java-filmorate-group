@@ -16706,3 +16706,161 @@ Column "mpa.id" not found [42122-214]
 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.base/java.lang.Thread.run(Thread.java:1589)
+2022-11-22 10:59:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER [*]BY m.rate DESC"
+Syntax error in SQL statement "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER [*]BY m.rate DESC"; SQL statement:
+SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER BY m.rate DESC [42000-214]
+2022-11-22 10:59:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER [*]BY m.rate DESC"
+Syntax error in SQL statement "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER [*]BY m.rate DESC"; SQL statement:
+SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER BY m.rate DESC [42000-214]
+2022-11-22 10:59:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER [*]BY m.rate DESC"
+Syntax error in SQL statement "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER [*]BY m.rate DESC"; SQL statement:
+SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER BY m.rate DESC [42000-214]
+2022-11-22 11:05:07 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER [*]BY COUNT(l1.film_id)"
+Syntax error in SQL statement "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER [*]BY COUNT(l1.film_id)"; SQL statement:
+SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER BY COUNT(l1.film_id) [42000-214]
+2022-11-22 11:05:08 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER [*]BY COUNT(l1.film_id)"
+Syntax error in SQL statement "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER [*]BY COUNT(l1.film_id)"; SQL statement:
+SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER BY COUNT(l1.film_id) [42000-214]
+2022-11-22 11:05:08 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER [*]BY COUNT(l1.film_id)"
+Syntax error in SQL statement "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER [*]BY COUNT(l1.film_id)"; SQL statement:
+SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER BY COUNT(l1.film_id) [42000-214]
+2022-11-22 11:08:44 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER [*]BY COUNT (m.id)"
+Syntax error in SQL statement "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER [*]BY COUNT (m.id)"; SQL statement:
+SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER BY COUNT (m.id) [42000-214]
+2022-11-22 11:08:45 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER [*]BY COUNT (m.id)"
+Syntax error in SQL statement "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER [*]BY COUNT (m.id)"; SQL statement:
+SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER BY COUNT (m.id) [42000-214]
+2022-11-22 11:08:45 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER [*]BY COUNT (m.id)"
+Syntax error in SQL statement "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER [*]BY COUNT (m.id)"; SQL statement:
+SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idORDER BY COUNT (m.id) [42000-214]
+2022-11-22 11:10:47 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idGROUP [*]BY l1.film_idORDER BY COUNT(l1.film_id) DESC"
+Syntax error in SQL statement "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idGROUP [*]BY l1.film_idORDER BY COUNT(l1.film_id) DESC"; SQL statement:
+SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idGROUP BY l1.film_idORDER BY COUNT(l1.film_id) DESC [42000-214]
+2022-11-22 11:10:48 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idGROUP [*]BY l1.film_idORDER BY COUNT(l1.film_id) DESC"
+Syntax error in SQL statement "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idGROUP [*]BY l1.film_idORDER BY COUNT(l1.film_id) DESC"; SQL statement:
+SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idGROUP BY l1.film_idORDER BY COUNT(l1.film_id) DESC [42000-214]
+2022-11-22 11:10:48 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idGROUP [*]BY l1.film_idORDER BY COUNT(l1.film_id) DESC"
+Syntax error in SQL statement "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idGROUP [*]BY l1.film_idORDER BY COUNT(l1.film_id) DESC"; SQL statement:
+SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idGROUP BY l1.film_idORDER BY COUNT(l1.film_id) DESC [42000-214]
+2022-11-22 11:18:26 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idGROUP [*]BY m.id ORDER BY COUNT(l1.user_id) DESC"
+Syntax error in SQL statement "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idGROUP [*]BY m.id ORDER BY COUNT(l1.user_id) DESC"; SQL statement:
+SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idGROUP BY m.id ORDER BY COUNT(l1.user_id) DESC [42000-214]
+2022-11-22 11:18:27 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idGROUP [*]BY m.id ORDER BY COUNT(l1.user_id) DESC"
+Syntax error in SQL statement "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idGROUP [*]BY m.id ORDER BY COUNT(l1.user_id) DESC"; SQL statement:
+SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idGROUP BY m.id ORDER BY COUNT(l1.user_id) DESC [42000-214]
+2022-11-22 11:18:27 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idGROUP [*]BY m.id ORDER BY COUNT(l1.user_id) DESC"
+Syntax error in SQL statement "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idGROUP [*]BY m.id ORDER BY COUNT(l1.user_id) DESC"; SQL statement:
+SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_idGROUP BY m.id ORDER BY COUNT(l1.user_id) DESC [42000-214]
+2022-11-22 11:22:05 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Столбец "M.ID" должен быть в предложении GROUP BY
+Column "M.ID" must be in the GROUP BY list; SQL statement:
+SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 INNER JOIN MPA ON (MPA.id = m.mpa_id)WHERE l1.user_id = ? AND l2.user_id = ? AND m.id = l1.film_id AND m.id = l2.film_id ORDER BY COUNT(l1.user_id) DESC [90016-214]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:632)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:477)
+	at org.h2.message.DbException.get(DbException.java:223)
+	at org.h2.message.DbException.get(DbException.java:199)
+	at org.h2.expression.ExpressionColumn.getValue(ExpressionColumn.java:291)
+	at org.h2.command.query.Select.constructGroupResultRow(Select.java:580)
+	at org.h2.command.query.Select.processGroupResult(Select.java:547)
+	at org.h2.command.query.Select.queryGroup(Select.java:489)
+	at org.h2.command.query.Select.queryWithoutCache(Select.java:828)
+	at org.h2.command.query.Query.queryWithoutCacheLazyCheck(Query.java:197)
+	at org.h2.command.query.Query.query(Query.java:512)
+	at org.h2.command.query.Query.query(Query.java:475)
+	at org.h2.command.CommandContainer.query(CommandContainer.java:251)
+	at org.h2.command.Command.executeQuery(Command.java:190)
+	at org.h2.jdbc.JdbcPreparedStatement.executeQuery(JdbcPreparedStatement.java:128)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java)
+	at org.springframework.jdbc.core.JdbcTemplate$1.doInPreparedStatement(JdbcTemplate.java:722)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:651)
+	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:713)
+	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:744)
+	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:757)
+	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:815)
+	at ru.yandex.practicum.filmorate.storage.film.FilmDbStorage.getCommonFilms(FilmDbStorage.java:105)
+	at ru.yandex.practicum.filmorate.storage.film.FilmDbStorage$$FastClassBySpringCGLIB$$65514f63.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:793)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:763)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:137)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:763)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:708)
+	at ru.yandex.practicum.filmorate.storage.film.FilmDbStorage$$EnhancerBySpringCGLIB$$6afd5dfb.getCommonFilms(<generated>)
+	at ru.yandex.practicum.filmorate.service.FilmService.getCommonFilms(FilmService.java:60)
+	at ru.yandex.practicum.filmorate.controller.film.FilmController.getCommonFilms(FilmController.java:50)
+	at ru.yandex.practicum.filmorate.controller.film.FilmController$$FastClassBySpringCGLIB$$d04db559.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:793)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:763)
+	at org.springframework.validation.beanvalidation.MethodValidationInterceptor.invoke(MethodValidationInterceptor.java:123)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:763)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:708)
+	at ru.yandex.practicum.filmorate.controller.film.FilmController$$EnhancerBySpringCGLIB$$4651d235.getCommonFilms(<generated>)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:578)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1071)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:964)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:655)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:764)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:890)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1789)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.base/java.lang.Thread.run(Thread.java:1589)
