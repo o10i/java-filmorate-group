@@ -11,8 +11,8 @@ import ru.yandex.practicum.filmorate.storage.review.ReviewLikeStorage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 @Repository
 @RequiredArgsConstructor
@@ -69,7 +69,7 @@ public class ReviewDbStorage implements ReviewStorage {
             return jdbcTemplate.query(sqlQuery, this::mapRowToReview, count);
         }
         String sqlQuery = "SELECT * FROM reviews WHERE film_id = ? LIMIT ?";
-        return new HashSet<>(jdbcTemplate.query(sqlQuery, this::mapRowToReview, filmId, count));
+        return new ArrayList<>(jdbcTemplate.query(sqlQuery, this::mapRowToReview, filmId, count));
     }
 
     private Review mapRowToReview(ResultSet rs, int rowNum) throws SQLException {
