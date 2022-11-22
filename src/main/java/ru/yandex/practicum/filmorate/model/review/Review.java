@@ -13,8 +13,7 @@ import java.util.Map;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Review {
-    @JsonProperty("reviewId")
-    Long id;
+    Long reviewId;
     @NotBlank
     String content;
     @JsonProperty("isPositive")

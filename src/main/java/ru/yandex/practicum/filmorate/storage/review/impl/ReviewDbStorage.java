@@ -1,13 +1,11 @@
 package ru.yandex.practicum.filmorate.storage.review.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.model.review.Review;
-import ru.yandex.practicum.filmorate.model.user.User;
 import ru.yandex.practicum.filmorate.storage.review.ReviewStorage;
 import ru.yandex.practicum.filmorate.storage.review.ReviewLikeStorage;
 
@@ -23,49 +21,49 @@ public class ReviewDbStorage implements ReviewStorage {
     private final ReviewLikeStorage reviewLikeStorage;
 
     @Override
-    public void create(Review review) {
+    public Review createReview(Review review) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("reviews")
                 .usingGeneratedKeyColumns("id");
-        review.setId(simpleJdbcInsert.executeAndReturnKey(review.toMap()).longValue());
+        review.setReviewId(simpleJdbcInsert.executeAndReturnKey(review.toMap()).longValue());
+        return review;
     }
 
     @Override
-    public void update(Review review) {
-        get(review.getId());
+    public Review updateReview(Review review) {
         String sqlQuery = "UPDATE reviews SET " +
                 "content = ?, is_positive = ? " +
                 "WHERE id = ?";
         jdbcTemplate.update(sqlQuery,
                 review.getContent(),
                 review.getPositive(),
-                review.getId());
+                review.getReviewId());
+        return review;
     }
 
     @Override
-    public Review get(Long reviewId) {
+    public Review findReviewById(Long reviewId) {
         String sqlQuery = "SELECT * FROM reviews WHERE id = ?";
-        try {
-            return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToReview, reviewId);
-        } catch (DataAccessException e) {
-            throw new DataNotFoundException("Review not found.");
-        }
+        return jdbcTemplate.query(sqlQuery, this::mapRowToReview, reviewId)
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new DataNotFoundException("Review not found."));
     }
 
     @Override
-    public Collection<Review> getAll() {
+    public Collection<Review> findAllReviews() {
         String sqlQuery = "SELECT * FROM reviews";
         return jdbcTemplate.query(sqlQuery, this::mapRowToReview);
     }
 
     @Override
-    public void delete(Long reviewId) {
+    public void deleteReview(Long reviewId) {
         String sqlQuery = "DELETE FROM reviews WHERE id = ?";
         jdbcTemplate.update(sqlQuery, reviewId);
     }
 
     @Override
-    public Collection<Review> getAll(Long filmId, Integer count) {
+    public Collection<Review> findAllReviews(Long filmId, Integer count) {
         if (filmId == -1) {
             String sqlQuery = "SELECT * FROM reviews LIMIT ?";
             return jdbcTemplate.query(sqlQuery, this::mapRowToReview, count);
@@ -74,32 +72,8 @@ public class ReviewDbStorage implements ReviewStorage {
         return new HashSet<>(jdbcTemplate.query(sqlQuery, this::mapRowToReview, filmId, count));
     }
 
-    @Override
-    public void addLike(Long reviewId, User user) {
-        get(reviewId);
-        reviewLikeStorage.addLike(reviewId, user.getId());
-    }
-
-    @Override
-    public void addDislike(Long reviewId, User user) {
-        get(reviewId);
-        reviewLikeStorage.addDislike(reviewId, user.getId());
-    }
-
-    @Override
-    public void removeLike(Long reviewId, User user) {
-        get(reviewId);
-        reviewLikeStorage.removeLike(reviewId, user.getId());
-    }
-
-    @Override
-    public void removeDislike(Long reviewId, User user) {
-        get(reviewId);
-        reviewLikeStorage.removeDislike(reviewId, user.getId());
-    }
-
     private Review mapRowToReview(ResultSet rs, int rowNum) throws SQLException {
-        return Review.builder().id(rs.getLong("id"))
+        return Review.builder().reviewId(rs.getLong("id"))
                 .content(rs.getString("content"))
                 .positive(rs.getBoolean("is_positive"))
                 .filmId(rs.getLong("film_id"))

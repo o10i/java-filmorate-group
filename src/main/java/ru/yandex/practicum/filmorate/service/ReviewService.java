@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.review.Review;
+import ru.yandex.practicum.filmorate.storage.review.ReviewLikeStorage;
 import ru.yandex.practicum.filmorate.storage.review.ReviewStorage;
 
 import java.util.Collection;
@@ -13,55 +14,77 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ReviewService {
     private final ReviewStorage reviewStorage;
+    private final ReviewLikeStorage likeStorage;
     private final UserService userService;
     private final FilmService filmService;
 
-    public Review create(Review review) {
+    public Review createReview(Review review) {
         filmService.findFilmById(review.getFilmId());
         userService.findUserById(review.getUserId());
-        reviewStorage.create(review);
-        return reviewStorage.get(review.getId());
+        return reviewStorage.createReview(review);
     }
 
-    public Review update(Review review) {
+    public Review updateReview(Review review) {
         filmService.findFilmById(review.getFilmId());
         userService.findUserById(review.getUserId());
-        reviewStorage.update(review);
-        return reviewStorage.get(review.getId());
+        findReviewById(review.getReviewId());
+
+        return reviewStorage.updateReview(review);
     }
 
-    public void delete(Long reviewId) {
-        reviewStorage.delete(reviewId);
+    public void deleteReview(Long reviewId) {
+        findReviewById(reviewId);
+        reviewStorage.deleteReview(reviewId);
     }
 
-    public Review get(Long reviewId) {
-        return reviewStorage.get(reviewId);
+    public Review findReviewById(Long reviewId) {
+        return reviewStorage.findReviewById(reviewId);
     }
 
-    public Collection<Review> getAllReviews(Optional<Long> filmId, Optional<Integer> count) {
+    public Collection<Review> findAllReviews(Optional<Long> filmId, Optional<Integer> count) {
         if (filmId.isEmpty() && count.isEmpty()) {
-            return reviewStorage.getAll().stream()
+            return reviewStorage.findAllReviews().stream()
                     .sorted((o1, o2) -> Long.compare(o2.getUseful(), o1.getUseful()))
                     .collect(Collectors.toList());
         }
-        return reviewStorage.getAll(filmId.orElse(-1L), count.orElse(10)).stream()
+        return reviewStorage.findAllReviews(filmId.orElse(-1L), count.orElse(10)).stream()
                 .sorted((o1, o2) -> Long.compare(o2.getUseful(), o1.getUseful()))
                 .collect(Collectors.toList());
     }
 
     public void addLike(Long reviewId, Long userId) {
-        reviewStorage.addLike(reviewId, userService.findUserById(userId));
+        var review = findReviewById(reviewId);
+        var user = userService.findUserById(userId);
+        if (likeStorage.containsLike(review, user, true)) {
+            return;
+        }
+        likeStorage.addLike(review, user);
     }
 
     public void addDislike(Long reviewId, Long userId) {
-        reviewStorage.addDislike(reviewId, userService.findUserById(userId));
+        var review = findReviewById(reviewId);
+        var user = userService.findUserById(userId);
+        if (likeStorage.containsLike(review, user, false)) {
+            return;
+        }
+        likeStorage.addDislike(review, user);
     }
 
     public void removeLike(Long reviewId, Long userId) {
-        reviewStorage.removeLike(reviewId, userService.findUserById(userId));
+        var review = findReviewById(reviewId);
+        var user = userService.findUserById(userId);
+        if (!likeStorage.containsLike(review, user, true)) {
+            return;
+        }
+        likeStorage.removeLike(review, user);
     }
 
     public void removeDislike(Long reviewId, Long userId) {
-        reviewStorage.removeDislike(reviewId, userService.findUserById(userId));
+        var review = findReviewById(reviewId);
+        var user = userService.findUserById(userId);
+        if (!likeStorage.containsLike(review, user, false)) {
+            return;
+        }
+        likeStorage.removeDislike(review, user);
     }
 }

@@ -3,6 +3,8 @@ package ru.yandex.practicum.filmorate.storage.review.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.model.review.Review;
+import ru.yandex.practicum.filmorate.model.user.User;
 import ru.yandex.practicum.filmorate.storage.review.ReviewLikeStorage;
 
 @Repository
@@ -26,38 +28,33 @@ public class ReviewLikeDbStorage implements ReviewLikeStorage {
     }
 
     @Override
-    public void addLike(Long reviewId, Long userId) {
-        if (contains(reviewId, userId, true)) {
-            return;
-        }
+    public void addLike(Review review, User user) {
         String sqlQuery = "INSERT INTO review_like (review_id, user_id, is_positive) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sqlQuery, reviewId, userId, true);
+        jdbcTemplate.update(sqlQuery, review.getReviewId(), user.getId(), true);
     }
 
     @Override
-    public void addDislike(Long reviewId, Long userId) {
-        if (contains(reviewId, userId, false)) {
-            return;
-        }
+    public void addDislike(Review review, User user) {
         String sqlQuery = "INSERT INTO review_like (review_id, user_id, is_positive) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sqlQuery, reviewId, userId, false);
+        jdbcTemplate.update(sqlQuery, review.getReviewId(), user.getId(), false);
     }
 
     @Override
-    public void removeLike(Long reviewId, Long userId) {
+    public void removeLike(Review review, User user) {
         String sqlQuery = "DELETE FROM review_like WHERE review_id = ? AND user_id = ? AND is_positive = ?";
-        jdbcTemplate.update(sqlQuery, reviewId, userId, true);
+        jdbcTemplate.update(sqlQuery, review.getReviewId(), user.getId(), true);
     }
 
     @Override
-    public void removeDislike(Long reviewId, Long userId) {
+    public void removeDislike(Review review, User user) {
         String sqlQuery = "DELETE FROM review_like WHERE review_id = ? AND user_id = ? AND is_positive = ?";
-        jdbcTemplate.update(sqlQuery, reviewId, userId, false);
+        jdbcTemplate.update(sqlQuery, review.getReviewId(), user.getId(), false);
     }
 
-    private boolean contains(long reviewId, long userId, boolean positive) {
+    @Override
+    public boolean containsLike(Review review, User user, Boolean positive) {
         String sqlQuery = "SELECT * FROM review_like " +
                 "WHERE review_id = ? AND user_id = ? AND is_positive = ?";
-        return jdbcTemplate.queryForRowSet(sqlQuery, reviewId, userId, positive).next();
+        return jdbcTemplate.queryForRowSet(sqlQuery, review.getReviewId(), user.getId(), positive).next();
     }
 }
