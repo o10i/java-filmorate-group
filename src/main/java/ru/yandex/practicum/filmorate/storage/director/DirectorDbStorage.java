@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.model.film.Director;
 import ru.yandex.practicum.filmorate.model.film.Film;
@@ -17,14 +17,14 @@ import java.util.stream.Collectors;
 
 import static java.util.function.UnaryOperator.identity;
 
-@Component
+@Repository
 @RequiredArgsConstructor
 public class DirectorDbStorage implements DirectorStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<Director> findAll() {
+    public List<Director> findAllDirectors() {
         String sqlQuery = "SELECT * FROM DIRECTORS";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToDirector(rs));
     }
@@ -39,7 +39,7 @@ public class DirectorDbStorage implements DirectorStorage {
     }
 
     @Override
-    public Director create(Director director) {
+    public Director createDirector(Director director) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("directors")
                 .usingGeneratedKeyColumns("id");
@@ -48,7 +48,7 @@ public class DirectorDbStorage implements DirectorStorage {
     }
 
     @Override
-    public Director update(Director director) {
+    public Director updateDirector(Director director) {
         String sqlQuery = "UPDATE DIRECTORS SET NAME = ? WHERE ID = ?";
         jdbcTemplate.update(sqlQuery,
                 director.getName(),
@@ -67,7 +67,7 @@ public class DirectorDbStorage implements DirectorStorage {
     @Override
     public void deleteFilmsDirector(Long filmId) {
         String sqlQuery = "DELETE FROM FILM_DIRECTOR WHERE FILM_ID = ?";
-        System.out.println(jdbcTemplate.update(sqlQuery, filmId));
+        jdbcTemplate.update(sqlQuery, filmId);
     }
 
     @Override

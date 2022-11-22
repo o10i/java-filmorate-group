@@ -74,7 +74,13 @@ public class FilmService {
         }
     }
 
-    public List<Film> getSortedDirectorFilms(Long directorId, SortType sortType) {
+    public List<Film> getSortedDirectorFilms(Long directorId, String sortBy) {
+        SortType sortType;
+        try {
+            sortType = SortType.valueOf(sortBy.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Некорректный тип сортировки");
+        }
         directorService.findDirectorById(directorId);
         List<Film> films;
         if (sortType == SortType.YEAR) {

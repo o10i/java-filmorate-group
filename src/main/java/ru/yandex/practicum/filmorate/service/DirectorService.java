@@ -15,24 +15,25 @@ import java.util.List;
 public class DirectorService {
     private final DirectorStorage directorStorage;
 
-    public List<Director> findAll() {
-        return directorStorage.findAll();
+    public List<Director> findAllDirectors() {
+        return directorStorage.findAllDirectors();
     }
 
     public Director findDirectorById(Long id) {
         return directorStorage.findDirectorById(id);
     }
 
-    public Director create(Director director) {
-        return directorStorage.create(director);
+    public Director createDirector(Director director) {
+        return directorStorage.createDirector(director);
     }
 
-    public Director update(Director director) {
+    public Director updateDirector(Director director) {
         findDirectorById(director.getId());
-        return directorStorage.update(director);
+        return directorStorage.updateDirector(director);
     }
 
     public void deleteDirectorById(@PathVariable("id") Long id) {
+        findDirectorById(id);
         directorStorage.deleteDirectorById(id);
     }
 

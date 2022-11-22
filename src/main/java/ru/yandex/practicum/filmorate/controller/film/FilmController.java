@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.film.Film;
-import ru.yandex.practicum.filmorate.model.film.SortType;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
@@ -48,12 +47,6 @@ public class FilmController {
     @GetMapping("/director/{directorId}")
     public List<Film> getSortedDirectorFilms(@PathVariable("directorId") Long directorId,
                                                  @RequestParam String sortBy) {
-        SortType sortType;
-        try {
-            sortType = SortType.valueOf(sortBy.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Некорректный тип сортировки");
-        }
-        return filmService.getSortedDirectorFilms(directorId, sortType);
+        return filmService.getSortedDirectorFilms(directorId, sortBy);
     }
 }
