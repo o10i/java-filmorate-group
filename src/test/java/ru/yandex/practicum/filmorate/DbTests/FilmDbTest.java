@@ -129,45 +129,11 @@ public class FilmDbTest {
     }
 
     @Test
-    void testGetEmptyTopFilms() {
-        assertEquals(new ArrayList<>(), filmDbStorage.getTopFilms(10));
-    }
-
-    @Test
-    void testFindOnePopularFilm() {
-        userDbStorage.create(getUser());
-        filmDbStorage.create(getFilm());
-        Film film = filmDbStorage.create(getFilm());
-        likeDbStorage.addLike(1L, 2L);
-        assertEquals(List.of(film), filmDbStorage.getTopFilms(1));
-    }
-
-    @Test
-    void testFindTwoPopularFilms() {
-        Film film = filmDbStorage.create(getFilm());
-        Film film2 = filmDbStorage.create(getFilm());
-        assertEquals(List.of(film, film2), filmDbStorage.getTopFilms(10));
-    }
-
-    @Test
     void testUpdateFilmWithGenre() {
         Film film = filmDbStorage.create(getFilm());
         LinkedHashSet<Genre> genres = new LinkedHashSet<>();
         genres.add(getGenre());
         film.setGenres(genres);
         assertEquals(film, filmDbStorage.update(film));
-    }
-
-    @Test
-    void testUpdateFilmWithRepeatedGenres() {
-        Film film = filmDbStorage.create(getFilm());
-        LinkedHashSet<Genre> genres = new LinkedHashSet<>();
-        genres.add(getGenre());
-        genres.add(Genre.builder().id(1L).name("Комедия").build());
-        genres.add(Genre.builder().id(2L).name("Драма").build());
-        genres.add(Genre.builder().id(1L).name("Комедия").build());
-        film.setGenres(genres);
-        Film updatedFilm = filmDbStorage.update(film);
-        assertEquals(film, updatedFilm);
     }
 }

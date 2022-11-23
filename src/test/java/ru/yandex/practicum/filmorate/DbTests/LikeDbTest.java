@@ -17,12 +17,6 @@ public class LikeDbTest {
     private final LikeDbStorage likeDbStorage;
 
     @Test
-    public void testAddLike() {
-        likeDbStorage.addLike(1L,1L);
-        likeDbStorage.addLike(2L,1L);
-    }
-
-    @Test
     public void testDeleteLike() {
         likeDbStorage.deleteLike(2L,1L);
     }
