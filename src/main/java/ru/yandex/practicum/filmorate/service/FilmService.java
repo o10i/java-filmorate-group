@@ -20,8 +20,8 @@ public class FilmService {
 
     public List<Film> findAll() {
         List<Film> films = filmStorage.findAll();
-        directorService.loadDirectors(films);
         genreService.loadGenres(films);
+        directorService.loadDirectors(films);
         return films;
     }
 
@@ -65,6 +65,7 @@ public class FilmService {
     public List<Film> getTopFilms(Integer count) {
         List<Film> films = filmStorage.getTopFilms(count);
         genreService.loadGenres(films);
+        directorService.loadDirectors(films);
         return films;
     }
 
@@ -88,8 +89,8 @@ public class FilmService {
         } else {
             films = filmStorage.getDirectorFilmsSortedByLikes(directorId);
         }
-        directorService.loadDirectors(films);
         genreService.loadGenres(films);
+        directorService.loadDirectors(films);
         return films;
     }
 }
