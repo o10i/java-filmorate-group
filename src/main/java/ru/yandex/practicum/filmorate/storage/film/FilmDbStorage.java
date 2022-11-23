@@ -30,7 +30,7 @@ public class FilmDbStorage implements FilmStorage {
     public List<Film> findAll() {
         String sqlQuery = "SELECT * FROM MOVIE AS m " +
                 "INNER JOIN MPA ON MPA.id = m.mpa_id";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm);
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs));
     }
 
     @Override
@@ -77,7 +77,7 @@ public class FilmDbStorage implements FilmStorage {
                 "INNER JOIN MPA ON m.mpa_id = MPA.id " +
                 "WHERE m.id = ?";
 
-        return jdbcTemplate.query(sqlQuery,this::mapRowToFilm, filmId)
+        return jdbcTemplate.query(sqlQuery,(rs, rowNum) -> mapRowToFilm(rs), filmId)
                 .stream()
                 .findFirst()
                 .orElseThrow(() -> new FilmNotFoundException(String.format("Film with %d id not found", filmId)));
@@ -92,10 +92,10 @@ public class FilmDbStorage implements FilmStorage {
                 "ORDER BY COUNT(l.user_id) DESC " +
                 "LIMIT ?";
 
-        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, count);
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), count);
     }
 
-    private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
+    public static Film mapRowToFilm(ResultSet resultSet) throws SQLException {
         return Film.builder()
                 .id(resultSet.getLong("id"))
                 .name((resultSet.getString("name")))

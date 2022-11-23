@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controller.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.user.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -17,18 +18,18 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public List<User> findAll() {
-        return userService.findAll();
+    public List<User> findAllUsers() {
+        return userService.findAllUsers();
     }
 
     @PostMapping
-    public User create(@Valid @RequestBody User user)  {
-        return userService.create(user);
+    public User createUser(@Valid @RequestBody User user)  {
+        return userService.createUser(user);
     }
 
     @PutMapping
-    public User update(@Valid @RequestBody User user) {
-        return userService.update(user);
+    public User updateUser(@Valid @RequestBody User user) {
+        return userService.updateUser(user);
     }
 
     @GetMapping("/{id}")
@@ -36,4 +37,8 @@ public class UserController {
         return userService.findUserById(id);
     }
 
+    @GetMapping("/{id}/recommendations")
+    public List<Film> getRecommendations(@PathVariable("id") Long userId) {
+        return userService.getRecommendations(userId);
+    }
 }
