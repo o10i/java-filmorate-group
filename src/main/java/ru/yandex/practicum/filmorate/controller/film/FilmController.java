@@ -54,4 +54,11 @@ public class FilmController {
                                      @RequestParam(value = "friendId") Long friendId) {
         return filmService.getCommonFilms(userId, friendId);
     }
+
+    @GetMapping("/search")
+    public List<Film> getTopSortedSearchedFilms(@RequestParam String query,
+                                                @RequestParam String by) {
+        return filmService.getTopSortedSearchedFilms(query, by);
+    }
+
 }

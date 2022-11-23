@@ -99,6 +99,18 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
+    public List<Film> getTopFilmsWithoutLimit() {
+        String sqlQuery = "SELECT * " +
+                "FROM MOVIE AS m " +
+                "INNER JOIN MPA ON MPA.id = m.mpa_id " +
+                "LEFT JOIN likes AS l ON l.film_id = m.id " +
+                "GROUP BY m.id " +
+                "ORDER BY COUNT(l.user_id) DESC";
+
+        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm);
+    }
+
+    @Override
     public List<Film> getCommonFilms(long userId, long friendId) {
         String check = "SELECT name FROM users WHERE id = ?";
         try {
