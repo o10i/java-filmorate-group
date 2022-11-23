@@ -28,7 +28,6 @@ public class FilmController {
     public Film create(@Valid @RequestBody Film film) {
         return filmService.create(film);
     }
-
     @PutMapping
     public Film update(@Valid @RequestBody Film film)  {
         return filmService.update(film);
@@ -42,6 +41,12 @@ public class FilmController {
     @GetMapping("/popular")
     public List<Film> getTopFilms (@RequestParam(defaultValue = "10") @Positive Integer count) {
         return filmService.getTopFilms(count);
+    }
+
+    @GetMapping("/director/{directorId}")
+    public List<Film> getSortedDirectorFilms(@PathVariable("directorId") Long directorId,
+                                             @RequestParam String sortBy) {
+        return filmService.getSortedDirectorFilms(directorId, sortBy);
     }
 
     @GetMapping("/common")

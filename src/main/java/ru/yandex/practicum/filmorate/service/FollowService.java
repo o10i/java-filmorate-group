@@ -15,6 +15,7 @@ public class FollowService {
 
     private final UserService userService;
 
+
     public void addFriend(Long userId, Long friendId) {
         userService.findUserById(userId);
         userService.findUserById(friendId);
