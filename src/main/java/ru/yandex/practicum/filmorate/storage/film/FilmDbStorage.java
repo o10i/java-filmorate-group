@@ -32,7 +32,7 @@ public class FilmDbStorage implements FilmStorage {
     public List<Film> findAll() {
         String sqlQuery = "SELECT * FROM MOVIE AS m " +
                 "INNER JOIN MPA ON MPA.id = m.mpa_id";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm);
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs));
     }
 
     @Override
@@ -79,7 +79,7 @@ public class FilmDbStorage implements FilmStorage {
                 "INNER JOIN MPA ON m.mpa_id = MPA.id " +
                 "WHERE m.id = ?";
 
-        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, filmId)
+        return jdbcTemplate.query(sqlQuery,(rs, rowNum) -> mapRowToFilm(rs), filmId)
                 .stream()
                 .findFirst()
                 .orElseThrow(() -> new FilmNotFoundException(String.format("Film with %d id not found", filmId)));
@@ -95,7 +95,7 @@ public class FilmDbStorage implements FilmStorage {
                 "ORDER BY COUNT(l.user_id) DESC " +
                 "LIMIT ?";
 
-        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, count);
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), count);
     }
 
     @Override
@@ -117,7 +117,7 @@ public class FilmDbStorage implements FilmStorage {
                 "AND m.id = l1.film_id AND m.id = l2.film_id " +
                 "GROUP BY m.id " +
                 "ORDER BY COUNT(l1.user_id) DESC";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, userId, friendId);
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), userId, friendId);
     }
 
     public List<Film> getDirectorFilmsSortedByYear(Long directorId) {
@@ -129,7 +129,7 @@ public class FilmDbStorage implements FilmStorage {
                 "FROM FILM_DIRECTOR " +
                 "WHERE DIRECTOR_ID = ?) " +
                 "ORDER BY M.RELEASE_DATE";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, directorId);
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), directorId);
     }
 
     public List<Film> getDirectorFilmsSortedByLikes(Long directorId) {
@@ -144,10 +144,10 @@ public class FilmDbStorage implements FilmStorage {
                 "GROUP BY M.ID " +
                 "ORDER BY COUNT(L.USER_ID) " +
                 "DESC";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, directorId);
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), directorId);
     }
 
-    private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
+    public static Film mapRowToFilm(ResultSet resultSet) throws SQLException {
         return Film.builder()
                 .id(resultSet.getLong("id"))
                 .name((resultSet.getString("name")))

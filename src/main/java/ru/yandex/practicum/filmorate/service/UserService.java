@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.user.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
@@ -15,19 +16,24 @@ public class UserService {
 
     private final UserStorage userStorage;
 
-    public List<User> findAll(){
-        return userStorage.findAll();
+    public List<User> findAllUsers(){
+        return userStorage.findAllUsers();
     }
 
-    public User create(User user) {
+    public User createUser(User user) {
         validator(user);
-        return userStorage.create(user);
+        return userStorage.createUser(user);
     }
 
-    public User update(User user) {
+    public User updateUser(User user) {
         validator(user);
         findUserById(user.getId());
-        return userStorage.update(user);
+        return userStorage.updateUser(user);
+    }
+
+    public List<Film> getRecommendations(Long userId) {
+        findUserById(userId);
+        return userStorage.getRecommendations(userId);
     }
 
     public User findUserById(Long userId) {

@@ -24,7 +24,7 @@ public class UserDbTest {
 
     @Test
     public void testFindUserById() {
-        User user = userStorage.create(User.builder()
+        User user = userStorage.createUser(User.builder()
                 .email("myname@ya.ru")
                 .login("login")
                 .name("MyName")
@@ -45,21 +45,21 @@ public class UserDbTest {
 
     @Test
     public void testFindAll() {
-        assertTrue(userStorage.findAll().isEmpty(), "Users is not empty");
-        User user = userStorage.create(User.builder()
+        assertTrue(userStorage.findAllUsers().isEmpty(), "Users is not empty");
+        User user = userStorage.createUser(User.builder()
                 .email("e@ya.ru")
                 .login("log")
                 .name("Name")
                 .birthday(LocalDate.of(2022, 2, 1))
                 .build()
         );
-        assertNotNull(userStorage.findAll(), "Users is empty");
-        assertEquals(1, userStorage.findAll().size(), "Wrong list size. User has not been saved.");
+        assertNotNull(userStorage.findAllUsers(), "Users is empty");
+        assertEquals(1, userStorage.findAllUsers().size(), "Wrong list size. User has not been saved.");
     }
 
     @Test
     public void testUpdate() {
-        User user = userStorage.update(User.builder()
+        User user = userStorage.updateUser(User.builder()
                 .id(1L)
                 .email("ame@ya.ru")
                 .login("log")
