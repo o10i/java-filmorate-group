@@ -1,10 +1,12 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Mpa;
 
@@ -93,6 +95,28 @@ public class FilmDbStorage implements FilmStorage {
                 "LIMIT ?";
 
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, count);
+    }
+
+    @Override
+    public List<Film> getCommonFilms(long userId, long friendId) {
+        String check = "SELECT name FROM users WHERE id = ?";
+        try {
+            jdbcTemplate.queryForObject(check, String.class, userId);
+        } catch (EmptyResultDataAccessException e) {
+            throw new UserNotFoundException(String.format("User with id %d not found", userId));
+        }
+        try {
+            jdbcTemplate.queryForObject(check, String.class, friendId);
+        } catch (EmptyResultDataAccessException e) {
+            throw new UserNotFoundException(String.format("User with id %d not found", friendId));
+        }
+        String sqlQuery = "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 " +
+                "INNER JOIN MPA ON (MPA.id = m.mpa_id)" +
+                "WHERE l1.user_id = ? AND l2.user_id = ? " +
+                "AND m.id = l1.film_id AND m.id = l2.film_id " +
+                "GROUP BY m.id " +
+                "ORDER BY COUNT(l1.user_id) DESC";
+        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, userId, friendId);
     }
 
     private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
