@@ -23,6 +23,13 @@ public class GenreDbStorage implements GenreStorage {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public static Genre mapRowToGenre(ResultSet resultSet) throws SQLException {
+        return Genre.builder()
+                .id(resultSet.getLong("id"))
+                .name(resultSet.getString("name"))
+                .build();
+    }
+
     public List<Genre> findAllGenre() {
         String sqlQuery = "SELECT * FROM GENRE";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToGenre(rs));
@@ -30,13 +37,13 @@ public class GenreDbStorage implements GenreStorage {
 
     public Genre findGenreById(Long genreId) {
         String sqlQuery = "SELECT * FROM GENRE WHERE id = ?";
-        return jdbcTemplate.query(sqlQuery,(rs, rowNum) -> mapRowToGenre(rs), genreId)
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToGenre(rs), genreId)
                 .stream()
                 .findFirst()
                 .orElseThrow(() -> new DataNotFoundException(String.format("Genre with %d id not found", genreId)));
     }
 
-    public void addFilmsGenre (Long filmId, LinkedHashSet<Genre> genres) {
+    public void addFilmsGenre(Long filmId, LinkedHashSet<Genre> genres) {
         List<Genre> genreList = new ArrayList<>(genres);
         jdbcTemplate.batchUpdate(
                 "MERGE INTO film_genre key(FILM_ID,genre_id) values (?, ?)",
@@ -45,6 +52,7 @@ public class GenreDbStorage implements GenreStorage {
                         statement.setLong(1, filmId);
                         statement.setLong(2, genreList.get(i).getId());
                     }
+
                     public int getBatchSize() {
                         return genreList.size();
                     }
@@ -65,15 +73,9 @@ public class GenreDbStorage implements GenreStorage {
             film.getGenres().add(mapRowToGenre(rs));
         }, films.stream().map(Film::getId).toArray());
     }
-    public void deleteFilmsGenre(Long filmId) {
-        String sqlQuery = "DELETE FROM FILM_GENRE WHERE FILM_ID + ?";
-        jdbcTemplate.update(sqlQuery, filmId);
-    }
 
-    public static Genre mapRowToGenre(ResultSet resultSet) throws SQLException {
-        return Genre.builder()
-                .id(resultSet.getLong("id"))
-                .name(resultSet.getString("name"))
-                .build();
+    public void deleteFilmsGenre(Long filmId) {
+        String sqlQuery = "DELETE FROM FILM_GENRE WHERE FILM_ID = ?";
+        jdbcTemplate.update(sqlQuery, filmId);
     }
 }

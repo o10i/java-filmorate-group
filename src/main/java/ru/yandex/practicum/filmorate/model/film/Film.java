@@ -15,10 +15,10 @@ import java.util.LinkedHashSet;
 
 @Builder
 @Data
-@FieldDefaults(level= AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Film {
     Long id;
-    @NotBlank
+    @NotBlank(message = "Название фильма не может быть пустым.")
     String name;
     @Size(max = 200)
     String description;
@@ -27,10 +27,7 @@ public class Film {
     @Positive
     int duration;
     int rate;
-
     Mpa mpa;
-
     LinkedHashSet<Genre> genres;
-
-
+    LinkedHashSet<Director> directors;
 }

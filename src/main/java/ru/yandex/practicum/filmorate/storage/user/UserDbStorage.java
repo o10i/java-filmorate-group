@@ -25,6 +25,16 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
+    public User findUserById(Long userId) {
+        String sqlQuery = "SELECT * FROM USERS WHERE id = ?";
+
+        return jdbcTemplate.query(sqlQuery,(rs, rowNum) -> mapRowToUser(rs), userId)
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new UserNotFoundException(String.format("User with %d id not found", userId)));
+    }
+
+    @Override
     public User create(User user) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("users")
@@ -46,16 +56,6 @@ public class UserDbStorage implements UserStorage {
                 , user.getBirthday()
                 , user.getId());
         return user;
-    }
-
-    @Override
-    public User findUserById(Long userId) {
-        String sqlQuery = "SELECT * FROM USERS WHERE id = ?";
-
-        return jdbcTemplate.query(sqlQuery,(rs, rowNum) -> mapRowToUser(rs), userId)
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new UserNotFoundException(String.format("User with %d id not found", userId)));
     }
 
     public static User mapRowToUser(ResultSet resultSet) throws SQLException {
