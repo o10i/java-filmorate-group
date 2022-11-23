@@ -33,6 +33,7 @@ public class UserDbStorage implements UserStorage {
         return user;
     }
 
+
     @Override
     public User update(User user) {
         String sqlQuery = "UPDATE USERS SET " +
