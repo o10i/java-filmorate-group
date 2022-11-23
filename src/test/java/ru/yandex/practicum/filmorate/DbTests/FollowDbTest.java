@@ -16,30 +16,9 @@ public class FollowDbTest {
 
     private final FollowDbStorage followDbStorage;
 
-
-    @Test
-    public void testAddFriend() {
-        followDbStorage.addFriend(2L, 4L);
-    }
-
     @Test
     public void testDeleteFriend() {
         followDbStorage.deleteFriend(2L, 4L);
     }
 
-    @Test
-    public void testGetAllFriends() {
-        followDbStorage.addFriend(1L, 2L);
-
-        assertNotNull(followDbStorage.getAllFriends(1L), "Friends is empty");
-    }
-
-    @Test
-    public void testGetCommonFriends() {
-        followDbStorage.addFriend(1L, 5L);
-        followDbStorage.addFriend(2L, 5L);
-
-        assertNotNull(followDbStorage.getCommonFriends(1L, 2L), "Common friends is empty");
-
-    }
 }
