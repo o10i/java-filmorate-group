@@ -1,10 +1,12 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Mpa;
 
@@ -97,6 +99,17 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getCommonFilms(long userId, long friendId) {
+        String check = "SELECT name FROM users WHERE id = ?";
+        try {
+            jdbcTemplate.queryForObject(check, String.class, userId);
+        } catch (EmptyResultDataAccessException e) {
+            throw new UserNotFoundException(String.format("User with id %d not found", userId));
+        }
+        try {
+            jdbcTemplate.queryForObject(check, String.class, friendId);
+        } catch (EmptyResultDataAccessException e) {
+            throw new UserNotFoundException(String.format("User with id %d not found", friendId));
+        }
         String sqlQuery = "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 " +
                 "INNER JOIN MPA ON (MPA.id = m.mpa_id)" +
                 "WHERE l1.user_id = ? AND l2.user_id = ? " +
