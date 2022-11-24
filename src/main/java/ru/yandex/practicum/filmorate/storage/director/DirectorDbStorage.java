@@ -65,12 +65,6 @@ public class DirectorDbStorage implements DirectorStorage {
     }
 
     @Override
-    public void deleteFilmsDirector(Long filmId) {
-        String sqlQuery = "DELETE FROM FILM_DIRECTOR WHERE FILM_ID = ?";
-        jdbcTemplate.update(sqlQuery, filmId);
-    }
-
-    @Override
     public void addFilmsDirector(Long filmId, LinkedHashSet<Director> directors) {
         List<Director> directorList = new ArrayList<>(directors);
         jdbcTemplate.batchUpdate(
@@ -86,6 +80,12 @@ public class DirectorDbStorage implements DirectorStorage {
                     }
                 }
         );
+    }
+
+    @Override
+    public void deleteFilmsDirector(Long filmId) {
+        String sqlQuery = "DELETE FROM FILM_DIRECTOR WHERE FILM_ID = ?";
+        jdbcTemplate.update(sqlQuery, filmId);
     }
 
     @Override

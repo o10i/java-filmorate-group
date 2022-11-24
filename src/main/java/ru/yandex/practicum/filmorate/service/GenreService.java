@@ -16,20 +16,20 @@ public class GenreService {
 
     private final GenreStorage genreStorage;
 
-    public List<Genre> findAllGenre() {
-        return genreStorage.findAllGenre();
+    public List<Genre> findAllGenres() {
+        return genreStorage.findAllGenres();
     }
 
     public Genre findGenreById(Long genreId) {
         return genreStorage.findGenreById(genreId);
     }
 
-    public void addFilmsGenre (Long filmId, LinkedHashSet<Genre> genres) {
-        genreStorage.addFilmsGenre(filmId, genres);
+    public void addGenresToFilm(Long filmId, LinkedHashSet<Genre> genres) {
+        genreStorage.addGenresToFilm(filmId, genres);
     }
 
-    public void deleteFilmsGenre(Long filmId){
-        genreStorage.deleteFilmsGenre(filmId);
+    public void deleteFilmGenres(Long filmId){
+        genreStorage.deleteFilmGenres(filmId);
     }
 
     public void loadGenres(List<Film> films) {

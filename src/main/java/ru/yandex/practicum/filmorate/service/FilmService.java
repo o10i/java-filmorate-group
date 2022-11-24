@@ -22,18 +22,18 @@ public class FilmService {
     private final GenreService genreService;
     private final DirectorService directorService;
 
-    public List<Film> findAll() {
-        List<Film> films = filmStorage.findAll();
+    public List<Film> findAllFilms() {
+        List<Film> films = filmStorage.findAllFilms();
         genreService.loadGenres(films);
         directorService.loadDirectors(films);
         return films;
     }
 
-    public Film create(Film film) {
+    public Film createFilm(Film film) {
         validator(film);
-        Film filmWithId = filmStorage.create(film);
+        Film filmWithId = filmStorage.createFilm(film);
         if (film.getGenres() != null) {
-            genreService.addFilmsGenre(filmWithId.getId(), film.getGenres());
+            genreService.addGenresToFilm(filmWithId.getId(), film.getGenres());
         }
         if (film.getDirectors() != null) {
             directorService.addFilmsDirector(filmWithId.getId(), film.getDirectors());
@@ -41,14 +41,14 @@ public class FilmService {
         return filmWithId;
     }
 
-    public Film update(Film film) {
+    public Film updateFilm(Film film) {
         validator(film);
         filmStorage.findFilmById(film.getId());
         if (film.getGenres() != null) {
-            genreService.deleteFilmsGenre(film.getId());
-            genreService.addFilmsGenre(film.getId(), film.getGenres());
+            genreService.deleteFilmGenres(film.getId());
+            genreService.addGenresToFilm(film.getId(), film.getGenres());
         } else {
-            genreService.deleteFilmsGenre(film.getId());
+            genreService.deleteFilmGenres(film.getId());
         }
         if (film.getDirectors() != null) {
             directorService.deleteFilmsDirector(film.getId());
@@ -56,7 +56,7 @@ public class FilmService {
         } else {
             directorService.deleteFilmsDirector(film.getId());
         }
-        return filmStorage.update(film);
+        return filmStorage.updateFilm(film);
     }
 
     public Film findFilmById(Long filmId) {
@@ -73,8 +73,8 @@ public class FilmService {
         return films;
     }
 
-    public List<Film> getCommonFilms (Long userId, Long friendId) {
-        List<Film> films = filmStorage.getCommonFilms(userId,friendId);
+    public List<Film> getCommonFilms(Long userId, Long friendId) {
+        List<Film> films = filmStorage.getCommonFilms(userId, friendId);
         genreService.loadGenres(films);
         return films;
     }

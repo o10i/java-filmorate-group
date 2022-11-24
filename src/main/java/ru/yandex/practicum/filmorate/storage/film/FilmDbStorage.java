@@ -30,16 +30,14 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> findAll() {
-        String sqlQuery = "SELECT * FROM MOVIE AS m " +
-                "INNER JOIN MPA ON MPA.id = m.mpa_id";
+    public List<Film> findAllFilms() {
+        String sqlQuery = "SELECT * FROM MOVIE AS m " + "INNER JOIN MPA ON MPA.id = m.mpa_id";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm);
     }
 
     @Override
-    public Film create(Film film) {
-        String sqlQuery = "INSERT INTO movie(name, description, release_date, duration, rate,  mpa_id) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
+    public Film createFilm(Film film) {
+        String sqlQuery = "INSERT INTO movie(name, description, release_date, duration, rate,  mpa_id) " + "VALUES (?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement stmt = connection.prepareStatement(sqlQuery, new String[]{"id"});
@@ -57,10 +55,8 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Film update(Film film) {
-        String sqlQuery = "UPDATE MOVIE SET " +
-                "NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ? , DURATION = ?, RATE = ?, MPA_ID = ? " +
-                "WHERE ID = ?";
+    public Film updateFilm(Film film) {
+        String sqlQuery = "UPDATE MOVIE SET " + "NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ? , DURATION = ?, RATE = ?, MPA_ID = ? " + "WHERE ID = ?";
 
         jdbcTemplate.update(sqlQuery
                 , film.getName()

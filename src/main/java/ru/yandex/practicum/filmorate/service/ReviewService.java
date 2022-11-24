@@ -2,6 +2,9 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.model.event.Event;
+import ru.yandex.practicum.filmorate.model.event.enums.EventType;
+import ru.yandex.practicum.filmorate.model.event.enums.Operation;
 import ru.yandex.practicum.filmorate.model.review.Review;
 import ru.yandex.practicum.filmorate.storage.review.ReviewLikeStorage;
 import ru.yandex.practicum.filmorate.storage.review.ReviewStorage;
@@ -17,24 +20,31 @@ public class ReviewService {
     private final ReviewLikeStorage likeStorage;
     private final UserService userService;
     private final FilmService filmService;
+    private final FeedService feedService;
 
     public Review createReview(Review review) {
         filmService.findFilmById(review.getFilmId());
         userService.findUserById(review.getUserId());
-        return reviewStorage.createReview(review);
+        Review reviewToEvent = reviewStorage.createReview(review);
+        feedService.saveEvent(Event.createEvent(reviewToEvent.getUserId(), EventType.REVIEW, Operation.ADD
+                , reviewToEvent.getReviewId()));
+        return reviewToEvent;
     }
 
     public Review updateReview(Review review) {
         filmService.findFilmById(review.getFilmId());
         userService.findUserById(review.getUserId());
-        findReviewById(review.getReviewId());
-
+        Review reviewToEvent = findReviewById(review.getReviewId());
+        feedService.saveEvent(Event.createEvent(reviewToEvent.getUserId(), EventType.REVIEW, Operation.UPDATE
+                , reviewToEvent.getReviewId()));
         return reviewStorage.updateReview(review);
     }
 
     public void deleteReview(Long reviewId) {
-        findReviewById(reviewId);
+        Review reviewToEvent = findReviewById(reviewId);
         reviewStorage.deleteReview(reviewId);
+        feedService.saveEvent(Event.createEvent(reviewToEvent.getUserId(), EventType.REVIEW, Operation.REMOVE
+                , reviewId));
     }
 
     public Review findReviewById(Long reviewId) {

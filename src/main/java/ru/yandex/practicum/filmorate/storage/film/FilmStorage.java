@@ -7,13 +7,13 @@ import java.util.Optional;
 
 public interface FilmStorage {
 
-    List<Film> findAll();
+    List<Film> findAllFilms();
 
-    Film create(Film film);
+    Film createFilm(Film film);
 
-    Film update(Film film);
+    Film updateFilm(Film film);
 
-    Film findFilmById (Long filmId);
+    Film findFilmById(Long filmId);
 
     List<Film> getTopFilms(Integer count, Optional<Integer> genreId, Optional<Integer> year);
 
