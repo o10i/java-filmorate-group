@@ -132,7 +132,7 @@ public class FilmDbTest {
 
     @Test
     void testFindOnePopularFilm() {
-        userDbStorage.create(getUser());
+        userDbStorage.createUser(getUser());
         filmDbStorage.createFilm(getFilm());
         Film film = filmDbStorage.createFilm(getFilm());
         likeDbStorage.addLike(1L, 2L);

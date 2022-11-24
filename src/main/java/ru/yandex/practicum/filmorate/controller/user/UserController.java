@@ -17,18 +17,18 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public List<User> findAll() {
-        return userService.findAll();
+    public List<User> findAllUsers() {
+        return userService.findAllUsers();
     }
 
     @PostMapping
-    public User create(@Valid @RequestBody User user)  {
-        return userService.create(user);
+    public User createUser(@Valid @RequestBody User user)  {
+        return userService.createUser(user);
     }
 
     @PutMapping
-    public User update(@Valid @RequestBody User user) {
-        return userService.update(user);
+    public User updateUser(@Valid @RequestBody User user) {
+        return userService.updateUser(user);
     }
 
     @GetMapping("/{id}")

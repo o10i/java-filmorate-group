@@ -38,7 +38,7 @@ public class ReviewDbTest {
 
     @BeforeAll
     public void beforeAll() {
-        userService.create(User.builder()
+        userService.createUser(User.builder()
                 .email("1@ya.ru")
                 .login("bot")
                 .name("Vova")

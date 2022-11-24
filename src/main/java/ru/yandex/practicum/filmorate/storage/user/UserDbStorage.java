@@ -19,7 +19,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public List<User> findAll() {
+    public List<User> findAllUsers() {
         String sqlQuery = "SELECT * FROM USERS";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToUser(rs));
     }
@@ -35,7 +35,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User create(User user) {
+    public User createUser(User user) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("users")
                 .usingGeneratedKeyColumns("id");
@@ -45,7 +45,7 @@ public class UserDbStorage implements UserStorage {
 
 
     @Override
-    public User update(User user) {
+    public User updateUser(User user) {
         String sqlQuery = "UPDATE USERS SET " +
                 "EMAIL = ?, LOGIN = ?, NAME = ? , BIRTHDAY = ?" +
                 "WHERE ID = ?";
