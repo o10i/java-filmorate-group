@@ -8,13 +8,13 @@ import java.util.List;
 
 public interface GenreStorage {
 
-    List<Genre> findAllGenre();
+    List<Genre> findAllGenres();
 
     Genre findGenreById(Long genreId);
 
-    void addFilmsGenre (Long filmId, LinkedHashSet<Genre> genres);
+    void addGenresToFilm(Long filmId, LinkedHashSet<Genre> genres);
 
     void loadGenres(List<Film> films);
-    void deleteFilmsGenre(Long filmId);
+    void deleteFilmGenres(Long filmId);
 
 }

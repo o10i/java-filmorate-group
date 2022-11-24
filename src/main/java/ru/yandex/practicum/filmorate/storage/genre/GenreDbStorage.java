@@ -30,7 +30,7 @@ public class GenreDbStorage implements GenreStorage {
                 .build();
     }
 
-    public List<Genre> findAllGenre() {
+    public List<Genre> findAllGenres() {
         String sqlQuery = "SELECT * FROM GENRE";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToGenre(rs));
     }
@@ -43,7 +43,7 @@ public class GenreDbStorage implements GenreStorage {
                 .orElseThrow(() -> new DataNotFoundException(String.format("Genre with %d id not found", genreId)));
     }
 
-    public void addFilmsGenre(Long filmId, LinkedHashSet<Genre> genres) {
+    public void addGenresToFilm(Long filmId, LinkedHashSet<Genre> genres) {
         List<Genre> genreList = new ArrayList<>(genres);
         jdbcTemplate.batchUpdate(
                 "MERGE INTO film_genre key(FILM_ID,genre_id) values (?, ?)",
@@ -74,7 +74,7 @@ public class GenreDbStorage implements GenreStorage {
         }, films.stream().map(Film::getId).toArray());
     }
 
-    public void deleteFilmsGenre(Long filmId) {
+    public void deleteFilmGenres(Long filmId) {
         String sqlQuery = "DELETE FROM FILM_GENRE WHERE FILM_ID = ?";
         jdbcTemplate.update(sqlQuery, filmId);
     }

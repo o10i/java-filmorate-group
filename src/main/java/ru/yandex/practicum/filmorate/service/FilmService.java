@@ -29,7 +29,7 @@ public class FilmService {
         validator(film);
         Film filmWithId = filmStorage.create(film);
         if (film.getGenres() != null) {
-            genreService.addFilmsGenre(filmWithId.getId(), film.getGenres());
+            genreService.addGenresToFilm(filmWithId.getId(), film.getGenres());
         }
         if (film.getDirectors() != null) {
             directorService.addFilmsDirector(filmWithId.getId(), film.getDirectors());
@@ -41,10 +41,10 @@ public class FilmService {
         validator(film);
         filmStorage.findFilmById(film.getId());
         if (film.getGenres() != null) {
-            genreService.deleteFilmsGenre(film.getId());
-            genreService.addFilmsGenre(film.getId(), film.getGenres());
+            genreService.deleteFilmGenres(film.getId());
+            genreService.addGenresToFilm(film.getId(), film.getGenres());
         } else {
-            genreService.deleteFilmsGenre(film.getId());
+            genreService.deleteFilmGenres(film.getId());
         }
         if (film.getDirectors() != null) {
             directorService.deleteFilmsDirector(film.getId());
