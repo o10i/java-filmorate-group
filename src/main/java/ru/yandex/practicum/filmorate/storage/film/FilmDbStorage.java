@@ -79,7 +79,7 @@ public class FilmDbStorage implements FilmStorage {
                 "INNER JOIN MPA ON m.mpa_id = MPA.id " +
                 "WHERE m.id = ?";
 
-        return jdbcTemplate.query(sqlQuery,(rs, rowNum) -> mapRowToFilm(rs), filmId)
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), filmId)
                 .stream()
                 .findFirst()
                 .orElseThrow(() -> new FilmNotFoundException(String.format("Film with %d id not found", filmId)));
@@ -147,7 +147,6 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), directorId);
     }
 
-    public static Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
     @Override
     public void deleteFilmById(Long filmId) {
         String check = "SELECT name FROM movie WHERE id = ?";
@@ -157,10 +156,10 @@ public class FilmDbStorage implements FilmStorage {
             throw new FilmNotFoundException(String.format("Film with id %d not found", filmId));
         }
         String sqlQuery = "DELETE FROM movie WHERE id = ?";
-        jdbcTemplate.update(sqlQuery,filmId);
+        jdbcTemplate.update(sqlQuery, filmId);
     }
 
-    private Film mapRowToFilm(ResultSet resultSet) throws SQLException {
+    public static Film mapRowToFilm(ResultSet resultSet) throws SQLException {
         return Film.builder()
                 .id(resultSet.getLong("id"))
                 .name((resultSet.getString("name")))

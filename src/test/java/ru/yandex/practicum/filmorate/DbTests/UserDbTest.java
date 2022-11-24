@@ -41,7 +41,7 @@ public class UserDbTest {
     @Test
     void testDeleteUser() {
         User user = getUser();
-        userDbStorage.create(user);
+        userDbStorage.createUser(user);
         userDbStorage.deleteUserById(1L);
         assertThrows(UserNotFoundException.class, ()-> userDbStorage.findUserById(1L));
     }
@@ -49,7 +49,7 @@ public class UserDbTest {
     @Test
     void testDeleteWrongUser() {
         User user = getUser();
-        userDbStorage.create(user);
+        userDbStorage.createUser(user);
         assertThrows(UserNotFoundException.class, ()-> userDbStorage.deleteUserById(333L));
     }
 
@@ -60,8 +60,8 @@ public class UserDbTest {
         friend.setEmail("friend@email.ru");
         friend.setName("friend");
         friend.setLogin("friendLogin");
-        userDbStorage.create(user);
-        userDbStorage.create(friend);
+        userDbStorage.createUser(user);
+        userDbStorage.createUser(friend);
         followDbStorage.addFriend(1L, 2L);
         followDbStorage.addFriend(2L, 2L);
         assertEquals(1, followDbStorage.getAllFriends(1L).size());

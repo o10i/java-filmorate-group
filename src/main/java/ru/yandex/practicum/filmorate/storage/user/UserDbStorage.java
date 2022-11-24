@@ -4,18 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
-import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.user.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-
-import static ru.yandex.practicum.filmorate.storage.film.FilmDbStorage.mapRowToFilm;
 
 @Repository("userStorage")
 @RequiredArgsConstructor
@@ -27,16 +22,6 @@ public class UserDbStorage implements UserStorage {
     public List<User> findAllUsers() {
         String sqlQuery = "SELECT * FROM USERS";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToUser(rs));
-    }
-
-    @Override
-    public User findUserById(Long userId) {
-        String sqlQuery = "SELECT * FROM USERS WHERE id = ?";
-
-        return jdbcTemplate.query(sqlQuery,(rs, rowNum) -> mapRowToUser(rs), userId)
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new UserNotFoundException(String.format("User with %d id not found", userId)));
     }
 
     @Override
@@ -60,6 +45,15 @@ public class UserDbStorage implements UserStorage {
                 , user.getBirthday()
                 , user.getId());
         return user;
+    }
+
+    @Override
+    public User findUserById(Long userId) {
+        String sqlQuery = "SELECT * FROM USERS WHERE id = ?";
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToUser(rs), userId)
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new UserNotFoundException(String.format("User with %d id not found", userId)));
     }
 
     @Override
