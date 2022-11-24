@@ -91,7 +91,7 @@ public class FilmDbStorage implements FilmStorage {
                 "FROM MOVIE AS m " +
                 "INNER JOIN MPA ON MPA.id = m.mpa_id " +
                 "LEFT JOIN likes AS l ON l.film_id = m.id " +
-                "GROUP BY m.id " +
+                "GROUP BY m.id, l.user_id " +
                 "ORDER BY COUNT(l.user_id) DESC " +
                 "LIMIT ?";
 
@@ -145,6 +145,12 @@ public class FilmDbStorage implements FilmStorage {
                 "ORDER BY COUNT(L.USER_ID) " +
                 "DESC";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, directorId);
+    }
+
+    @Override
+    public void deleteFilmById(Long filmId) {
+        String sqlQuery = "DELETE FROM movie WHERE id = ?";
+        jdbcTemplate.update(sqlQuery,filmId);
     }
 
     private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {

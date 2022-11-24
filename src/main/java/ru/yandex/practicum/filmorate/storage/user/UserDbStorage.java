@@ -58,6 +58,12 @@ public class UserDbStorage implements UserStorage {
         return user;
     }
 
+    @Override
+    public void deleteUserById(Long userId) {
+        String sqlQuery = "DELETE FROM users WHERE id = ?";
+        jdbcTemplate.update(sqlQuery, userId);
+    }
+
     public static User mapRowToUser(ResultSet resultSet) throws SQLException {
         return User.builder()
                 .id(resultSet.getLong("id"))

@@ -99,6 +99,10 @@ public class FilmService {
         directorService.loadDirectors(films);
         return films;
     }
+
+    public void deleteFilmById(Long filmId) {
+        filmStorage.deleteFilmById(filmId);
+    }
 }
 
 
