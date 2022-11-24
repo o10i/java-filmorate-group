@@ -1,71 +1,74 @@
 package ru.yandex.practicum.filmorate.DbTests;
 
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
+import org.springframework.jdbc.core.JdbcTemplate;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.storage.follow.FollowDbStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
 import ru.yandex.practicum.filmorate.model.user.User;
 
 
-import java.time.LocalDate;
-import java.util.Optional;
+import java.sql.Date;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UserDbTest {
-    private final UserDbStorage userStorage;
+    private final JdbcTemplate jdbcTemplate;
+    private final UserDbStorage userDbStorage;
 
-    @Test
-    public void testFindUserById() {
-        User user = userStorage.createUser(User.builder()
-                .email("myname@ya.ru")
-                .login("login")
-                .name("MyName")
-                .birthday(LocalDate.of(2022, 1, 1))
-                .build()
-        );
+    private final FollowDbStorage followDbStorage;
 
-        Optional<User> userOptional = Optional.ofNullable(userStorage.findUserById(1L));
 
-        assertThat(userOptional)
-                .isPresent()
-                .hasValueSatisfying(us ->
-                        assertThat(us).hasFieldOrPropertyWithValue("id", 1L)
-                );
+    private User getUser() {
+        return User.builder().email("test@mail.ru").login("testLogin").name("testName").birthday(Date.valueOf("1946-08-20").toLocalDate()).build();
+    }
 
-        assertThrows(UserNotFoundException.class, () -> userStorage.findUserById(-4L));
+    @AfterEach
+    void tearDown() {
+        jdbcTemplate.update("DELETE FROM FOLLOW");
+        jdbcTemplate.update("DELETE FROM USERS");
+        jdbcTemplate.update("ALTER TABLE USERS ALTER COLUMN ID RESTART WITH 1");
     }
 
     @Test
-    public void testFindAll() {
-        assertTrue(userStorage.findAllUsers().isEmpty(), "Users is not empty");
-        User user = userStorage.createUser(User.builder()
-                .email("e@ya.ru")
-                .login("log")
-                .name("Name")
-                .birthday(LocalDate.of(2022, 2, 1))
-                .build()
-        );
-        assertNotNull(userStorage.findAllUsers(), "Users is empty");
-        assertEquals(1, userStorage.findAllUsers().size(), "Wrong list size. User has not been saved.");
+    void testDeleteUser() {
+        User user = getUser();
+        userDbStorage.create(user);
+        userDbStorage.deleteUserById(1L);
+        assertThrows(UserNotFoundException.class, ()-> userDbStorage.findUserById(1L));
     }
 
     @Test
-    public void testUpdate() {
-        User user = userStorage.updateUser(User.builder()
-                .id(1L)
-                .email("ame@ya.ru")
-                .login("log")
-                .name("My")
-                .birthday(LocalDate.of(2022, 1, 1))
-                .build()
-        );
+    void testDeleteWrongUser() {
+        User user = getUser();
+        userDbStorage.create(user);
+        assertThrows(UserNotFoundException.class, ()-> userDbStorage.deleteUserById(333L));
     }
+
+    @Test
+    void testFollowAfterDeleting() {
+        User user = getUser();
+        User friend = getUser();
+        friend.setEmail("friend@email.ru");
+        friend.setName("friend");
+        friend.setLogin("friendLogin");
+        userDbStorage.create(user);
+        userDbStorage.create(friend);
+        followDbStorage.addFriend(1L, 2L);
+        followDbStorage.addFriend(2L, 2L);
+        assertEquals(1, followDbStorage.getAllFriends(1L).size());
+        userDbStorage.deleteUserById(2L);
+        assertEquals(0, followDbStorage.getAllFriends(1L).size());
+
+
+    }
+
 }

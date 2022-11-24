@@ -91,7 +91,7 @@ public class FilmDbStorage implements FilmStorage {
                 "FROM MOVIE AS m " +
                 "INNER JOIN MPA ON MPA.id = m.mpa_id " +
                 "LEFT JOIN likes AS l ON l.film_id = m.id " +
-                "GROUP BY m.id " +
+                "GROUP BY m.id, l.user_id " +
                 "ORDER BY COUNT(l.user_id) DESC " +
                 "LIMIT ?";
 
@@ -99,7 +99,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getCommonFilms(long userId, long friendId) {
+    public List<Film> getCommonFilms(Long userId, Long friendId) {
         String check = "SELECT name FROM users WHERE id = ?";
         try {
             jdbcTemplate.queryForObject(check, String.class, userId);
@@ -148,6 +148,19 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     public static Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
+    @Override
+    public void deleteFilmById(Long filmId) {
+        String check = "SELECT name FROM movie WHERE id = ?";
+        try {
+            jdbcTemplate.queryForObject(check, String.class, filmId);
+        } catch (EmptyResultDataAccessException e) {
+            throw new FilmNotFoundException(String.format("Film with id %d not found", filmId));
+        }
+        String sqlQuery = "DELETE FROM movie WHERE id = ?";
+        jdbcTemplate.update(sqlQuery,filmId);
+    }
+
+    private Film mapRowToFilm(ResultSet resultSet) throws SQLException {
         return Film.builder()
                 .id(resultSet.getLong("id"))
                 .name((resultSet.getString("name")))

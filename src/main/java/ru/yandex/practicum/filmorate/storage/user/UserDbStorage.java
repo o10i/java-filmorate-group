@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -29,6 +30,16 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
+    public User findUserById(Long userId) {
+        String sqlQuery = "SELECT * FROM USERS WHERE id = ?";
+
+        return jdbcTemplate.query(sqlQuery,(rs, rowNum) -> mapRowToUser(rs), userId)
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new UserNotFoundException(String.format("User with %d id not found", userId)));
+    }
+
+    @Override
     public User createUser(User user) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("users")
@@ -52,47 +63,15 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User findUserById(Long userId) {
-        String sqlQuery = "SELECT * FROM USERS WHERE id = ?";
-
-        return jdbcTemplate.query(sqlQuery,(rs, rowNum) -> mapRowToUser(rs), userId)
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new UserNotFoundException(String.format("User with %d id not found", userId)));
-    }
-
-    @Override
-    public List<Film> getRecommendations(Long userId) {
-        List<Film> recommendations = new ArrayList<>();
-
-        String sqlQueryForSimilarUser = "SELECT user_id, COUNT(*) AS same_film_count " +
-                            "FROM likes " +
-                            "WHERE film_id IN (SELECT film_id " +
-                                        "FROM likes " +
-                                        "WHERE user_id = ?) AND user_id != ? " +
-                            "GROUP BY user_id " +
-                            "ORDER BY same_film_count DESC " +
-                            "LIMIT 1";
-
-        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sqlQueryForSimilarUser, userId, userId);
-
-        if (!rowSet.next()) {
-            return recommendations;
+    public void deleteUserById(Long userId) {
+        String check = "SELECT name FROM users WHERE id = ?";
+        try {
+            jdbcTemplate.queryForObject(check, String.class, userId);
+        } catch (EmptyResultDataAccessException e) {
+            throw new UserNotFoundException(String.format("User with id %d not found", userId));
         }
-
-        Long similarUserId = rowSet.getLong("user_id");
-
-        String sqlQueryForRecommendations = "SELECT * " +
-                            "FROM MOVIE AS m " +
-                            "INNER JOIN MPA ON MPA.id = m.mpa_id " +
-                            "LEFT JOIN likes AS l ON l.film_id = m.id " +
-                            "WHERE l.film_id NOT IN (SELECT film_id " +
-                                            "FROM likes " +
-                                            "WHERE user_id = ?) AND l.user_id = ? ";
-
-        return jdbcTemplate.query(sqlQueryForRecommendations,
-                (rs, rowNum) -> mapRowToFilm(rs),
-                userId, similarUserId);
+        String sqlQuery = "DELETE FROM users WHERE id = ?";
+        jdbcTemplate.update(sqlQuery, userId);
     }
 
     public static User mapRowToUser(ResultSet resultSet) throws SQLException {
