@@ -10,14 +10,13 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.user.User;
-import ru.yandex.practicum.filmorate.storage.follow.FollowDbStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
@@ -25,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UserDbTest {
     private final JdbcTemplate jdbcTemplate;
     private final UserDbStorage userDbStorage;
-    private  final FollowDbStorage followDbStorage;
 
     private User getUser() {
         return User.builder().email("test@mail.ru").login("testLogin").name("testName").birthday(Date.valueOf("1946-08-20").toLocalDate()).build();
@@ -106,114 +104,5 @@ public class UserDbTest {
     @Test
     void testFindUnknownUser() {
         assertThrows(UserNotFoundException.class, () -> userDbStorage.findUserById(9999L), "Пользователь с id " + 9999 + " не найден.");
-    }
-
-    @Test
-    void testSaveOneUserFriend() {
-        userDbStorage.createUser(getUser());
-        User user = getUser();
-        user.setEmail("test1@mail.ru");
-        user.setLogin("testLogin1");
-        userDbStorage.createUser(user);
-        assertDoesNotThrow(() -> followDbStorage.addFriend(1L, 2L));
-    }
-
-    @Test
-    void testSaveUnknownUserFriend() {
-        userDbStorage.createUser(getUser());
-        assertThrows(DataIntegrityViolationException.class, () -> followDbStorage.addFriend(1L, -1L), "Пользователь с id " + -1L + " не найден.");
-    }
-
-    @Test
-    void testFindOneUserFriend() {
-        userDbStorage.createUser(getUser());
-        User user = getUser();
-        user.setEmail("test1@mail.ru");
-        user.setLogin("testLogin1");
-        User savedUser = userDbStorage.createUser(user);
-        followDbStorage.addFriend(1L, 2L);
-        assertEquals(List.of(savedUser), followDbStorage.getAllFriends(1L));
-    }
-
-    @Test
-    void testFindEmptyFriendsOfFriend() {
-        userDbStorage.createUser(getUser());
-        User user = getUser();
-        user.setEmail("test1@mail.ru");
-        user.setLogin("testLogin1");
-        userDbStorage.createUser(user);
-        followDbStorage.addFriend(1L, 2L);
-        assertEquals(new ArrayList<>(), followDbStorage.getAllFriends(2L));
-    }
-
-    @Test
-    void testFindTwoUserFriends() {
-        userDbStorage.createUser(getUser());
-        User user1 = getUser();
-        user1.setEmail("test1@mail.ru");
-        user1.setLogin("testLogin1");
-        User savedUser = userDbStorage.createUser(user1);
-        User user2 = getUser();
-        user2.setEmail("test2@mail.ru");
-        user2.setLogin("testLogin2");
-        User savedUser2 = userDbStorage.createUser(user2);
-
-        followDbStorage.addFriend(1L, 2L);
-        followDbStorage.addFriend(1L, 3L);
-        assertEquals(List.of(savedUser, savedUser2), followDbStorage.getAllFriends(1L));
-    }
-
-    @Test
-    void testFindEmptyCommonFriends() {
-        assertEquals(new ArrayList<>(), followDbStorage.getCommonFriends(1L, 2L));
-    }
-
-    @Test
-    void testFindOneCommonFriend() {
-        userDbStorage.createUser(getUser());
-        User user1 = getUser();
-        user1.setEmail("test1@mail.ru");
-        user1.setLogin("testLogin1");
-        userDbStorage.createUser(user1);
-        User user2 = getUser();
-        user2.setEmail("test2@mail.ru");
-        user2.setLogin("testLogin2");
-        User savedUser2 = userDbStorage.createUser(user2);
-
-        followDbStorage.addFriend(1L, 2L);
-        followDbStorage.addFriend(1L, 3L);
-        followDbStorage.addFriend(2L, 3L);
-        assertEquals(List.of(savedUser2), followDbStorage.getCommonFriends(1L, 2L));
-    }
-
-    @Test
-    void testDeleteUserFriend() {
-        userDbStorage.createUser(getUser());
-        User user1 = getUser();
-        user1.setEmail("test1@mail.ru");
-        user1.setLogin("testLogin1");
-        userDbStorage.createUser(user1);
-
-        followDbStorage.addFriend(1L, 2L);
-        assertDoesNotThrow(() -> followDbStorage.deleteFriend(1L, 2L));
-    }
-
-    @Test
-    void testFindOneCommonFriendAfterDeletingOfFriend() {
-        userDbStorage.createUser(getUser());
-        User user1 = getUser();
-        user1.setEmail("test1@mail.ru");
-        user1.setLogin("testLogin1");
-        userDbStorage.createUser(user1);
-        User user2 = getUser();
-        user2.setEmail("test2@mail.ru");
-        user2.setLogin("testLogin2");
-        User savedUser2 = userDbStorage.createUser(user2);
-
-        followDbStorage.addFriend(1L, 2L);
-        followDbStorage.addFriend(1L, 3L);
-        followDbStorage.addFriend(2L, 3L);
-        followDbStorage.deleteFriend(1L, 2L);
-        assertEquals(List.of(savedUser2), followDbStorage.getCommonFriends(1L, 2L));
     }
 }

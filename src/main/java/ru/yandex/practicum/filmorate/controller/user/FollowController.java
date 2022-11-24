@@ -11,9 +11,7 @@ import java.util.List;
 @RequestMapping("/users/{id}/friends")
 @RequiredArgsConstructor
 public class FollowController {
-
     private final FollowService followService;
-
 
     @PutMapping("/{friendId}")
     public void addFriend(@PathVariable("id") Long userId, @PathVariable("friendId") Long friendId) {

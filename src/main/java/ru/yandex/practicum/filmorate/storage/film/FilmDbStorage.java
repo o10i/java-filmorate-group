@@ -21,7 +21,6 @@ import java.util.Objects;
 
 @Repository("filmStorage")
 public class FilmDbStorage implements FilmStorage {
-
     private final JdbcTemplate jdbcTemplate;
 
     public FilmDbStorage(JdbcTemplate jdbcTemplate) {

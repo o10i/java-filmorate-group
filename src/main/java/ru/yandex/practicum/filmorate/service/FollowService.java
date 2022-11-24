@@ -31,7 +31,7 @@ public class FollowService {
         feedService.saveEvent(Event.createEvent(userId, EventType.FRIEND, Operation.REMOVE, friendId));
     }
 
-    public List<User> getAllFriends (Long userId) {
+    public List<User> getAllFriends(Long userId) {
         userService.findUserById(userId);
         return followStorage.getAllFriends(userId);
     }

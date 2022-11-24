@@ -10,9 +10,7 @@ import static ru.yandex.practicum.filmorate.storage.user.UserDbStorage.mapRowToU
 
 @Component
 public class FollowDbStorage implements FollowStorage {
-
     private final JdbcTemplate jdbcTemplate;
-
 
     public FollowDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;

@@ -12,7 +12,7 @@ public interface FilmStorage {
 
     Film updateFilm(Film film);
 
-    Film findFilmById (Long filmId);
+    Film findFilmById(Long filmId);
 
     List<Film> getTopFilms(Integer count);
 
