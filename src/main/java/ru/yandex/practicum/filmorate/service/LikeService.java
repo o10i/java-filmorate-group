@@ -21,15 +21,14 @@ public class LikeService {
     private final FeedService feedService;
 
 
-
-    public void addLike (Long userId, Long filmId) {
+    public void addLike(Long userId, Long filmId) {
         filmService.findFilmById(filmId);
         userService.findUserById(userId);
         likeStorage.addLike(userId, filmId);
         feedService.saveEvent(Event.createEvent(userId, EventType.LIKE, Operation.ADD, filmId));
     }
 
-    public void deleteLike (Long userId, Long filmId) {
+    public void deleteLike(Long userId, Long filmId) {
         filmService.findFilmById(filmId);
         userService.findUserById(userId);
         if (likeStorage.getLikes(userId, filmId) == null) {

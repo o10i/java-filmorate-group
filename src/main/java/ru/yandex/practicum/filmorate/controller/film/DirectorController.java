@@ -20,7 +20,7 @@ public class DirectorController {
     }
 
     @GetMapping("/{id}")
-    public Director findDirectorById(@PathVariable("id") Long id) {
+    public Director findDirectorById(@PathVariable Long id) {
         return directorService.findDirectorById(id);
     }
 
