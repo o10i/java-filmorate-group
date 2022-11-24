@@ -56,7 +56,7 @@ public class FeedDBTest {
         final Event eventSave = feedDbStorage.saveEvent(eventCreate);
         final Map<Long, Event> eventWithId = Stream.of(eventSave).collect(Collectors.toMap(Event::getEventId, identity()));
 
-        assertEquals(eventCreate, eventWithId.get(eventCreate.getEventId()), "Created Event and saved Event don't match.");
+        assertEquals(eventCreate, eventWithId.get(eventSave.getEventId()), "Created Event and saved Event don't match.");
         assertEquals(1L, eventSave.getEventId(), "Event id don't match.");
     }
 
