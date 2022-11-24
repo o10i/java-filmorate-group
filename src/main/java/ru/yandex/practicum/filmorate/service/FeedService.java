@@ -10,14 +10,12 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FeedService {
-
     private final FeedStorage feedStorage;
-
     private final UserService userService;
 
-    public List<Event> findEventByUserId(Long userId) {
+    public List<Event> findEventsByUserId(Long userId) {
         userService.findUserById(userId);
-        return feedStorage.findEventByUserId(userId);
+        return feedStorage.findEventsByUserId(userId);
     }
 
     public Event saveEvent(Event event) {
