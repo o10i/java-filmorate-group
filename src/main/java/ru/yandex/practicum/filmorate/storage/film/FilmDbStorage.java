@@ -29,16 +29,14 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> findAll() {
-        String sqlQuery = "SELECT * FROM MOVIE AS m " +
-                "INNER JOIN MPA ON MPA.id = m.mpa_id";
+    public List<Film> findAllFilms() {
+        String sqlQuery = "SELECT * FROM MOVIE AS m " + "INNER JOIN MPA ON MPA.id = m.mpa_id";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm);
     }
 
     @Override
-    public Film create(Film film) {
-        String sqlQuery = "INSERT INTO movie(name, description, release_date, duration, rate,  mpa_id) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
+    public Film createFilm(Film film) {
+        String sqlQuery = "INSERT INTO movie(name, description, release_date, duration, rate,  mpa_id) " + "VALUES (?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement stmt = connection.prepareStatement(sqlQuery, new String[]{"id"});
@@ -56,44 +54,24 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Film update(Film film) {
-        String sqlQuery = "UPDATE MOVIE SET " +
-                "NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ? , DURATION = ?, RATE = ?, MPA_ID = ? " +
-                "WHERE ID = ?";
+    public Film updateFilm(Film film) {
+        String sqlQuery = "UPDATE MOVIE SET " + "NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ? , DURATION = ?, RATE = ?, MPA_ID = ? " + "WHERE ID = ?";
 
-        jdbcTemplate.update(sqlQuery
-                , film.getName()
-                , film.getDescription()
-                , film.getReleaseDate()
-                , film.getDuration()
-                , film.getRate()
-                , film.getMpa().getId()
-                , film.getId());
+        jdbcTemplate.update(sqlQuery, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getRate(), film.getMpa().getId(), film.getId());
 
         return film;
     }
 
     @Override
     public Film findFilmById(Long filmId) {
-        String sqlQuery = "SELECT * FROM MOVIE AS m " +
-                "INNER JOIN MPA ON m.mpa_id = MPA.id " +
-                "WHERE m.id = ?";
+        String sqlQuery = "SELECT * FROM MOVIE AS m " + "INNER JOIN MPA ON m.mpa_id = MPA.id " + "WHERE m.id = ?";
 
-        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, filmId)
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new FilmNotFoundException(String.format("Film with %d id not found", filmId)));
+        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, filmId).stream().findFirst().orElseThrow(() -> new FilmNotFoundException(String.format("Film with %d id not found", filmId)));
 
     }
 
     public List<Film> getTopFilms(Integer count) {
-        String sqlQuery = "SELECT * " +
-                "FROM MOVIE AS m " +
-                "INNER JOIN MPA ON MPA.id = m.mpa_id " +
-                "LEFT JOIN likes AS l ON l.film_id = m.id " +
-                "GROUP BY m.id " +
-                "ORDER BY COUNT(l.user_id) DESC " +
-                "LIMIT ?";
+        String sqlQuery = "SELECT * " + "FROM MOVIE AS m " + "INNER JOIN MPA ON MPA.id = m.mpa_id " + "LEFT JOIN likes AS l ON l.film_id = m.id " + "GROUP BY m.id " + "ORDER BY COUNT(l.user_id) DESC " + "LIMIT ?";
 
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, count);
     }
@@ -111,56 +89,21 @@ public class FilmDbStorage implements FilmStorage {
         } catch (EmptyResultDataAccessException e) {
             throw new UserNotFoundException(String.format("User with id %d not found", friendId));
         }
-        String sqlQuery = "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 " +
-                "INNER JOIN MPA ON (MPA.id = m.mpa_id)" +
-                "WHERE l1.user_id = ? AND l2.user_id = ? " +
-                "AND m.id = l1.film_id AND m.id = l2.film_id " +
-                "GROUP BY m.id " +
-                "ORDER BY COUNT(l1.user_id) DESC";
+        String sqlQuery = "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 " + "INNER JOIN MPA ON (MPA.id = m.mpa_id)" + "WHERE l1.user_id = ? AND l2.user_id = ? " + "AND m.id = l1.film_id AND m.id = l2.film_id " + "GROUP BY m.id " + "ORDER BY COUNT(l1.user_id) DESC";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, userId, friendId);
     }
 
     public List<Film> getDirectorFilmsSortedByYear(Long directorId) {
-        String sqlQuery = "SELECT * " +
-                "FROM MOVIE M " +
-                "LEFT JOIN MPA ON MPA.ID = M.MPA_ID " +
-                "WHERE M.ID IN (" +
-                "SELECT FILM_ID " +
-                "FROM FILM_DIRECTOR " +
-                "WHERE DIRECTOR_ID = ?) " +
-                "ORDER BY M.RELEASE_DATE";
+        String sqlQuery = "SELECT * " + "FROM MOVIE M " + "LEFT JOIN MPA ON MPA.ID = M.MPA_ID " + "WHERE M.ID IN (" + "SELECT FILM_ID " + "FROM FILM_DIRECTOR " + "WHERE DIRECTOR_ID = ?) " + "ORDER BY M.RELEASE_DATE";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, directorId);
     }
 
     public List<Film> getDirectorFilmsSortedByLikes(Long directorId) {
-        String sqlQuery = "SELECT * " +
-                "FROM MOVIE M " +
-                "LEFT JOIN MPA ON MPA.ID = M.MPA_ID " +
-                "LEFT JOIN LIKES L ON L.FILM_ID = M.ID " +
-                "WHERE M.ID IN (" +
-                "SELECT FILM_ID " +
-                "FROM FILM_DIRECTOR " +
-                "WHERE DIRECTOR_ID = ?) " +
-                "GROUP BY M.ID " +
-                "ORDER BY COUNT(L.USER_ID) " +
-                "DESC";
+        String sqlQuery = "SELECT * " + "FROM MOVIE M " + "LEFT JOIN MPA ON MPA.ID = M.MPA_ID " + "LEFT JOIN LIKES L ON L.FILM_ID = M.ID " + "WHERE M.ID IN (" + "SELECT FILM_ID " + "FROM FILM_DIRECTOR " + "WHERE DIRECTOR_ID = ?) " + "GROUP BY M.ID " + "ORDER BY COUNT(L.USER_ID) " + "DESC";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, directorId);
     }
 
     private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
-        return Film.builder()
-                .id(resultSet.getLong("id"))
-                .name((resultSet.getString("name")))
-                .releaseDate((resultSet.getDate("release_date")).toLocalDate())
-                .description(resultSet.getString("description"))
-                .duration(resultSet.getInt("duration"))
-                .rate(resultSet.getInt("rate"))
-                .mpa(Mpa.builder()
-                        .id(resultSet.getLong("mpa.id"))
-                        .name(resultSet.getString("mpa.name"))
-                        .build())
-                .genres(new LinkedHashSet<>())
-                .directors(new LinkedHashSet<>())
-                .build();
+        return Film.builder().id(resultSet.getLong("id")).name((resultSet.getString("name"))).releaseDate((resultSet.getDate("release_date")).toLocalDate()).description(resultSet.getString("description")).duration(resultSet.getInt("duration")).rate(resultSet.getInt("rate")).mpa(Mpa.builder().id(resultSet.getLong("mpa.id")).name(resultSet.getString("mpa.name")).build()).genres(new LinkedHashSet<>()).directors(new LinkedHashSet<>()).build();
     }
 }

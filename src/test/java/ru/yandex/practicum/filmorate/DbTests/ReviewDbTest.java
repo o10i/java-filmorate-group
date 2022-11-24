@@ -44,7 +44,7 @@ public class ReviewDbTest {
                 .name("Vova")
                 .birthday(LocalDate.of(2022, 1, 1))
                 .build());
-        filmService.create(Film.builder()
+        filmService.createFilm(Film.builder()
                 .name("Iron Man")
                 .description("Some superhero's shit")
                 .releaseDate(LocalDate.of(2012, 8, 12))

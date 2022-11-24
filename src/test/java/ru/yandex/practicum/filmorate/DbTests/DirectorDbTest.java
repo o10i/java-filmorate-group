@@ -82,7 +82,7 @@ public class DirectorDbTest {
 
     @Test
     void testAddFilmsDirector() {
-        Film film = filmDbStorage.create(getFilm());
+        Film film = filmDbStorage.createFilm(getFilm());
         LinkedHashSet<Director> directors = new LinkedHashSet<>();
         Director director = directorDbStorage.createDirector(getDirector());
         directors.add(director);
@@ -91,7 +91,7 @@ public class DirectorDbTest {
 
     @Test
     void testDeleteFilmsDirector() {
-        Film film = filmDbStorage.create(getFilm());
+        Film film = filmDbStorage.createFilm(getFilm());
         LinkedHashSet<Director> directors = new LinkedHashSet<>();
         Director director = directorDbStorage.createDirector(getDirector());
         directors.add(director);
