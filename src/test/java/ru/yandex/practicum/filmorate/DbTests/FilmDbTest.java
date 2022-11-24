@@ -1,4 +1,4 @@
-package DbTests;
+package ru.yandex.practicum.filmorate.DbTests;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
@@ -59,23 +59,23 @@ public class FilmDbTest {
         Film film = getFilm();
         filmDbStorage.create(film);
         filmDbStorage.deleteFilmById(1L);
-        assertThrows(FilmNotFoundException.class, () -> filmDbStorage.findFilmById(1L));
+        assertThrows(FilmNotFoundException.class, ()-> filmDbStorage.findFilmById(1L));
     }
 
     @Test
     void deleteWrongFilm() {
         Film film = getFilm();
         filmDbStorage.create(film);
-        assertThrows(FilmNotFoundException.class, () -> filmDbStorage.deleteFilmById(444L));
+        assertThrows(FilmNotFoundException.class, ()-> filmDbStorage.deleteFilmById(444L));
     }
 
     @Test
     void deleteLikesAfterDeletingFilm() {
         filmDbStorage.create(getFilm());
         userDbStorage.create(getUser());
-        likeDbStorage.addLike(1L, 1L);
-        assertEquals(1, likeDbStorage.getLikes(1l, 1l).size());
+        likeDbStorage.addLike(1L,1L);
+        assertEquals(1, likeDbStorage.getLikes(1l,1l).size());
         filmDbStorage.deleteFilmById(1L);
-        assertEquals(0, likeDbStorage.getLikes(1l, 1l).size());
+        assertEquals(0, likeDbStorage.getLikes(1l,1l).size());
     }
 }

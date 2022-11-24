@@ -1,4 +1,4 @@
-package DbTests;
+package ru.yandex.practicum.filmorate.DbTests;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
