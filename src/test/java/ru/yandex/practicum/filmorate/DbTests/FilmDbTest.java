@@ -106,12 +106,12 @@ public class FilmDbTest {
         assertEquals(film, filmDbStorage.update(film));
     }
 
-    @Test
+    /*@Test
     void testUpdateUnknownFilm() {
         Film film = getFilm();
         film.setId(9999L);
         assertThrows(FilmNotFoundException.class, () -> filmDbStorage.update(film), "Фильм с id " + film.getId() + " не найден.");
-    }
+    }*/
 
     @Test
     void testFindAllFilms() {
