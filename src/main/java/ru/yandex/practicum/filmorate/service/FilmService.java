@@ -72,6 +72,7 @@ public class FilmService {
     public List<Film> getCommonFilms (Long userId, Long friendId) {
         List<Film> films = filmStorage.getCommonFilms(userId,friendId);
         genreService.loadGenres(films);
+        directorService.loadDirectors(films);
         return films;
     }
 

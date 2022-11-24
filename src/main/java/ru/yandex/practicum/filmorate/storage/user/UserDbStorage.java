@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -60,6 +61,12 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public void deleteUserById(Long userId) {
+        String check = "SELECT name FROM users WHERE id = ?";
+        try {
+            jdbcTemplate.queryForObject(check, String.class, userId);
+        } catch (EmptyResultDataAccessException e) {
+            throw new UserNotFoundException(String.format("User with id %d not found", userId));
+        }
         String sqlQuery = "DELETE FROM users WHERE id = ?";
         jdbcTemplate.update(sqlQuery, userId);
     }
