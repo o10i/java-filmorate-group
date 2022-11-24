@@ -21,6 +21,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -104,14 +105,7 @@ public class FilmDbTest {
     void testUpdateFilm() {
         Film film = filmDbStorage.createFilm(getFilm());
         film.setName("testUpdateName");
-        assertEquals(film, filmDbStorage.update(film));
-    }
-
-    @Test
-    void testUpdateUnknownFilm() {
-        Film film = getFilm();
-        film.setId(9999L);
-        assertThrows(FilmNotFoundException.class, () -> filmDbStorage.update(film), "Фильм с id " + film.getId() + " не найден.");
+        assertEquals(film, filmDbStorage.updateFilm(film));
     }
 
     @Test
@@ -134,7 +128,7 @@ public class FilmDbTest {
 
     @Test
     void testGetEmptyTopFilms() {
-        assertEquals(new ArrayList<>(), filmDbStorage.getTopFilms(10));
+        assertEquals(new ArrayList<>(), filmDbStorage.getTopFilms(10, Optional.empty(), Optional.empty()));
     }
 
     @Test
@@ -143,14 +137,14 @@ public class FilmDbTest {
         filmDbStorage.createFilm(getFilm());
         Film film = filmDbStorage.createFilm(getFilm());
         likeDbStorage.addLike(1L, 2L);
-        assertEquals(List.of(film), filmDbStorage.getTopFilms(1));
+        assertEquals(List.of(film), filmDbStorage.getTopFilms(1, Optional.empty(), Optional.empty()));
     }
 
     @Test
     void testFindTwoPopularFilms() {
         Film film = filmDbStorage.createFilm(getFilm());
         Film film2 = filmDbStorage.createFilm(getFilm());
-        assertEquals(List.of(film, film2), filmDbStorage.getTopFilms(10));
+        assertEquals(List.of(film, film2), filmDbStorage.getTopFilms(10, Optional.empty(), Optional.empty()));
     }
 
     @Test
