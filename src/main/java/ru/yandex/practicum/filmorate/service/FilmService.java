@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import javax.validation.ValidationException;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -104,31 +103,20 @@ public class FilmService {
     }
 
     public List<Film> getTopSortedSearchedFilms(String query, String by) {
-        List<SearchType> searchType = Arrays.stream(by.toUpperCase().split(",")).map(SearchType::valueOf).collect(Collectors.toList());
         List<Film> films = filmStorage.getTopFilmsWithoutLimit();
         genreService.loadGenres(films);
         directorService.loadDirectors(films);
-        if (searchType.size() == 1 && searchType.get(0) == SearchType.DIRECTOR) {
-            films = films.stream()
-                    .filter(film -> film.getDirectors()
-                            .stream()
+        by = by.toUpperCase();
+        boolean searchByFilmName = by.contains(SearchType.TITLE.name());
+        boolean searchByDirectorName = by.contains(SearchType.DIRECTOR.name());
+        if (searchByFilmName || searchByDirectorName) {
+            return films.stream()
+                    .filter(film -> (searchByDirectorName && film.getDirectors().stream()
                             .anyMatch(director -> director.getName().toLowerCase().contains(query.toLowerCase())))
+                            || (searchByFilmName && film.getName().toLowerCase().contains(query.toLowerCase())))
                     .collect(Collectors.toList());
-        } else if (searchType.size() == 1 && searchType.get(0) == SearchType.TITLE) {
-            films = films.stream()
-                    .filter(film -> film.getName().toLowerCase().contains(query.toLowerCase()))
-                    .collect(Collectors.toList());
-        } else if (searchType.size() == 2 && searchType.get(0) != searchType.get(1)) {
-            films = films.stream()
-                    .filter(film -> film.getDirectors()
-                            .stream()
-                            .anyMatch(director -> director.getName().toLowerCase().contains(query.toLowerCase()))
-                            || film.getName().toLowerCase().contains(query.toLowerCase()))
-                    .collect(Collectors.toList());
-        } else {
-            throw new IllegalArgumentException("Некорректный тип поиска");
         }
-        return films;
+        throw new IllegalArgumentException("Некорректный тип поиска");
     }
 }
 
