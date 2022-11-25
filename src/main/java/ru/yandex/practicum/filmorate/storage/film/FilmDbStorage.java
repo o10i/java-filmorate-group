@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Mpa;
+import ru.yandex.practicum.filmorate.model.film.SortType;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -159,30 +160,30 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, userId, friendId);
     }
 
-    public List<Film> getDirectorFilmsSortedByYear(Long directorId) {
-        String sqlQuery = "SELECT * " +
-                "FROM MOVIE M " +
-                "LEFT JOIN MPA ON MPA.ID = M.MPA_ID " +
-                "WHERE M.ID IN (" +
-                "SELECT FILM_ID " +
-                "FROM FILM_DIRECTOR " +
-                "WHERE DIRECTOR_ID = ?) " +
-                "ORDER BY M.RELEASE_DATE";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, directorId);
-    }
-
-    public List<Film> getDirectorFilmsSortedByLikes(Long directorId) {
-        String sqlQuery = "SELECT * " +
-                "FROM MOVIE M " +
-                "LEFT JOIN MPA ON MPA.ID = M.MPA_ID " +
-                "LEFT JOIN LIKES L ON L.FILM_ID = M.ID " +
-                "WHERE M.ID IN (" +
-                "SELECT FILM_ID " +
-                "FROM FILM_DIRECTOR " +
-                "WHERE DIRECTOR_ID = ?) " +
-                "GROUP BY M.ID " +
-                "ORDER BY COUNT(L.USER_ID) " +
-                "DESC";
+    public List<Film> getSortedDirectorFilms(Long directorId, String sortBy) {
+        String sqlQuery;
+        if (sortBy.toUpperCase().equals(SortType.YEAR.name())) {
+            sqlQuery = "SELECT * " +
+                    "FROM MOVIE M " +
+                    "LEFT JOIN MPA ON MPA.ID = M.MPA_ID " +
+                    "WHERE M.ID IN (" +
+                    "SELECT FILM_ID " +
+                    "FROM FILM_DIRECTOR " +
+                    "WHERE DIRECTOR_ID = ?) " +
+                    "ORDER BY M.RELEASE_DATE";
+        } else {
+            sqlQuery = "SELECT * " +
+                    "FROM MOVIE M " +
+                    "LEFT JOIN MPA ON MPA.ID = M.MPA_ID " +
+                    "LEFT JOIN LIKES L ON L.FILM_ID = M.ID " +
+                    "WHERE M.ID IN (" +
+                    "SELECT FILM_ID " +
+                    "FROM FILM_DIRECTOR " +
+                    "WHERE DIRECTOR_ID = ?) " +
+                    "GROUP BY M.ID " +
+                    "ORDER BY COUNT(L.USER_ID) " +
+                    "DESC";
+        }
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, directorId);
     }
 
