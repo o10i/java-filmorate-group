@@ -100,7 +100,7 @@ public class FilmDbStorage implements FilmStorage {
                     "FROM MOVIE M " +
                     "INNER JOIN MPA ON MPA.ID = M.MPA_ID " +
                     "LEFT JOIN LIKES L ON L.FILM_ID = M.ID " +
-                    "GROUP BY M.ID " +
+                    "GROUP BY M.ID, L.USER_ID " +
                     "ORDER BY COUNT(L.USER_ID) DESC " +
                     "LIMIT ?";
             return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, count);

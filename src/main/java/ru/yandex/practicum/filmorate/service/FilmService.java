@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.model.film.SortType;
 import ru.yandex.practicum.filmorate.model.search.SearchType;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
-import javax.validation.ValidationException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
