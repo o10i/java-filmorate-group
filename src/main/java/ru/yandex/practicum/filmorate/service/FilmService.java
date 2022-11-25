@@ -104,7 +104,7 @@ public class FilmService {
     }
 
     public List<Film> getTopSortedSearchedFilms(String query, String by) {
-        List<Film> films = filmStorage.getTopFilmsWithoutLimit();
+        List<Film> films = filmStorage.getTopFilms(-1, Optional.empty(), Optional.empty());
         genreService.loadGenres(films);
         directorService.loadDirectors(films);
         by = by.toUpperCase();

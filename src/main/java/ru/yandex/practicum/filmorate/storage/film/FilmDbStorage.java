@@ -86,7 +86,15 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public List<Film> getTopFilms(Integer count, Optional<Integer> genreId, Optional<Integer> year) {
         String sqlQuery;
-        if (genreId.isEmpty() && year.isEmpty()) {
+        if (count == -1 && genreId.isEmpty() && year.isEmpty()) { // для возврата всех фильмов отсортированных по лайкам
+            sqlQuery = "SELECT * " +
+                    "FROM MOVIE AS m " +
+                    "INNER JOIN MPA ON MPA.id = m.mpa_id " +
+                    "LEFT JOIN likes AS l ON l.film_id = m.id " +
+                    "GROUP BY m.id " +
+                    "ORDER BY COUNT(l.user_id) DESC";
+            return jdbcTemplate.query(sqlQuery, this::mapRowToFilm);
+        } else if (genreId.isEmpty() && year.isEmpty()) {
             sqlQuery = "SELECT * " +
                     "FROM MOVIE M " +
                     "INNER JOIN MPA ON MPA.ID = M.MPA_ID " +
@@ -127,18 +135,6 @@ public class FilmDbStorage implements FilmStorage {
                 "ORDER BY COUNT(L.USER_ID) DESC " +
                 "LIMIT ?";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, genreId.get(), year.get(), count);
-    }
-
-    @Override
-    public List<Film> getTopFilmsWithoutLimit() {
-        String sqlQuery = "SELECT * " +
-                "FROM MOVIE AS m " +
-                "INNER JOIN MPA ON MPA.id = m.mpa_id " +
-                "LEFT JOIN likes AS l ON l.film_id = m.id " +
-                "GROUP BY m.id " +
-                "ORDER BY COUNT(l.user_id) DESC";
-
-        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm);
     }
 
     @Override
