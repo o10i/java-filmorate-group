@@ -34,6 +34,11 @@ public class UserService {
         return userStorage.findUserById(userId);
     }
 
+    public void deleteUserById(Long userId) {
+        userStorage.findUserById(userId);
+        userStorage.deleteUserById(userId);
+    }
+
     private void validator (User user) {
         if (user.getLogin().contains(" ")) {
             throw new ValidationException("Your login must not contains space symbols.");

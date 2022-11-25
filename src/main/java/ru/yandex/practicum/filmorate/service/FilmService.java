@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.SortType;
 import ru.yandex.practicum.filmorate.model.search.SearchType;
@@ -75,6 +76,7 @@ public class FilmService {
     public List<Film> getCommonFilms(Long userId, Long friendId) {
         List<Film> films = filmStorage.getCommonFilms(userId, friendId);
         genreService.loadGenres(films);
+        directorService.loadDirectors(films);
         return films;
     }
 
@@ -112,6 +114,11 @@ public class FilmService {
                     .collect(Collectors.toList());
         }
         throw new IllegalArgumentException("Некорректный тип поиска");
+    }
+
+    public void deleteFilmById(Long filmId) {
+        filmStorage.findFilmById(filmId);
+        filmStorage.deleteFilmById(filmId);
     }
 }
 

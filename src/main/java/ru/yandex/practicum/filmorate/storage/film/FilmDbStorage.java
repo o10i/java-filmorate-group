@@ -139,7 +139,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getCommonFilms(long userId, long friendId) {
+    public List<Film> getCommonFilms(Long userId, Long friendId) {
         String check = "SELECT name FROM users WHERE id = ?";
         try {
             jdbcTemplate.queryForObject(check, String.class, userId);
@@ -185,6 +185,12 @@ public class FilmDbStorage implements FilmStorage {
                     "DESC";
         }
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, directorId);
+    }
+
+    @Override
+    public void deleteFilmById(Long filmId) {
+        String sqlQuery = "DELETE FROM movie WHERE id = ?";
+        jdbcTemplate.update(sqlQuery,filmId);
     }
 
     private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {

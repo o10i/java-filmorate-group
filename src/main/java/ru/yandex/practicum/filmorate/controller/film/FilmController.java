@@ -65,4 +65,9 @@ public class FilmController {
         return filmService.getTopSortedSearchedFilms(query, by);
     }
 
+
+    @DeleteMapping("{filmId}")
+    public void deleteFilmById(@PathVariable("filmId") Long filmId) {
+        filmService.deleteFilmById(filmId);
+    }
 }

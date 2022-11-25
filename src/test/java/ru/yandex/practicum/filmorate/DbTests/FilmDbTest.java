@@ -102,6 +102,11 @@ public class FilmDbTest {
     }
 
     @Test
+    void deleteFilm() {
+        Film film = getFilm();
+        filmDbStorage.create(film);
+        filmDbStorage.deleteFilmById(1L);
+        assertEquals(0, filmDbStorage.findAll().size());
     void testUpdateFilm() {
         Film film = filmDbStorage.createFilm(getFilm());
         film.setName("testUpdateName");
@@ -129,6 +134,17 @@ public class FilmDbTest {
     @Test
     void testGetEmptyTopFilms() {
         assertEquals(new ArrayList<>(), filmDbStorage.getTopFilms(10, Optional.empty(), Optional.empty()));
+    }
+
+        @Test
+        void deleteLikesAfterDeletingFilm() {
+            filmDbStorage.create(getFilm());
+            userDbStorage.create(getUser());
+            likeDbStorage.addLike(1L,1L);
+            assertEquals(1, likeDbStorage.getLikes(1l,1l).size());
+            filmDbStorage.deleteFilmById(1L);
+            assertEquals(0, likeDbStorage.getLikes(1l,1l).size());
+        }
     }
 
     @Test
