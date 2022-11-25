@@ -39,10 +39,6 @@ public class FilmDbTest {
         return User.builder().email("test@mail.ru").login("testLogin").name("testName").birthday(Date.valueOf("1946-08-20").toLocalDate()).build();
     }
 
-    private Genre getGenre() {
-        return Genre.builder().id(2L).name("Драма").build();
-    }
-
     @AfterEach
     void tearDown() {
         jdbcTemplate.update("DELETE FROM LIKES");
@@ -59,14 +55,7 @@ public class FilmDbTest {
         Film film = getFilm();
         filmDbStorage.create(film);
         filmDbStorage.deleteFilmById(1L);
-        assertThrows(FilmNotFoundException.class, ()-> filmDbStorage.findFilmById(1L));
-    }
-
-    @Test
-    void deleteWrongFilm() {
-        Film film = getFilm();
-        filmDbStorage.create(film);
-        assertThrows(FilmNotFoundException.class, ()-> filmDbStorage.deleteFilmById(444L));
+        assertEquals(0, filmDbStorage.findAll().size());
     }
 
     @Test

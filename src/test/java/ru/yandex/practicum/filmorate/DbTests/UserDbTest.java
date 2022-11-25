@@ -23,9 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UserDbTest {
     private final JdbcTemplate jdbcTemplate;
     private final UserDbStorage userDbStorage;
-
     private final FollowDbStorage followDbStorage;
-
 
     private User getUser() {
         return User.builder().email("test@mail.ru").login("testLogin").name("testName").birthday(Date.valueOf("1946-08-20").toLocalDate()).build();
@@ -44,13 +42,6 @@ public class UserDbTest {
         userDbStorage.create(user);
         userDbStorage.deleteUserById(1L);
         assertThrows(UserNotFoundException.class, ()-> userDbStorage.findUserById(1L));
-    }
-
-    @Test
-    void testDeleteWrongUser() {
-        User user = getUser();
-        userDbStorage.create(user);
-        assertThrows(UserNotFoundException.class, ()-> userDbStorage.deleteUserById(333L));
     }
 
     @Test

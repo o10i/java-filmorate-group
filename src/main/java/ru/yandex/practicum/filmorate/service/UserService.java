@@ -35,6 +35,7 @@ public class UserService {
     }
 
     public void deleteUserById(Long userId) {
+        userStorage.findUserById(userId);
         userStorage.deleteUserById(userId);
     }
 
