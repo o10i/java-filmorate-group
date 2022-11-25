@@ -20,13 +20,11 @@ public class ReviewController {
 
     @PostMapping
     public Review createReview(@Valid @RequestBody Review review) {
-        System.out.println(review.getFilmId());
         return reviewService.createReview(review);
     }
 
     @PutMapping
     public Review updateReview(@Valid @RequestBody Review review) {
-        System.out.println(review.getFilmId());
         return reviewService.updateReview(review);
     }
 

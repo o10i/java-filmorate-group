@@ -14,16 +14,16 @@ import javax.validation.constraints.NotNull;
 @FieldDefaults(level= AccessLevel.PRIVATE)
 public class Event {
     @NotNull
-    private Long timestamp;
+    Long timestamp;
     @NotNull
-    private Long userId;
+    Long userId;
     @NotNull
-    private EventType eventType;
+    EventType eventType;
     @NotNull
-    private Operation operation;
-    private Long eventId;
+    Operation operation;
+    Long eventId;
     @NotNull
-    private Long entityId;
+    Long entityId;
 
 
     public static Event createEvent(Long userId, EventType eventType, Operation operation, Long entityId) {

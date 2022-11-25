@@ -11,13 +11,9 @@ import ru.yandex.practicum.filmorate.storage.like.LikeStorage;
 @Service
 @RequiredArgsConstructor
 public class LikeService {
-
     private final LikeStorage likeStorage;
-
     private final UserService userService;
-
     private final FilmService filmService;
-
     private final FeedService feedService;
 
 

@@ -17,7 +17,7 @@ public class FeedController {
     private final FeedService feedService;
 
     @GetMapping
-    public List<Event> findEventByUserId(@PathVariable("id") Long eventId){
-        return feedService.findEventByUserId(eventId);
+    public List<Event> findEventsByUserId(@PathVariable("id") Long userId){
+        return feedService.findEventsByUserId(userId);
     }
 }

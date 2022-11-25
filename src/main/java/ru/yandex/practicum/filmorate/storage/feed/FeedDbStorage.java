@@ -21,7 +21,7 @@ public class FeedDbStorage implements FeedStorage {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<Event> findEventByUserId(Long userId) {
+    public List<Event> findEventsByUserId(Long userId) {
         String sqlQuery = "SELECT * FROM FEED WHERE USER_ID = ?";
         return jdbcTemplate.query(sqlQuery, this::makeRowToEvent , userId);
     }
