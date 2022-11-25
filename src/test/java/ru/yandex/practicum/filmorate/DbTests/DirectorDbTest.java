@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.DbTests;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +26,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 @AutoConfigureTestDatabase()
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class DirectorDbTest {
-    private final JdbcTemplate jdbcTemplate;
-    private final DirectorDbStorage directorDbStorage;
-    private final FilmDbStorage filmDbStorage;
+    JdbcTemplate jdbcTemplate;
+    DirectorDbStorage directorDbStorage;
+    FilmDbStorage filmDbStorage;
 
     private Director getDirector() {
         return Director.builder().name("testName").build();

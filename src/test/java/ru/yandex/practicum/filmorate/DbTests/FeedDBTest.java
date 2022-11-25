@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.DbTests;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +29,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 @AutoConfigureTestDatabase()
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class FeedDBTest {
-    private final JdbcTemplate jdbcTemplate;
-    private final FeedDbStorage feedDbStorage;
-    private final UserDbStorage userDbStorage;
+    JdbcTemplate jdbcTemplate;
+    FeedDbStorage feedDbStorage;
+    UserDbStorage userDbStorage;
 
     User makeUser(){
         return User.builder()

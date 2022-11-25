@@ -15,18 +15,17 @@ import ru.yandex.practicum.filmorate.storage.like.LikeDbStorage;
 import ru.yandex.practicum.filmorate.storage.recommendation.RecommendationDbStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest
 @AutoConfigureTestDatabase()
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-@FieldDefaults(makeFinal=true, level=AccessLevel.PRIVATE)
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class RecommendationDbTest {
     RecommendationDbStorage recommendationDbStorage;
     UserDbStorage userDbStorage;
@@ -34,7 +33,7 @@ public class RecommendationDbTest {
     LikeDbStorage likeDbStorage;
 
     @Test
-    void testGetRecommendations(){
+    void testGetRecommendations() {
         final Film film = filmDbStorage.createFilm(Film.builder()
                 .name("testName")
                 .releaseDate(Date.valueOf("1979-04-17").toLocalDate())

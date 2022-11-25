@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.DbTests;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +31,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 @AutoConfigureTestDatabase()
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class FilmDbTest {
-    private final JdbcTemplate jdbcTemplate;
-    private final FilmDbStorage filmDbStorage;
-    private final UserDbStorage userDbStorage;
-    private final LikeDbStorage likeDbStorage;
+    JdbcTemplate jdbcTemplate;
+    FilmDbStorage filmDbStorage;
+    UserDbStorage userDbStorage;
+    LikeDbStorage likeDbStorage;
 
     private Film getFilm() {
         return Film.builder().name("testName").releaseDate(Date.valueOf("1979-04-17").toLocalDate()).description("testDescription").duration(100).rate(4).mpa(Mpa.builder().id(1L).name("G").build()).genres(new LinkedHashSet<>()).directors(new LinkedHashSet<>()).build();
@@ -140,22 +143,13 @@ public class FilmDbTest {
     }
 
     @Test
-    void deleteLikesAfterDeletingFilm() {
+    void testDeleteLikesAfterDeletingFilm() {
         filmDbStorage.createFilm(getFilm());
         userDbStorage.createUser(getUser());
         likeDbStorage.addLike(1L, 1L);
         assertEquals(1, likeDbStorage.getLikes(1L, 1L).size());
         filmDbStorage.deleteFilmById(1L);
         assertEquals(0, likeDbStorage.getLikes(1L, 1L).size());
-    }
-
-    @Test
-    void testFindOnePopularFilm() {
-        userDbStorage.createUser(getUser());
-        filmDbStorage.createFilm(getFilm());
-        Film film = filmDbStorage.createFilm(getFilm());
-        likeDbStorage.addLike(1L, 2L);
-        assertEquals(List.of(film), filmDbStorage.getTopFilms(1, Optional.empty(), Optional.empty()));
     }
 
     @Test

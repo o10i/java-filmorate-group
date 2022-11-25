@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.DbTests;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserDbTest {
-    private final JdbcTemplate jdbcTemplate;
-    private final UserDbStorage userDbStorage;
+    JdbcTemplate jdbcTemplate;
+    UserDbStorage userDbStorage;
 
     private User getUser() {
         return User.builder().email("test@mail.ru").login("testLogin").name("testName").birthday(Date.valueOf("1946-08-20").toLocalDate()).build();

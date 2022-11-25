@@ -30,6 +30,23 @@ public class FilmDbStorage implements FilmStorage {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public static Film mapRowToFilm(ResultSet resultSet) throws SQLException {
+        return Film.builder()
+                .id(resultSet.getLong("id"))
+                .name((resultSet.getString("name")))
+                .releaseDate((resultSet.getDate("release_date")).toLocalDate())
+                .description(resultSet.getString("description"))
+                .duration(resultSet.getInt("duration"))
+                .rate(resultSet.getInt("rate"))
+                .mpa(Mpa.builder()
+                        .id(resultSet.getLong("mpa.id"))
+                        .name(resultSet.getString("mpa.name"))
+                        .build())
+                .genres(new LinkedHashSet<>())
+                .directors(new LinkedHashSet<>())
+                .build();
+    }
+
     @Override
     public List<Film> findAllFilms() {
         String sqlQuery = "SELECT * FROM MOVIE AS m " + "INNER JOIN MPA ON MPA.id = m.mpa_id";
@@ -88,11 +105,11 @@ public class FilmDbStorage implements FilmStorage {
     public List<Film> getTopFilms(Integer count, Optional<Integer> genreId, Optional<Integer> year) {
         String sqlQuery;
         if (count == -1 && genreId.isEmpty() && year.isEmpty()) { // для возврата всех фильмов отсортированных по лайкам
-            sqlQuery = "SELECT * " +
-                    "FROM MOVIE AS m " +
-                    "INNER JOIN MPA ON MPA.id = m.mpa_id " +
-                    "LEFT JOIN likes AS l ON l.film_id = m.id " +
-                    "GROUP BY m.id, L.USER_ID " +
+            sqlQuery = "SELECT m.*, MPA.* " +
+                    "FROM likes AS l " +
+                    "INNER JOIN MOVIE AS m ON m.ID = l.FILM_ID " +
+                    "INNER JOIN MPA ON MPA.ID = m.MPA_ID " +
+                    "GROUP BY m.id " +
                     "ORDER BY COUNT(l.user_id) DESC";
             return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs));
         } else if (genreId.isEmpty() && year.isEmpty()) {
@@ -191,22 +208,5 @@ public class FilmDbStorage implements FilmStorage {
     public void deleteFilmById(Long filmId) {
         String sqlQuery = "DELETE FROM movie WHERE id = ?";
         jdbcTemplate.update(sqlQuery, filmId);
-    }
-
-    public static Film mapRowToFilm(ResultSet resultSet) throws SQLException {
-        return Film.builder()
-                .id(resultSet.getLong("id"))
-                .name((resultSet.getString("name")))
-                .releaseDate((resultSet.getDate("release_date")).toLocalDate())
-                .description(resultSet.getString("description"))
-                .duration(resultSet.getInt("duration"))
-                .rate(resultSet.getInt("rate"))
-                .mpa(Mpa.builder()
-                        .id(resultSet.getLong("mpa.id"))
-                        .name(resultSet.getString("mpa.name"))
-                        .build())
-                .genres(new LinkedHashSet<>())
-                .directors(new LinkedHashSet<>())
-                .build();
     }
 }

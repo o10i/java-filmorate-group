@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.DbTests;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -29,12 +31,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @AutoConfigureTestDatabase()
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ReviewDbTest {
-    private final JdbcTemplate jdbcTemplate;
-    private final ReviewDbStorage reviewStorage;
-    private final ReviewLikeStorage likeStorage;
-    private final FilmService filmService;
-    private final UserService userService;
+    JdbcTemplate jdbcTemplate;
+    ReviewDbStorage reviewStorage;
+    ReviewLikeStorage likeStorage;
+    FilmService filmService;
+    UserService userService;
 
     @BeforeAll
     public void beforeAll() {
