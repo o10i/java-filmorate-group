@@ -26,8 +26,8 @@ public class ReviewService {
         filmService.findFilmById(review.getFilmId());
         userService.findUserById(review.getUserId());
         Review reviewToEvent = reviewStorage.createReview(review);
-        feedService.saveEvent(Event.createEvent(reviewToEvent.getUserId(), EventType.REVIEW, Operation.ADD
-                , reviewToEvent.getReviewId()));
+        feedService.saveEvent(Event.createEvent(reviewToEvent.getUserId(), EventType.REVIEW, Operation.ADD,
+                reviewToEvent.getReviewId()));
         return reviewToEvent;
     }
 
@@ -35,16 +35,16 @@ public class ReviewService {
         filmService.findFilmById(review.getFilmId());
         userService.findUserById(review.getUserId());
         Review reviewToEvent = findReviewById(review.getReviewId());
-        feedService.saveEvent(Event.createEvent(reviewToEvent.getUserId(), EventType.REVIEW, Operation.UPDATE
-                , reviewToEvent.getReviewId()));
+        feedService.saveEvent(Event.createEvent(reviewToEvent.getUserId(), EventType.REVIEW, Operation.UPDATE,
+                reviewToEvent.getReviewId()));
         return reviewStorage.updateReview(review);
     }
 
     public void deleteReview(Long reviewId) {
         Review reviewToEvent = findReviewById(reviewId);
         reviewStorage.deleteReview(reviewId);
-        feedService.saveEvent(Event.createEvent(reviewToEvent.getUserId(), EventType.REVIEW, Operation.REMOVE
-                , reviewId));
+        feedService.saveEvent(Event.createEvent(reviewToEvent.getUserId(), EventType.REVIEW, Operation.REMOVE,
+                reviewId));
     }
 
     public Review findReviewById(Long reviewId) {

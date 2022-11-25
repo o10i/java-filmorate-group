@@ -56,6 +56,7 @@ public class FilmDbTest {
         jdbcTemplate.update("ALTER TABLE MOVIE ALTER COLUMN ID RESTART WITH 1");
 
     }
+
     @Test
     void testSaveFilm() {
         Film film = getFilm();
@@ -105,13 +106,6 @@ public class FilmDbTest {
         film.setName("testUpdateName");
         assertEquals(film, filmDbStorage.update(film));
     }
-
-    /*@Test
-    void testUpdateUnknownFilm() {
-        Film film = getFilm();
-        film.setId(9999L);
-        assertThrows(FilmNotFoundException.class, () -> filmDbStorage.update(film), "Фильм с id " + film.getId() + " не найден.");
-    }*/
 
     @Test
     void testFindAllFilms() {
