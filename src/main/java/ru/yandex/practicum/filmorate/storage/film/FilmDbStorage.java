@@ -33,7 +33,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public List<Film> findAllFilms() {
         String sqlQuery = "SELECT * FROM MOVIE AS m " + "INNER JOIN MPA ON MPA.id = m.mpa_id";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm);
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs));
     }
 
     @Override
@@ -77,7 +77,7 @@ public class FilmDbStorage implements FilmStorage {
                 "INNER JOIN MPA ON m.mpa_id = MPA.id " +
                 "WHERE m.id = ?";
 
-        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, filmId)
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), filmId)
                 .stream()
                 .findFirst()
                 .orElseThrow(() -> new FilmNotFoundException(String.format("Film with %d id not found", filmId)));
@@ -94,7 +94,7 @@ public class FilmDbStorage implements FilmStorage {
                     "LEFT JOIN likes AS l ON l.film_id = m.id " +
                     "GROUP BY m.id " +
                     "ORDER BY COUNT(l.user_id) DESC";
-            return jdbcTemplate.query(sqlQuery, this::mapRowToFilm);
+            return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs));
         } else if (genreId.isEmpty() && year.isEmpty()) {
             sqlQuery = "SELECT * " +
                     "FROM MOVIE M " +
@@ -103,7 +103,7 @@ public class FilmDbStorage implements FilmStorage {
                     "GROUP BY M.ID, L.USER_ID " +
                     "ORDER BY COUNT(L.USER_ID) DESC " +
                     "LIMIT ?";
-            return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, count);
+            return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), count);
         } else if (genreId.isPresent() && year.isEmpty()) {
             sqlQuery = "SELECT * " +
                     "FROM MOVIE M " +
@@ -114,7 +114,7 @@ public class FilmDbStorage implements FilmStorage {
                     "GROUP BY M.ID " +
                     "ORDER BY COUNT(L.USER_ID) DESC " +
                     "LIMIT ?";
-            return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, genreId.get(), count);
+            return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), genreId.get(), count);
         } else if (genreId.isEmpty()) {
             sqlQuery = "SELECT * " +
                     "FROM MOVIE M " +
@@ -124,7 +124,7 @@ public class FilmDbStorage implements FilmStorage {
                     "GROUP BY M.ID " +
                     "ORDER BY COUNT(L.USER_ID) DESC " +
                     "LIMIT ?";
-            return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, year.get(), count);
+            return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), year.get(), count);
         }
         sqlQuery = "SELECT * " +
                 "FROM MOVIE M " +
@@ -135,7 +135,7 @@ public class FilmDbStorage implements FilmStorage {
                 "GROUP BY M.ID " +
                 "ORDER BY COUNT(L.USER_ID) DESC " +
                 "LIMIT ?";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, genreId.get(), year.get(), count);
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), genreId.get(), year.get(), count);
     }
 
     @Override
@@ -157,7 +157,7 @@ public class FilmDbStorage implements FilmStorage {
                 "AND m.id = l1.film_id AND m.id = l2.film_id " +
                 "GROUP BY m.id " +
                 "ORDER BY COUNT(l1.user_id) DESC";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, userId, friendId);
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), userId, friendId);
     }
 
     public List<Film> getSortedDirectorFilms(Long directorId, String sortBy) {
@@ -184,16 +184,16 @@ public class FilmDbStorage implements FilmStorage {
                     "ORDER BY COUNT(L.USER_ID) " +
                     "DESC";
         }
-        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, directorId);
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), directorId);
     }
 
     @Override
     public void deleteFilmById(Long filmId) {
         String sqlQuery = "DELETE FROM movie WHERE id = ?";
-        jdbcTemplate.update(sqlQuery,filmId);
+        jdbcTemplate.update(sqlQuery, filmId);
     }
 
-    private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
+    public static Film mapRowToFilm(ResultSet resultSet) throws SQLException {
         return Film.builder()
                 .id(resultSet.getLong("id"))
                 .name((resultSet.getString("name")))

@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -12,12 +13,10 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Repository("userStorage")
+@RequiredArgsConstructor
 public class UserDbStorage implements UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
-    public UserDbStorage(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     @Override
     public List<User> findAllUsers() {
@@ -43,7 +42,6 @@ public class UserDbStorage implements UserStorage {
         user.setId(simpleJdbcInsert.executeAndReturnKey(user.toMap()).longValue());
         return user;
     }
-
 
     @Override
     public User updateUser(User user) {
