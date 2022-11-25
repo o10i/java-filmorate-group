@@ -51,7 +51,7 @@ public class FeedDBTest {
 
     @Test
     void testSaveEvent(){
-        final User user = userDbStorage.create(makeUser());
+        final User user = userDbStorage.createUser(makeUser());
         final Event eventCreate = Event.createEvent(user.getId(), EventType.LIKE, Operation.ADD, 3L);
         final Event eventSave = feedDbStorage.saveEvent(eventCreate);
         final Map<Long, Event> eventWithId = Stream.of(eventSave).collect(Collectors.toMap(Event::getEventId, identity()));
@@ -62,7 +62,7 @@ public class FeedDBTest {
 
     @Test
     void testFindEventsByUserId(){
-        final User user = userDbStorage.create(makeUser());
+        final User user = userDbStorage.createUser(makeUser());
 
         assertTrue(feedDbStorage.findEventsByUserId(user.getId()).isEmpty(), "List Event don't empty.");
 

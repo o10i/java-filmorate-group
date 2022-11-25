@@ -92,7 +92,7 @@ public class FilmDbStorage implements FilmStorage {
                     "FROM MOVIE AS m " +
                     "INNER JOIN MPA ON MPA.id = m.mpa_id " +
                     "LEFT JOIN likes AS l ON l.film_id = m.id " +
-                    "GROUP BY m.id " +
+                    "GROUP BY m.id, L.USER_ID " +
                     "ORDER BY COUNT(l.user_id) DESC";
             return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs));
         } else if (genreId.isEmpty() && year.isEmpty()) {
@@ -111,7 +111,7 @@ public class FilmDbStorage implements FilmStorage {
                     "LEFT JOIN LIKES L ON M.ID = L.FILM_ID " +
                     "LEFT JOIN FILM_GENRE FG ON M.ID = FG.FILM_ID " +
                     "WHERE FG.GENRE_ID = ? " +
-                    "GROUP BY M.ID " +
+                    "GROUP BY M.ID, L.USER_ID " +
                     "ORDER BY COUNT(L.USER_ID) DESC " +
                     "LIMIT ?";
             return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), genreId.get(), count);
@@ -121,7 +121,7 @@ public class FilmDbStorage implements FilmStorage {
                     "INNER JOIN MPA ON M.MPA_ID = MPA.ID " +
                     "LEFT JOIN LIKES L ON M.ID = L.FILM_ID " +
                     "WHERE YEAR(M.RELEASE_DATE) = ? " +
-                    "GROUP BY M.ID " +
+                    "GROUP BY M.ID, L.USER_ID " +
                     "ORDER BY COUNT(L.USER_ID) DESC " +
                     "LIMIT ?";
             return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), year.get(), count);
@@ -132,7 +132,7 @@ public class FilmDbStorage implements FilmStorage {
                 "LEFT JOIN LIKES L ON M.ID = L.FILM_ID " +
                 "LEFT JOIN FILM_GENRE FG ON M.ID = FG.FILM_ID " +
                 "WHERE FG.GENRE_ID = ? AND YEAR(M.RELEASE_DATE) = ? " +
-                "GROUP BY M.ID " +
+                "GROUP BY M.ID, L.USER_ID " +
                 "ORDER BY COUNT(L.USER_ID) DESC " +
                 "LIMIT ?";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), genreId.get(), year.get(), count);
