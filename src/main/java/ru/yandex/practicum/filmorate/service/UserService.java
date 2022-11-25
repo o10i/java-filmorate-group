@@ -15,19 +15,19 @@ public class UserService {
 
     private final UserStorage userStorage;
 
-    public List<User> findAll(){
-        return userStorage.findAll();
+    public List<User> findAllUsers(){
+        return userStorage.findAllUsers();
     }
 
-    public User create(User user) {
+    public User createUser(User user) {
         validator(user);
-        return userStorage.create(user);
+        return userStorage.createUser(user);
     }
 
-    public User update(User user) {
+    public User updateUser(User user) {
         validator(user);
         findUserById(user.getId());
-        return userStorage.update(user);
+        return userStorage.updateUser(user);
     }
 
     public User findUserById(Long userId) {

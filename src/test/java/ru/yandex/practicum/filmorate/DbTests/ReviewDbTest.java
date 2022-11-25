@@ -38,13 +38,13 @@ public class ReviewDbTest {
 
     @BeforeAll
     public void beforeAll() {
-        userService.create(User.builder()
+        userService.createUser(User.builder()
                 .email("1@ya.ru")
                 .login("bot")
                 .name("Vova")
                 .birthday(LocalDate.of(2022, 1, 1))
                 .build());
-        filmService.create(Film.builder()
+        filmService.createFilm(Film.builder()
                 .name("Iron Man")
                 .description("Some superhero's shit")
                 .releaseDate(LocalDate.of(2012, 8, 12))

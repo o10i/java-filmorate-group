@@ -5,11 +5,11 @@ import java.util.List;
 
 public interface UserStorage {
 
-    List<User> findAll();
+    List<User> findAllUsers();
 
-    User create(User user);
+    User createUser(User user);
 
-    User update(User user);
+    User updateUser(User user);
 
     User findUserById(Long userId);
 }

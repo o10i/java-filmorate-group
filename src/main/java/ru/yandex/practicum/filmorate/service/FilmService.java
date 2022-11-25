@@ -2,13 +2,16 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.SortType;
+import ru.yandex.practicum.filmorate.model.search.SearchType;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
+import javax.validation.ValidationException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -18,18 +21,18 @@ public class FilmService {
     private final GenreService genreService;
     private final DirectorService directorService;
 
-    public List<Film> findAll() {
-        List<Film> films = filmStorage.findAll();
+    public List<Film> findAllFilms() {
+        List<Film> films = filmStorage.findAllFilms();
         genreService.loadGenres(films);
         directorService.loadDirectors(films);
         return films;
     }
 
-    public Film create(Film film) {
+    public Film createFilm(Film film) {
         validator(film);
-        Film filmWithId = filmStorage.create(film);
+        Film filmWithId = filmStorage.createFilm(film);
         if (film.getGenres() != null) {
-            genreService.addFilmsGenre(filmWithId.getId(), film.getGenres());
+            genreService.addGenresToFilm(filmWithId.getId(), film.getGenres());
         }
         if (film.getDirectors() != null) {
             directorService.addFilmsDirector(filmWithId.getId(), film.getDirectors());
@@ -37,14 +40,14 @@ public class FilmService {
         return filmWithId;
     }
 
-    public Film update(Film film) {
+    public Film updateFilm(Film film) {
         validator(film);
         filmStorage.findFilmById(film.getId());
         if (film.getGenres() != null) {
-            genreService.deleteFilmsGenre(film.getId());
-            genreService.addFilmsGenre(film.getId(), film.getGenres());
+            genreService.deleteFilmGenres(film.getId());
+            genreService.addGenresToFilm(film.getId(), film.getGenres());
         } else {
-            genreService.deleteFilmsGenre(film.getId());
+            genreService.deleteFilmGenres(film.getId());
         }
         if (film.getDirectors() != null) {
             directorService.deleteFilmsDirector(film.getId());
@@ -52,7 +55,7 @@ public class FilmService {
         } else {
             directorService.deleteFilmsDirector(film.getId());
         }
-        return filmStorage.update(film);
+        return filmStorage.updateFilm(film);
     }
 
     public Film findFilmById(Long filmId) {
@@ -62,15 +65,15 @@ public class FilmService {
         return film;
     }
 
-    public List<Film> getTopFilms(Integer count) {
-        List<Film> films = filmStorage.getTopFilms(count);
+    public List<Film> getTopFilms(Integer count, Optional<Integer> genreId, Optional<Integer> year) {
+        List<Film> films = filmStorage.getTopFilms(count, genreId, year);
         genreService.loadGenres(films);
         directorService.loadDirectors(films);
         return films;
     }
 
-    public List<Film> getCommonFilms (Long userId, Long friendId) {
-        List<Film> films = filmStorage.getCommonFilms(userId,friendId);
+    public List<Film> getCommonFilms(Long userId, Long friendId) {
+        List<Film> films = filmStorage.getCommonFilms(userId, friendId);
         genreService.loadGenres(films);
         return films;
     }
@@ -82,22 +85,33 @@ public class FilmService {
     }
 
     public List<Film> getSortedDirectorFilms(Long directorId, String sortBy) {
-        SortType sortType;
         try {
-            sortType = SortType.valueOf(sortBy.toUpperCase());
+            SortType.valueOf(sortBy.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Некорректный тип сортировки");
         }
         directorService.findDirectorById(directorId);
-        List<Film> films;
-        if (sortType == SortType.YEAR) {
-            films = filmStorage.getDirectorFilmsSortedByYear(directorId);
-        } else {
-            films = filmStorage.getDirectorFilmsSortedByLikes(directorId);
-        }
+        List<Film> films = filmStorage.getSortedDirectorFilms(directorId, sortBy);
         genreService.loadGenres(films);
         directorService.loadDirectors(films);
         return films;
+    }
+
+    public List<Film> getTopSortedSearchedFilms(String query, String by) {
+        List<Film> films = filmStorage.getTopFilms(-1, Optional.empty(), Optional.empty());
+        genreService.loadGenres(films);
+        directorService.loadDirectors(films);
+        by = by.toUpperCase();
+        boolean searchByFilmName = by.contains(SearchType.TITLE.name());
+        boolean searchByDirectorName = by.contains(SearchType.DIRECTOR.name());
+        if (searchByFilmName || searchByDirectorName) {
+            return films.stream()
+                    .filter(film -> (searchByDirectorName && film.getDirectors().stream()
+                            .anyMatch(director -> director.getName().toLowerCase().contains(query.toLowerCase())))
+                            || (searchByFilmName && film.getName().toLowerCase().contains(query.toLowerCase())))
+                    .collect(Collectors.toList());
+        }
+        throw new IllegalArgumentException("Некорректный тип поиска");
     }
 }
 
