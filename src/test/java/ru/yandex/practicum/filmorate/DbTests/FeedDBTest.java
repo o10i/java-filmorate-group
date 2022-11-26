@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.DbTests;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -44,7 +44,7 @@ public class FeedDBTest {
                 .build();
     }
 
-    @AfterEach
+    @BeforeEach
     void tearDown() {
         jdbcTemplate.update("DELETE FROM FEED");
         jdbcTemplate.update("ALTER TABLE FEED ALTER COLUMN EVENT_ID RESTART WITH 1");
