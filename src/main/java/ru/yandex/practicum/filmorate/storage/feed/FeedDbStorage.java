@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.storage.feed;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -17,13 +19,14 @@ import java.util.Objects;
 
 @Repository
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class FeedDbStorage implements FeedStorage {
-    private final JdbcTemplate jdbcTemplate;
+    JdbcTemplate jdbcTemplate;
 
     @Override
     public List<Event> findEventsByUserId(Long userId) {
         String sqlQuery = "SELECT * FROM FEED WHERE USER_ID = ?";
-        return jdbcTemplate.query(sqlQuery, this::makeRowToEvent , userId);
+        return jdbcTemplate.query(sqlQuery, this::makeRowToEvent, userId);
     }
 
     @Override

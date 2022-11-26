@@ -1,11 +1,12 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.EmptyResultDataAccessException;
+import lombok.experimental.FieldDefaults;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.user.User;
 
 import java.sql.ResultSet;
@@ -14,9 +15,10 @@ import java.util.List;
 
 @Repository("userStorage")
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserDbStorage implements UserStorage {
 
-    private final JdbcTemplate jdbcTemplate;
+    JdbcTemplate jdbcTemplate;
 
     @Override
     public List<User> findAllUsers() {
@@ -28,10 +30,10 @@ public class UserDbStorage implements UserStorage {
     public User findUserById(Long userId) {
         String sqlQuery = "SELECT * FROM USERS WHERE id = ?";
 
-        return jdbcTemplate.query(sqlQuery,(rs, rowNum) -> mapRowToUser(rs), userId)
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToUser(rs), userId)
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new UserNotFoundException(String.format("User with %d id not found", userId)));
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("User with %d id not found", userId)));
     }
 
     @Override

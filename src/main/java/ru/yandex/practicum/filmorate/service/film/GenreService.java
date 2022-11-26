@@ -1,7 +1,9 @@
-package ru.yandex.practicum.filmorate.service;
+package ru.yandex.practicum.filmorate.service.film;
 
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Genre;
@@ -12,9 +14,10 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class GenreService {
 
-    private final GenreStorage genreStorage;
+    GenreStorage genreStorage;
 
     public List<Genre> findAllGenres() {
         return genreStorage.findAllGenres();
@@ -28,7 +31,7 @@ public class GenreService {
         genreStorage.addGenresToFilm(filmId, genres);
     }
 
-    public void deleteFilmGenres(Long filmId){
+    public void deleteFilmGenres(Long filmId) {
         genreStorage.deleteFilmGenres(filmId);
     }
 

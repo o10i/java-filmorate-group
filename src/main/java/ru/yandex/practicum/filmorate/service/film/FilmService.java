@@ -1,6 +1,8 @@
-package ru.yandex.practicum.filmorate.service;
+package ru.yandex.practicum.filmorate.service.film;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.film.Film;
@@ -15,11 +17,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class FilmService {
-    private static final LocalDate FILM_BIRTH = LocalDate.of(1895, 12, 28);
-    private final FilmStorage filmStorage;
-    private final GenreService genreService;
-    private final DirectorService directorService;
+    static LocalDate FILM_BIRTH = LocalDate.of(1895, 12, 28);
+    FilmStorage filmStorage;
+    GenreService genreService;
+    DirectorService directorService;
 
     public List<Film> findAllFilms() {
         List<Film> films = filmStorage.findAllFilms();

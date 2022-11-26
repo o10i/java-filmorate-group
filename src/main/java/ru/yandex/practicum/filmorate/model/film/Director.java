@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Builder
 @Data
-@FieldDefaults(level= AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Director {
     @NotNull
     Long id;

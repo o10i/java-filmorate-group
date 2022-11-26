@@ -1,12 +1,14 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Mpa;
 import ru.yandex.practicum.filmorate.model.film.SortType;
@@ -22,30 +24,12 @@ import java.util.Optional;
 
 
 @Repository("filmStorage")
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class FilmDbStorage implements FilmStorage {
 
-    private final JdbcTemplate jdbcTemplate;
+    JdbcTemplate jdbcTemplate;
 
-    public FilmDbStorage(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
-    public static Film mapRowToFilm(ResultSet resultSet) throws SQLException {
-        return Film.builder()
-                .id(resultSet.getLong("id"))
-                .name((resultSet.getString("name")))
-                .releaseDate((resultSet.getDate("release_date")).toLocalDate())
-                .description(resultSet.getString("description"))
-                .duration(resultSet.getInt("duration"))
-                .rate(resultSet.getInt("rate"))
-                .mpa(Mpa.builder()
-                        .id(resultSet.getLong("mpa.id"))
-                        .name(resultSet.getString("mpa.name"))
-                        .build())
-                .genres(new LinkedHashSet<>())
-                .directors(new LinkedHashSet<>())
-                .build();
-    }
 
     @Override
     public List<Film> findAllFilms() {
@@ -97,7 +81,7 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), filmId)
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new FilmNotFoundException(String.format("Film with %d id not found", filmId)));
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Film with %d id not found", filmId)));
 
     }
 
@@ -161,12 +145,12 @@ public class FilmDbStorage implements FilmStorage {
         try {
             jdbcTemplate.queryForObject(check, String.class, userId);
         } catch (EmptyResultDataAccessException e) {
-            throw new UserNotFoundException(String.format("User with id %d not found", userId));
+            throw new ObjectNotFoundException(String.format("User with id %d not found", userId));
         }
         try {
             jdbcTemplate.queryForObject(check, String.class, friendId);
         } catch (EmptyResultDataAccessException e) {
-            throw new UserNotFoundException(String.format("User with id %d not found", friendId));
+            throw new ObjectNotFoundException(String.format("User with id %d not found", friendId));
         }
         String sqlQuery = "SELECT m.*,mpa.id,mpa.name FROM movie m, likes l1, likes l2 " +
                 "INNER JOIN MPA ON (MPA.id = m.mpa_id)" +
@@ -177,6 +161,7 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), userId, friendId);
     }
 
+    @Override
     public List<Film> getSortedDirectorFilms(Long directorId, String sortBy) {
         String sqlQuery;
         if (sortBy.toUpperCase().equals(SortType.YEAR.name())) {
@@ -208,5 +193,22 @@ public class FilmDbStorage implements FilmStorage {
     public void deleteFilmById(Long filmId) {
         String sqlQuery = "DELETE FROM movie WHERE id = ?";
         jdbcTemplate.update(sqlQuery, filmId);
+    }
+
+    public static Film mapRowToFilm(ResultSet resultSet) throws SQLException {
+        return Film.builder()
+                .id(resultSet.getLong("id"))
+                .name((resultSet.getString("name")))
+                .releaseDate((resultSet.getDate("release_date")).toLocalDate())
+                .description(resultSet.getString("description"))
+                .duration(resultSet.getInt("duration"))
+                .rate(resultSet.getInt("rate"))
+                .mpa(Mpa.builder()
+                        .id(resultSet.getLong("mpa.id"))
+                        .name(resultSet.getString("mpa.name"))
+                        .build())
+                .genres(new LinkedHashSet<>())
+                .directors(new LinkedHashSet<>())
+                .build();
     }
 }

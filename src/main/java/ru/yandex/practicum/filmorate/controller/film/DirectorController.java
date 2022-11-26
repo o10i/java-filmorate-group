@@ -1,9 +1,11 @@
 package ru.yandex.practicum.filmorate.controller.film;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.film.Director;
-import ru.yandex.practicum.filmorate.service.DirectorService;
+import ru.yandex.practicum.filmorate.service.film.DirectorService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -11,8 +13,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/directors")
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class DirectorController {
-    private final DirectorService directorService;
+    DirectorService directorService;
 
     @GetMapping
     public List<Director> findAllDirectors() {

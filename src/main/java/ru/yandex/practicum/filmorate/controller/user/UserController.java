@@ -1,9 +1,11 @@
 package ru.yandex.practicum.filmorate.controller.user;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.user.User;
-import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.service.user.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -12,9 +14,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserController {
 
-    private final UserService userService;
+    UserService userService;
 
     @GetMapping
     public List<User> findAllUsers() {
@@ -22,7 +25,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@Valid @RequestBody User user)  {
+    public User createUser(@Valid @RequestBody User user) {
         return userService.createUser(user);
     }
 
@@ -35,6 +38,7 @@ public class UserController {
     public User getUserById(@PathVariable("id") Long id) {
         return userService.findUserById(id);
     }
+
     @DeleteMapping("{userId}")
     public void deleteUserById(@PathVariable("userId") Long id) {
         userService.deleteUserById(id);

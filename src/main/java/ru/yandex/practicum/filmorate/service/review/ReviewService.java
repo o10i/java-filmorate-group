@@ -1,11 +1,16 @@
-package ru.yandex.practicum.filmorate.service;
+package ru.yandex.practicum.filmorate.service.review;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.event.Event;
 import ru.yandex.practicum.filmorate.model.event.enums.EventType;
 import ru.yandex.practicum.filmorate.model.event.enums.Operation;
 import ru.yandex.practicum.filmorate.model.review.Review;
+import ru.yandex.practicum.filmorate.service.feed.FeedService;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
+import ru.yandex.practicum.filmorate.service.user.UserService;
 import ru.yandex.practicum.filmorate.storage.review.ReviewLikeStorage;
 import ru.yandex.practicum.filmorate.storage.review.ReviewStorage;
 
@@ -15,12 +20,13 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ReviewService {
-    private final ReviewStorage reviewStorage;
-    private final ReviewLikeStorage likeStorage;
-    private final UserService userService;
-    private final FilmService filmService;
-    private final FeedService feedService;
+    ReviewStorage reviewStorage;
+    ReviewLikeStorage likeStorage;
+    UserService userService;
+    FilmService filmService;
+    FeedService feedService;
 
     public Review createReview(Review review) {
         filmService.findFilmById(review.getFilmId());

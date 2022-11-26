@@ -1,20 +1,25 @@
-package ru.yandex.practicum.filmorate.service;
+package ru.yandex.practicum.filmorate.service.film;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.event.Event;
 import ru.yandex.practicum.filmorate.model.event.enums.EventType;
 import ru.yandex.practicum.filmorate.model.event.enums.Operation;
+import ru.yandex.practicum.filmorate.service.feed.FeedService;
+import ru.yandex.practicum.filmorate.service.user.UserService;
 import ru.yandex.practicum.filmorate.storage.like.LikeStorage;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class LikeService {
-    private final LikeStorage likeStorage;
-    private final UserService userService;
-    private final FilmService filmService;
-    private final FeedService feedService;
+    LikeStorage likeStorage;
+    UserService userService;
+    FilmService filmService;
+    FeedService feedService;
 
 
     public void addLike(Long userId, Long filmId) {
@@ -28,7 +33,7 @@ public class LikeService {
         filmService.findFilmById(filmId);
         userService.findUserById(userId);
         if (likeStorage.getLikes(userId, filmId) == null) {
-            throw new DataNotFoundException("Like not found");
+            throw new ObjectNotFoundException("Like not found");
         }
         likeStorage.deleteLike(userId, filmId);
         feedService.saveEvent(Event.createEvent(userId, EventType.LIKE, Operation.REMOVE, filmId));

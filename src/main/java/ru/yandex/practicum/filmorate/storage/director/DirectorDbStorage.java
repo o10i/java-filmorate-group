@@ -1,11 +1,13 @@
 package ru.yandex.practicum.filmorate.storage.director;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.film.Director;
 import ru.yandex.practicum.filmorate.model.film.Film;
 
@@ -19,9 +21,10 @@ import static java.util.function.UnaryOperator.identity;
 
 @Repository
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class DirectorDbStorage implements DirectorStorage {
 
-    private final JdbcTemplate jdbcTemplate;
+    JdbcTemplate jdbcTemplate;
 
     @Override
     public List<Director> findAllDirectors() {
@@ -35,7 +38,7 @@ public class DirectorDbStorage implements DirectorStorage {
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToDirector(rs), id)
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new DataNotFoundException(String.format("Director with %d id not found", id)));
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Director with %d id not found", id)));
     }
 
     @Override
@@ -51,7 +54,7 @@ public class DirectorDbStorage implements DirectorStorage {
     public Director updateDirector(Director director) {
         String sqlQuery = "UPDATE DIRECTORS SET NAME = ? WHERE ID = ?";
         if (jdbcTemplate.update(sqlQuery, director.getName(), director.getId()) == 0) {
-            throw new DataNotFoundException(String.format("Director with %d id not found", director.getId()));
+            throw new ObjectNotFoundException(String.format("Director with %d id not found", director.getId()));
         }
         return director;
     }

@@ -1,10 +1,12 @@
 package ru.yandex.practicum.filmorate.controller.film;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.film.Film;
-import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -16,9 +18,10 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/films")
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class FilmController {
 
-    private final FilmService filmService;
+    FilmService filmService;
 
     @GetMapping
     public List<Film> findAllFilms() {
@@ -41,9 +44,9 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> getTopFilms (@RequestParam(defaultValue = "10") @Positive Integer count,
-                                   @RequestParam Optional<Integer> genreId,
-                                   @RequestParam Optional<Integer> year) {
+    public List<Film> getTopFilms(@RequestParam(defaultValue = "10") @Positive Integer count,
+                                  @RequestParam Optional<Integer> genreId,
+                                  @RequestParam Optional<Integer> year) {
         return filmService.getTopFilms(count, genreId, year);
     }
 

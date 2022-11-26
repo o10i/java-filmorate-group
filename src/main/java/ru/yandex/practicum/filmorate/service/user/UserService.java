@@ -1,6 +1,8 @@
-package ru.yandex.practicum.filmorate.service;
+package ru.yandex.practicum.filmorate.service.user;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.user.User;
@@ -11,10 +13,11 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserService {
-    private final UserStorage userStorage;
+    UserStorage userStorage;
 
-    public List<User> findAllUsers(){
+    public List<User> findAllUsers() {
         return userStorage.findAllUsers();
     }
 
@@ -38,7 +41,7 @@ public class UserService {
         userStorage.deleteUserById(userId);
     }
 
-    private void validator (User user) {
+    private void validator(User user) {
         if (user.getLogin().contains(" ")) {
             throw new ValidationException("Your login must not contains space symbols.");
         }

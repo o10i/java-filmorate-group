@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.film.Mpa;
 import ru.yandex.practicum.filmorate.storage.mpa.MpaDbStorage;
 
@@ -28,7 +28,7 @@ public class MpaDbTest {
 
     @Test
     void testFindUnknownMpa() {
-        assertThrows(DataNotFoundException.class, () -> mpaDbStorage.findMPAById(-1L), "Mpa с id -1 не найден.");
+        assertThrows(ObjectNotFoundException.class, () -> mpaDbStorage.findMPAById(-1L), "Mpa с id -1 не найден.");
     }
 
     @Test

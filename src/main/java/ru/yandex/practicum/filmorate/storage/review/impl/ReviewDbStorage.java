@@ -1,10 +1,12 @@
 package ru.yandex.practicum.filmorate.storage.review.impl;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.review.Review;
 import ru.yandex.practicum.filmorate.storage.review.ReviewStorage;
 import ru.yandex.practicum.filmorate.storage.review.ReviewLikeStorage;
@@ -16,9 +18,10 @@ import java.util.Collection;
 
 @Repository
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ReviewDbStorage implements ReviewStorage {
-    private final JdbcTemplate jdbcTemplate;
-    private final ReviewLikeStorage reviewLikeStorage;
+    JdbcTemplate jdbcTemplate;
+    ReviewLikeStorage reviewLikeStorage;
 
     @Override
     public Review createReview(Review review) {
@@ -47,7 +50,7 @@ public class ReviewDbStorage implements ReviewStorage {
         return jdbcTemplate.query(sqlQuery, this::mapRowToReview, reviewId)
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new DataNotFoundException("Review not found."));
+                .orElseThrow(() -> new ObjectNotFoundException("Review not found."));
     }
 
     @Override

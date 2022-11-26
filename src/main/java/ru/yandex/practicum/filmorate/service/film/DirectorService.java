@@ -1,6 +1,8 @@
-package ru.yandex.practicum.filmorate.service;
+package ru.yandex.practicum.filmorate.service.film;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import ru.yandex.practicum.filmorate.model.film.Director;
@@ -12,8 +14,9 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class DirectorService {
-    private final DirectorStorage directorStorage;
+    DirectorStorage directorStorage;
 
     public List<Director> findAllDirectors() {
         return directorStorage.findAllDirectors();
@@ -36,7 +39,7 @@ public class DirectorService {
         directorStorage.deleteDirectorById(id);
     }
 
-    public void deleteFilmsDirector(Long filmId){
+    public void deleteFilmsDirector(Long filmId) {
         directorStorage.deleteFilmsDirector(filmId);
     }
 

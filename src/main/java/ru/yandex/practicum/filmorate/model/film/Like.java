@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 
 @Builder
 @Data
-@FieldDefaults(level= AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Like {
 
     @NotNull

@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.storage.review.impl;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.review.Review;
@@ -9,8 +11,9 @@ import ru.yandex.practicum.filmorate.storage.review.ReviewLikeStorage;
 
 @Repository
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ReviewLikeDbStorage implements ReviewLikeStorage {
-    private final JdbcTemplate jdbcTemplate;
+    JdbcTemplate jdbcTemplate;
 
     @Override
     public Long getUseful(Long reviewId) {

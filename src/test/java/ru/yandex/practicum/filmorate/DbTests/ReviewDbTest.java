@@ -11,13 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Mpa;
 import ru.yandex.practicum.filmorate.model.review.Review;
 import ru.yandex.practicum.filmorate.model.user.User;
-import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
+import ru.yandex.practicum.filmorate.service.user.UserService;
 import ru.yandex.practicum.filmorate.storage.review.ReviewLikeStorage;
 import ru.yandex.practicum.filmorate.storage.review.impl.ReviewDbStorage;
 
@@ -90,7 +90,7 @@ public class ReviewDbTest {
 
     @Test
     public void testFindReviewByWrongId() {
-        assertThrows(DataNotFoundException.class, () -> reviewStorage.findReviewById(-1L));
+        assertThrows(ObjectNotFoundException.class, () -> reviewStorage.findReviewById(-1L));
     }
 
     @Test
@@ -99,7 +99,7 @@ public class ReviewDbTest {
         reviewStorage.createReview(review);
         reviewStorage.deleteReview(review.getReviewId());
         assertEquals(0, reviewStorage.findAllReviews().size());
-        assertThrows(DataNotFoundException.class, () -> reviewStorage.findReviewById(review.getReviewId()));
+        assertThrows(ObjectNotFoundException.class, () -> reviewStorage.findReviewById(review.getReviewId()));
     }
 
     @Test

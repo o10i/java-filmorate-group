@@ -1,9 +1,12 @@
 package ru.yandex.practicum.filmorate.storage.genre;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
+import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Genre;
 
@@ -15,34 +18,29 @@ import java.util.stream.Collectors;
 
 import static java.util.function.UnaryOperator.identity;
 
-@Component
+@Repository
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class GenreDbStorage implements GenreStorage {
-    private final JdbcTemplate jdbcTemplate;
+    JdbcTemplate jdbcTemplate;
 
-    public GenreDbStorage(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
-    public static Genre mapRowToGenre(ResultSet resultSet) throws SQLException {
-        return Genre.builder()
-                .id(resultSet.getLong("id"))
-                .name(resultSet.getString("name"))
-                .build();
-    }
-
+    @Override
     public List<Genre> findAllGenres() {
         String sqlQuery = "SELECT * FROM GENRE";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToGenre(rs));
     }
 
+    @Override
     public Genre findGenreById(Long genreId) {
         String sqlQuery = "SELECT * FROM GENRE WHERE id = ?";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToGenre(rs), genreId)
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new DataNotFoundException(String.format("Genre with %d id not found", genreId)));
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Genre with %d id not found", genreId)));
     }
 
+    @Override
     public void addGenresToFilm(Long filmId, LinkedHashSet<Genre> genres) {
         List<Genre> genreList = new ArrayList<>(genres);
         jdbcTemplate.batchUpdate(
@@ -60,6 +58,7 @@ public class GenreDbStorage implements GenreStorage {
         );
     }
 
+    @Override
     public void loadGenres(List<Film> films) {
         String inSql = String.join(",", Collections.nCopies(films.size(), "?"));
 
@@ -74,8 +73,16 @@ public class GenreDbStorage implements GenreStorage {
         }, films.stream().map(Film::getId).toArray());
     }
 
+    @Override
     public void deleteFilmGenres(Long filmId) {
         String sqlQuery = "DELETE FROM FILM_GENRE WHERE FILM_ID = ?";
         jdbcTemplate.update(sqlQuery, filmId);
+    }
+
+    public static Genre mapRowToGenre(ResultSet resultSet) throws SQLException {
+        return Genre.builder()
+                .id(resultSet.getLong("id"))
+                .name(resultSet.getString("name"))
+                .build();
     }
 }

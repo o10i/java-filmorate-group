@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.film.Genre;
 import ru.yandex.practicum.filmorate.storage.genre.GenreDbStorage;
 
@@ -28,7 +28,7 @@ public class GenreDbTest {
 
     @Test
     void testFindUnknownGenre() {
-        assertThrows(DataNotFoundException.class, () -> genreDbStorage.findGenreById(-1L), "Genre с id -1 не найден.");
+        assertThrows(ObjectNotFoundException.class, () -> genreDbStorage.findGenreById(-1L), "Genre с id -1 не найден.");
     }
 
     @Test
