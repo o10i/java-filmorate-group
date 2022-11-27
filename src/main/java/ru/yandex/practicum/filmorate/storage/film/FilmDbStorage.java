@@ -210,34 +210,34 @@ public class FilmDbStorage implements FilmStorage {
         String search = "%" + query.toLowerCase() + "%";
         String sqlQuery;
         if (searchByFilmName && searchByDirectorName) {
-            sqlQuery = "SELECT m.*, MPA.* " +
-                    "FROM likes l " +
-                    "LEFT JOIN MOVIE m ON m.ID = l.FILM_ID " +
-                    "LEFT JOIN MPA ON MPA.ID = m.MPA_ID " +
-                    "LEFT JOIN FILM_DIRECTOR FD on m.ID = FD.FILM_ID " +
+            sqlQuery = "SELECT M.*, MPA.* " +
+                    "FROM MOVIE M " +
+                    "LEFT JOIN MPA ON MPA.ID = M.MPA_ID " +
+                    "LEFT JOIN LIKES L ON M.ID = L.FILM_ID " +
+                    "LEFT JOIN FILM_DIRECTOR FD on M.ID = FD.FILM_ID " +
                     "LEFT JOIN DIRECTORS D on D.ID = FD.DIRECTOR_ID " +
                     "WHERE LOWER(D.NAME) LIKE ? OR LOWER(M.NAME) LIKE ? " +
-                    "GROUP BY m.id " +
+                    "GROUP BY M.id " +
                     "ORDER BY COUNT(L.USER_ID) DESC";
             return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), search, search);
         } else if (searchByFilmName) {
-            sqlQuery = "SELECT m.*, MPA.* " +
+            sqlQuery = "SELECT M.*, MPA.* " +
+                    "FROM MOVIE M " +
+                    "LEFT JOIN MPA ON MPA.ID = M.MPA_ID " +
+                    "LEFT JOIN LIKES L ON M.ID = L.FILM_ID " +
+                    "WHERE LOWER(M.NAME) LIKE ? " +
+                    "GROUP BY M.id " +
+                    "ORDER BY COUNT(L.USER_ID) DESC;";
+            return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), search);
+        } else if (searchByDirectorName) {
+            sqlQuery = "SELECT M.*, MPA.* " +
                     "FROM LIKES L " +
                     "LEFT JOIN MOVIE M ON M.ID = L.FILM_ID " +
                     "LEFT JOIN MPA ON MPA.ID = M.MPA_ID " +
-                    "WHERE LOWER(M.NAME) LIKE ? " +
-                    "GROUP BY M.id " +
-                    "ORDER BY COUNT(L.USER_ID) DESC";
-            return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), search);
-        } else if (searchByDirectorName) {
-            sqlQuery = "SELECT m.*, MPA.* " +
-                    "FROM likes l " +
-                    "LEFT JOIN MOVIE m ON m.ID = l.FILM_ID " +
-                    "LEFT JOIN MPA ON MPA.ID = m.MPA_ID " +
-                    "LEFT JOIN FILM_DIRECTOR FD on m.ID = FD.FILM_ID " +
+                    "LEFT JOIN FILM_DIRECTOR FD on M.ID = FD.FILM_ID " +
                     "LEFT JOIN DIRECTORS D on D.ID = FD.DIRECTOR_ID " +
                     "WHERE LOWER(D.NAME) LIKE ? " +
-                    "GROUP BY m.id " +
+                    "GROUP BY M.id " +
                     "ORDER BY COUNT(L.USER_ID) DESC";
             return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), search);
         }
