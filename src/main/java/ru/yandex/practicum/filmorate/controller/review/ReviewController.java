@@ -1,11 +1,11 @@
 package ru.yandex.practicum.filmorate.controller.review;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.review.Review;
+import ru.yandex.practicum.filmorate.model.review.validation.OnCreate;
+import ru.yandex.practicum.filmorate.model.review.validation.OnUpdate;
 import ru.yandex.practicum.filmorate.service.review.ReviewService;
 
 import javax.validation.Valid;
@@ -17,34 +17,35 @@ import java.util.Optional;
 @RequestMapping("/reviews")
 @RequiredArgsConstructor
 @Validated
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ReviewController {
-    ReviewService reviewService;
+    private final ReviewService reviewService;
 
     @PostMapping
+    @Validated(OnCreate.class)
     public Review createReview(@Valid @RequestBody Review review) {
-        return reviewService.createReview(review);
+        return reviewService.create(review);
     }
 
     @PutMapping
+    @Validated(OnUpdate.class)
     public Review updateReview(@Valid @RequestBody Review review) {
-        return reviewService.updateReview(review);
+        return reviewService.update(review);
     }
 
     @DeleteMapping("/{reviewId}")
     public void deleteReview(@Positive @PathVariable("reviewId") Long reviewId) {
-        reviewService.deleteReview(reviewId);
+        reviewService.delete(reviewId);
     }
 
     @GetMapping("/{reviewId}")
     public Review getReview(@Positive @PathVariable("reviewId") Long reviewId) {
-        return reviewService.findReviewById(reviewId);
+        return reviewService.findById(reviewId);
     }
 
     @GetMapping
     public Collection<Review> getAllReviews(@RequestParam(name = "filmId", required = false) Optional<Long> filmId,
                                             @RequestParam(name = "count", required = false) Optional<Integer> count) {
-        return reviewService.findAllReviews(filmId, count);
+        return reviewService.findAll(filmId, count);
     }
 
     @PutMapping("/{reviewId}/like/{userId}")

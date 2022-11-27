@@ -3,10 +3,10 @@ package ru.yandex.practicum.filmorate.storage.review.impl;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.model.review.Review;
-import ru.yandex.practicum.filmorate.model.user.User;
+import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.storage.review.ReviewLikeStorage;
 
 @Repository
@@ -16,48 +16,48 @@ public class ReviewLikeDbStorage implements ReviewLikeStorage {
     JdbcTemplate jdbcTemplate;
 
     @Override
-    public Long getUseful(Long reviewId) {
-        long result = 0;
-        String sqlQuery = "SELECT * FROM review_like WHERE review_id = ?";
-        var rs = jdbcTemplate.queryForRowSet(sqlQuery, reviewId);
-        while (rs.next()) {
-            if (rs.getBoolean("is_positive")) {
-                result++;
-            } else {
-                result--;
-            }
+    public void addLike(Long reviewId, Long userId) {
+//        try {
+            String sqlQuery = "MERGE INTO REVIEW_LIKE (REVIEW_ID, USER_ID, IS_POSITIVE) VALUES (?, ?, ?)";
+            jdbcTemplate.update(sqlQuery, reviewId, userId, 1);
+//        } catch (DataAccessException e) {
+//            throw new ObjectNotFoundException(
+//                    String.format("Review with %d id or User with %d id not found",
+//                            reviewId,
+//                            userId)
+//            );
+//        }
+    }
+
+    @Override
+    public void addDislike(Long reviewId, Long userId) {
+        try {
+            String sqlQuery = "MERGE INTO REVIEW_LIKE (REVIEW_ID, USER_ID, IS_POSITIVE) VALUES (?, ?, ?)";
+            jdbcTemplate.update(sqlQuery, reviewId, userId, -1);
+        } catch (DataAccessException e) {
+            throw new ObjectNotFoundException(
+                    String.format("Review with %d id or User with %d id not found",
+                            reviewId,
+                            userId)
+            );
         }
-        return result;
     }
 
     @Override
-    public void addLike(Review review, User user) {
-        String sqlQuery = "INSERT INTO review_like (review_id, user_id, is_positive) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sqlQuery, review.getReviewId(), user.getId(), true);
+    public void removeLike(Long reviewId, Long userId) {
+        String sqlQuery = "DELETE FROM REVIEW_LIKE WHERE REVIEW_ID = ? AND USER_ID = ? AND IS_POSITIVE = ?";
+        if (jdbcTemplate.update(sqlQuery, reviewId, userId, 1) == 0) {
+            throw new ObjectNotFoundException(
+                    String.format("Review like with %d id not found", reviewId));
+        }
     }
 
     @Override
-    public void addDislike(Review review, User user) {
-        String sqlQuery = "INSERT INTO review_like (review_id, user_id, is_positive) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sqlQuery, review.getReviewId(), user.getId(), false);
-    }
-
-    @Override
-    public void removeLike(Review review, User user) {
-        String sqlQuery = "DELETE FROM review_like WHERE review_id = ? AND user_id = ? AND is_positive = ?";
-        jdbcTemplate.update(sqlQuery, review.getReviewId(), user.getId(), true);
-    }
-
-    @Override
-    public void removeDislike(Review review, User user) {
-        String sqlQuery = "DELETE FROM review_like WHERE review_id = ? AND user_id = ? AND is_positive = ?";
-        jdbcTemplate.update(sqlQuery, review.getReviewId(), user.getId(), false);
-    }
-
-    @Override
-    public boolean containsLike(Review review, User user, Boolean positive) {
-        String sqlQuery = "SELECT * FROM review_like " +
-                "WHERE review_id = ? AND user_id = ? AND is_positive = ?";
-        return jdbcTemplate.queryForRowSet(sqlQuery, review.getReviewId(), user.getId(), positive).next();
+    public void removeDislike(Long reviewId, Long userId) {
+        String sqlQuery = "DELETE FROM REVIEW_LIKE WHERE REVIEW_ID = ? AND USER_ID = ? AND IS_POSITIVE = ?";
+        if (jdbcTemplate.update(sqlQuery, reviewId, userId, -1) == 0) {
+            throw new ObjectNotFoundException(
+                    String.format("Review like with %d id not found", reviewId));
+        }
     }
 }

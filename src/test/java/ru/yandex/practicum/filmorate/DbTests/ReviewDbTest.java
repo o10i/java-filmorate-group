@@ -75,31 +75,31 @@ public class ReviewDbTest {
     @Test
     public void testCreateReview() {
         var review = getReview();
-        reviewStorage.createReview(review);
-        assertEquals(review, reviewStorage.findReviewById(review.getReviewId()));
+        reviewStorage.create(review);
+        assertEquals(review, reviewStorage.getById(review.getReviewId()));
     }
 
     @Test
     public void testUpdateReview() {
         var review = getReview();
-        reviewStorage.createReview(review);
+        reviewStorage.create(review);
         review.setContent("updated good review");
-        reviewStorage.updateReview(review);
-        assertEquals(review, reviewStorage.findReviewById(review.getReviewId()));
+        reviewStorage.update(review);
+        assertEquals(review, reviewStorage.getById(review.getReviewId()));
     }
 
     @Test
     public void testFindReviewByWrongId() {
-        assertThrows(ObjectNotFoundException.class, () -> reviewStorage.findReviewById(-1L));
+        assertThrows(ObjectNotFoundException.class, () -> reviewStorage.getById(-1L));
     }
 
     @Test
     public void testDeleteReview() {
         var review = getReview();
-        reviewStorage.createReview(review);
-        reviewStorage.deleteReview(review.getReviewId());
-        assertEquals(0, reviewStorage.findAllReviews().size());
-        assertThrows(ObjectNotFoundException.class, () -> reviewStorage.findReviewById(review.getReviewId()));
+        reviewStorage.create(review);
+        reviewStorage.delete(review.getReviewId());
+        assertEquals(0, reviewStorage.getAll().size());
+        assertThrows(ObjectNotFoundException.class, () -> reviewStorage.getById(review.getReviewId()));
     }
 
     @Test
@@ -109,55 +109,50 @@ public class ReviewDbTest {
         var review2 = getReview();
         List<Review> values = new ArrayList<>();
 
-        values.add(reviewStorage.createReview(review));
-        values.add(reviewStorage.createReview(review1));
-        values.add(reviewStorage.createReview(review2));
+        values.add(reviewStorage.create(review));
+        values.add(reviewStorage.create(review1));
+        values.add(reviewStorage.create(review2));
 
-        assertEquals(values, reviewStorage.findAllReviews());
+        assertEquals(values, reviewStorage.getAll());
     }
 
     @Test
     public void testFindAllReviewsWithCount() {
-        var review = reviewStorage.createReview(getReview());
-        var review1 = reviewStorage.createReview(getReview());
-        reviewStorage.createReview(getReview());
+        var review = reviewStorage.create(getReview());
+        reviewStorage.create(getReview());
+        reviewStorage.create(getReview());
         List<Review> values = new ArrayList<>();
 
         values.add(review);
-        values.add(review1);
 
-        assertEquals(values, reviewStorage.findAllReviews(1L, 2));
+        assertEquals(values, reviewStorage.getAll(1L, 1));
     }
 
     @Test
     public void testAddReviewLikeAndDelete() {
-        var review = reviewStorage.createReview(getReview());
+        var review = reviewStorage.create(getReview());
         var user = userService.findUserById(1L);
 
-        likeStorage.addLike(review, user);
+        likeStorage.addLike(review.getReviewId(), user.getId());
 
-        assertTrue(likeStorage.containsLike(review, user, true));
-        assertEquals(1, reviewStorage.findReviewById(1L).getUseful());
+        assertEquals(1, reviewStorage.getById(1L).getUseful());
 
-        likeStorage.removeLike(review, user);
+        likeStorage.removeLike(review.getReviewId(), user.getId());
 
-        assertFalse(likeStorage.containsLike(review, user, true));
-        assertEquals(0, reviewStorage.findReviewById(1L).getUseful());
+        assertEquals(0, reviewStorage.getById(1L).getUseful());
     }
 
     @Test
     public void testAddReviewDislikeAndDelete() {
-        var review = reviewStorage.createReview(getReview());
+        var review = reviewStorage.create(getReview());
         var user = userService.findUserById(1L);
 
-        likeStorage.addDislike(review, user);
+        likeStorage.addDislike(review.getReviewId(), user.getId());
 
-        assertTrue(likeStorage.containsLike(review, user, false));
-        assertEquals(-1, reviewStorage.findReviewById(1L).getUseful());
+        assertEquals(-1, reviewStorage.getById(1L).getUseful());
 
-        likeStorage.removeDislike(review, user);
+        likeStorage.removeDislike(review.getReviewId(), user.getId());
 
-        assertFalse(likeStorage.containsLike(review, user, false));
-        assertEquals(0, reviewStorage.findReviewById(1L).getUseful());
+        assertEquals(0, reviewStorage.getById(1L).getUseful());
     }
 }

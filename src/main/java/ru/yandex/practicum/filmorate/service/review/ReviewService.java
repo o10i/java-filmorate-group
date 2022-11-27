@@ -16,7 +16,6 @@ import ru.yandex.practicum.filmorate.storage.review.ReviewStorage;
 
 import java.util.Collection;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,79 +27,51 @@ public class ReviewService {
     FilmService filmService;
     FeedService feedService;
 
-    public Review createReview(Review review) {
+    public Review create(Review review) {
         filmService.getById(review.getFilmId());
         userService.findUserById(review.getUserId());
-        Review reviewToEvent = reviewStorage.createReview(review);
+        Review reviewToEvent = reviewStorage.create(review);
         feedService.saveEvent(Event.createEvent(reviewToEvent.getUserId(), EventType.REVIEW, Operation.ADD,
                 reviewToEvent.getReviewId()));
         return reviewToEvent;
     }
 
-    public Review updateReview(Review review) {
-        filmService.getById(review.getFilmId());
-        userService.findUserById(review.getUserId());
-        Review reviewToEvent = findReviewById(review.getReviewId());
-        feedService.saveEvent(Event.createEvent(reviewToEvent.getUserId(), EventType.REVIEW, Operation.UPDATE,
-                reviewToEvent.getReviewId()));
-        return reviewStorage.updateReview(review);
+    public Review update(Review review) {
+        feedService.saveEvent(Event.createEvent(findById(review.getReviewId()).getUserId(), EventType.REVIEW, Operation.UPDATE,
+                review.getReviewId()));
+        return reviewStorage.update(review);
     }
 
-    public void deleteReview(Long reviewId) {
-        Review reviewToEvent = findReviewById(reviewId);
-        reviewStorage.deleteReview(reviewId);
-        feedService.saveEvent(Event.createEvent(reviewToEvent.getUserId(), EventType.REVIEW, Operation.REMOVE,
+    public void delete(Long reviewId) {
+        feedService.saveEvent(Event.createEvent(findById(reviewId).getUserId(), EventType.REVIEW, Operation.REMOVE,
                 reviewId));
+        reviewStorage.delete(reviewId);
     }
 
-    public Review findReviewById(Long reviewId) {
-        return reviewStorage.findReviewById(reviewId);
+    public Review findById(Long reviewId) {
+        return reviewStorage.getById(reviewId);
     }
 
-    public Collection<Review> findAllReviews(Optional<Long> filmId, Optional<Integer> count) {
+    public Collection<Review> findAll(Optional<Long> filmId, Optional<Integer> count) {
         if (filmId.isEmpty() && count.isEmpty()) {
-            return reviewStorage.findAllReviews().stream()
-                    .sorted((o1, o2) -> Long.compare(o2.getUseful(), o1.getUseful()))
-                    .collect(Collectors.toList());
+            return reviewStorage.getAll();
         }
-        return reviewStorage.findAllReviews(filmId.orElse(-1L), count.orElse(10)).stream()
-                .sorted((o1, o2) -> Long.compare(o2.getUseful(), o1.getUseful()))
-                .collect(Collectors.toList());
+        return reviewStorage.getAll(filmId.orElse(-1L), count.orElse(10));
     }
 
     public void addLike(Long reviewId, Long userId) {
-        var review = findReviewById(reviewId);
-        var user = userService.findUserById(userId);
-        if (likeStorage.containsLike(review, user, true)) {
-            return;
-        }
-        likeStorage.addLike(review, user);
+        likeStorage.addLike(reviewId, userId);
     }
 
     public void addDislike(Long reviewId, Long userId) {
-        var review = findReviewById(reviewId);
-        var user = userService.findUserById(userId);
-        if (likeStorage.containsLike(review, user, false)) {
-            return;
-        }
-        likeStorage.addDislike(review, user);
+        likeStorage.addDislike(reviewId, userId);
     }
 
     public void removeLike(Long reviewId, Long userId) {
-        var review = findReviewById(reviewId);
-        var user = userService.findUserById(userId);
-        if (!likeStorage.containsLike(review, user, true)) {
-            return;
-        }
-        likeStorage.removeLike(review, user);
+        likeStorage.removeLike(reviewId, userId);
     }
 
     public void removeDislike(Long reviewId, Long userId) {
-        var review = findReviewById(reviewId);
-        var user = userService.findUserById(userId);
-        if (!likeStorage.containsLike(review, user, false)) {
-            return;
-        }
-        likeStorage.removeDislike(review, user);
+        likeStorage.removeDislike(reviewId, userId);
     }
 }
