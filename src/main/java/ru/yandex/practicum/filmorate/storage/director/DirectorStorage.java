@@ -8,19 +8,19 @@ import java.util.List;
 
 public interface DirectorStorage {
 
-    List<Director> findAllDirectors();
+    List<Director> getAll();
 
-    Director findDirectorById (Long id);
+    Director getById(Long id);
 
-    Director createDirector(Director director);
+    Director create(Director director);
 
-    Director updateDirector(Director director);
+    Director update(Director director);
 
-    void deleteDirectorById(Long id);
+    void deleteById(Long id);
 
-    void deleteFilmsDirector(Long filmId);
+    void addFilmDirectors(Long filmId, LinkedHashSet<Director> directors);
 
-    void addFilmsDirector(Long filmId, LinkedHashSet<Director> directors);
+    void deleteFilmDirectors(Long filmId);
 
     void loadDirectors(List<Film> films);
 }

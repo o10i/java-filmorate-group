@@ -42,7 +42,7 @@ public class UserDbTest {
     @Test
     void testSaveUser() {
         User user = getUser();
-        User userSaved = userDbStorage.createUser(user);
+        User userSaved = userDbStorage.create(user);
         user.setId(1L);
         assertEquals(user, userSaved);
     }
@@ -52,54 +52,54 @@ public class UserDbTest {
         User user = getUser();
         user.setLogin("test test");
         user.setLogin("test test");
-        assertThrows(DataIntegrityViolationException.class, () -> userDbStorage.createUser(user), "Логин должен быть без пробелов.");
+        assertThrows(DataIntegrityViolationException.class, () -> userDbStorage.create(user), "Логин должен быть без пробелов.");
     }
 
     @Test
     void testSaveUserWithEmptyLogin() {
         User user = getUser();
         user.setLogin("");
-        assertThrows(DataIntegrityViolationException.class, () -> userDbStorage.createUser(user), "Логин не должен быть пустым.");
+        assertThrows(DataIntegrityViolationException.class, () -> userDbStorage.create(user), "Логин не должен быть пустым.");
     }
 
     @Test
     void testSaveUserWithFutureBirthday() {
         User user = getUser();
         user.setBirthday(Date.valueOf("2122-11-03").toLocalDate());
-        assertThrows(DataIntegrityViolationException.class, () -> userDbStorage.createUser(user), "День рождения не может быть в будущем.");
+        assertThrows(DataIntegrityViolationException.class, () -> userDbStorage.create(user), "День рождения не может быть в будущем.");
     }
 
     @Test
     void testSaveUserWithEmptyEmail() {
         User user = getUser();
         user.setEmail("");
-        assertThrows(DataIntegrityViolationException.class, () -> userDbStorage.createUser(user), "Электронная почта не может быть пустой.");
+        assertThrows(DataIntegrityViolationException.class, () -> userDbStorage.create(user), "Электронная почта не может быть пустой.");
     }
 
     @Test
     void testSaveUserWithoutAtInEmail() {
         User user = getUser();
         user.setEmail("testmail.ru");
-        assertThrows(DataIntegrityViolationException.class, () -> userDbStorage.createUser(user), "Электронная почта должна содержать символ '@'.");
+        assertThrows(DataIntegrityViolationException.class, () -> userDbStorage.create(user), "Электронная почта должна содержать символ '@'.");
     }
 
     @Test
     void testUpdateUser() {
-        User user = userDbStorage.createUser(getUser());
+        User user = userDbStorage.create(getUser());
         user.setLogin("testUpdateLogin");
         assertEquals(user, userDbStorage.updateUser(user));
     }
 
     @Test
     void testFindAllUsers() {
-        User user = userDbStorage.createUser(getUser());
+        User user = userDbStorage.create(getUser());
         List<User> users = List.of(user);
         assertEquals(users, userDbStorage.findAllUsers());
     }
 
     @Test
     void testFindUserById() {
-        User user = userDbStorage.createUser(getUser());
+        User user = userDbStorage.create(getUser());
         user.setId(1L);
         assertEquals(user, userDbStorage.findUserById(1L));
     }

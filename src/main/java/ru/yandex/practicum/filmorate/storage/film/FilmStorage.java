@@ -1,25 +1,27 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
 import ru.yandex.practicum.filmorate.model.film.Film;
+import ru.yandex.practicum.filmorate.model.film.DirectorSortBy;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface FilmStorage {
 
-    List<Film> findAllFilms();
+    List<Film> getAll();
 
-    Film createFilm(Film film);
+    Film getById(Long filmId);
 
-    Film updateFilm(Film film);
+    Film create(Film film);
 
-    Film findFilmById(Long filmId);
+    Film update(Film film);
 
-    List<Film> getTopFilms(Integer count, Optional<Integer> genreId, Optional<Integer> year);
+    void deleteById(Long filmId);
 
-    List<Film> getCommonFilms(Long userId, Long friendId);
+    List<Film> getTop(Integer count, Optional<Integer> genreId, Optional<Integer> year);
 
-    List<Film> getSortedDirectorFilms(Long directorId, String sortBy);
+    List<Film> getCommon(Long userId, Long friendId);
 
-    void deleteFilmById(Long filmId);
+    List<Film> getDirectorFilmsBy(Long directorId, DirectorSortBy filmSortBy);
+    List<Film> searchTopFilmsBy(String query, boolean searchByFilmName, boolean searchByDirectorName);
 }

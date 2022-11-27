@@ -4,6 +4,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
+import ru.yandex.practicum.filmorate.model.film.groupInterfaces.Create;
+import ru.yandex.practicum.filmorate.model.film.groupInterfaces.Update;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -14,9 +16,9 @@ import java.util.Map;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Director {
-    @NotNull
+    @NotNull(groups = {Update.class})
     Long id;
-    @NotBlank(message = "Имя режиссёра не может быть пустым.")
+    @NotBlank(groups = {Create.class, Update.class}, message = "Имя режиссёра не может быть пустым.")
     String name;
 
     public Map<String, Object> toMap() {

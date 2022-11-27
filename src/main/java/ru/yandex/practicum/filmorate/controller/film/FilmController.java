@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.film.Film;
+import ru.yandex.practicum.filmorate.model.film.DirectorSortBy;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
 
 import javax.validation.Valid;
@@ -24,53 +25,53 @@ public class FilmController {
     FilmService filmService;
 
     @GetMapping
-    public List<Film> findAllFilms() {
-        return filmService.findAllFilms();
-    }
-
-    @PostMapping
-    public Film createFilm(@Valid @RequestBody Film film) {
-        return filmService.createFilm(film);
-    }
-
-    @PutMapping
-    public Film updateFilm(@Valid @RequestBody Film film) {
-        return filmService.updateFilm(film);
+    public List<Film> getAll() {
+        return filmService.getAll();
     }
 
     @GetMapping("/{id}")
-    public Film getFilmById(@PathVariable("id") Long filmId) {
-        return filmService.findFilmById(filmId);
+    public Film getById(@PathVariable("id") Long filmId) {
+        return filmService.getById(filmId);
+    }
+
+    @PostMapping
+    public Film create(@Valid @RequestBody Film film) {
+        return filmService.create(film);
+    }
+
+    @PutMapping
+    public Film update(@Valid @RequestBody Film film) {
+        return filmService.update(film);
+    }
+
+    @DeleteMapping("{filmId}")
+    public void deleteById(@PathVariable("filmId") Long filmId) {
+        filmService.deleteById(filmId);
     }
 
     @GetMapping("/popular")
-    public List<Film> getTopFilms(@RequestParam(defaultValue = "10") @Positive Integer count,
-                                  @RequestParam Optional<Integer> genreId,
-                                  @RequestParam Optional<Integer> year) {
-        return filmService.getTopFilms(count, genreId, year);
-    }
-
-    @GetMapping("/director/{directorId}")
-    public List<Film> getSortedDirectorFilms(@PathVariable("directorId") Long directorId,
-                                             @RequestParam String sortBy) {
-        return filmService.getSortedDirectorFilms(directorId, sortBy);
+    public List<Film> getTop(@RequestParam(defaultValue = "10") @Positive Integer count,
+                             @RequestParam(required = false) Optional<Integer> genreId,
+                             @RequestParam(required = false) Optional<Integer> year) {
+        return filmService.getTop(count, genreId, year);
     }
 
     @GetMapping("/common")
-    public List<Film> getCommonFilms(@RequestParam(value = "userId") Long userId,
-                                     @RequestParam(value = "friendId") Long friendId) {
-        return filmService.getCommonFilms(userId, friendId);
+    public List<Film> getCommon(@RequestParam(value = "userId") Long userId,
+                                @RequestParam(value = "friendId") Long friendId) {
+        return filmService.getCommon(userId, friendId);
+    }
+
+    @GetMapping("/director/{directorId}")
+    public List<Film> getDirectorFilmsBy(@PathVariable("directorId") Long directorId,
+                                         @RequestParam DirectorSortBy sortBy) {
+        return filmService.getDirectorFilmsBy(directorId, sortBy);
     }
 
     @GetMapping("/search")
-    public List<Film> getTopSortedSearchedFilms(@RequestParam String query,
-                                                @RequestParam String by) {
-        return filmService.getTopSortedSearchedFilms(query, by);
+    public List<Film> searchTopFilmsBy(@RequestParam String query,
+                                       @RequestParam String by) {
+        return filmService.searchTopFilmsBy(query, by);
     }
 
-
-    @DeleteMapping("{filmId}")
-    public void deleteFilmById(@PathVariable("filmId") Long filmId) {
-        filmService.deleteFilmById(filmId);
-    }
 }

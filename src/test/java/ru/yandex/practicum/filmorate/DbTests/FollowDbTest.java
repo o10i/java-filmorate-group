@@ -42,42 +42,42 @@ public class FollowDbTest {
 
     @Test
     public void testAddFriend() {
-        userDbStorage.createUser(getUser());
+        userDbStorage.create(getUser());
         User user = getUser();
         user.setEmail("test1@mail.ru");
         user.setLogin("testLogin1");
-        userDbStorage.createUser(user);
+        userDbStorage.create(user);
         assertDoesNotThrow(() -> followDbStorage.addFriend(1L, 2L));
     }
 
     @Test
     void testAddUnknownFriend() {
-        userDbStorage.createUser(getUser());
+        userDbStorage.create(getUser());
         assertThrows(DataIntegrityViolationException.class, () -> followDbStorage.addFriend(1L, -1L), "Пользователь с id " + -1L + " не найден.");
     }
 
     @Test
     void testGetOneUserFriend() {
-        userDbStorage.createUser(getUser());
+        userDbStorage.create(getUser());
         User user = getUser();
         user.setEmail("test1@mail.ru");
         user.setLogin("testLogin1");
-        User savedUser = userDbStorage.createUser(user);
+        User savedUser = userDbStorage.create(user);
         followDbStorage.addFriend(1L, 2L);
         assertEquals(List.of(savedUser), followDbStorage.getAllFriends(1L));
     }
 
     @Test
     void testGetTwoUserFriends() {
-        userDbStorage.createUser(getUser());
+        userDbStorage.create(getUser());
         User user1 = getUser();
         user1.setEmail("test1@mail.ru");
         user1.setLogin("testLogin1");
-        User savedUser = userDbStorage.createUser(user1);
+        User savedUser = userDbStorage.create(user1);
         User user2 = getUser();
         user2.setEmail("test2@mail.ru");
         user2.setLogin("testLogin2");
-        User savedUser2 = userDbStorage.createUser(user2);
+        User savedUser2 = userDbStorage.create(user2);
 
         followDbStorage.addFriend(1L, 2L);
         followDbStorage.addFriend(1L, 3L);
@@ -86,11 +86,11 @@ public class FollowDbTest {
 
     @Test
     void testGetEmptyFriendsOfFriend() {
-        userDbStorage.createUser(getUser());
+        userDbStorage.create(getUser());
         User user = getUser();
         user.setEmail("test1@mail.ru");
         user.setLogin("testLogin1");
-        userDbStorage.createUser(user);
+        userDbStorage.create(user);
         followDbStorage.addFriend(1L, 2L);
         assertEquals(new ArrayList<>(), followDbStorage.getAllFriends(2L));
     }
@@ -102,15 +102,15 @@ public class FollowDbTest {
 
     @Test
     void testGetOneCommonFriend() {
-        userDbStorage.createUser(getUser());
+        userDbStorage.create(getUser());
         User user1 = getUser();
         user1.setEmail("test1@mail.ru");
         user1.setLogin("testLogin1");
-        userDbStorage.createUser(user1);
+        userDbStorage.create(user1);
         User user2 = getUser();
         user2.setEmail("test2@mail.ru");
         user2.setLogin("testLogin2");
-        User savedUser2 = userDbStorage.createUser(user2);
+        User savedUser2 = userDbStorage.create(user2);
 
         followDbStorage.addFriend(1L, 2L);
         followDbStorage.addFriend(1L, 3L);
@@ -120,11 +120,11 @@ public class FollowDbTest {
 
     @Test
     void testDeleteUserFriend() {
-        userDbStorage.createUser(getUser());
+        userDbStorage.create(getUser());
         User user1 = getUser();
         user1.setEmail("test1@mail.ru");
         user1.setLogin("testLogin1");
-        userDbStorage.createUser(user1);
+        userDbStorage.create(user1);
 
         followDbStorage.addFriend(1L, 2L);
         assertDoesNotThrow(() -> followDbStorage.deleteFriend(1L, 2L));
@@ -132,15 +132,15 @@ public class FollowDbTest {
 
     @Test
     void testGetOneCommonFriendAfterDeletingOfFriend() {
-        userDbStorage.createUser(getUser());
+        userDbStorage.create(getUser());
         User user1 = getUser();
         user1.setEmail("test1@mail.ru");
         user1.setLogin("testLogin1");
-        userDbStorage.createUser(user1);
+        userDbStorage.create(user1);
         User user2 = getUser();
         user2.setEmail("test2@mail.ru");
         user2.setLogin("testLogin2");
-        User savedUser2 = userDbStorage.createUser(user2);
+        User savedUser2 = userDbStorage.create(user2);
 
         followDbStorage.addFriend(1L, 2L);
         followDbStorage.addFriend(1L, 3L);

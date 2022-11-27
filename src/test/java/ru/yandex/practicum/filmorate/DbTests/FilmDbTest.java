@@ -64,7 +64,7 @@ public class FilmDbTest {
     @Test
     void testSaveFilm() {
         Film film = getFilm();
-        Film savedFilm = filmDbStorage.createFilm(film);
+        Film savedFilm = filmDbStorage.create(film);
         film.setId(1L);
         assertEquals(film, savedFilm);
     }
@@ -73,111 +73,111 @@ public class FilmDbTest {
     void testSaveFilmWithEmptyName() {
         Film film = getFilm();
         film.setName("");
-        assertThrows(DataIntegrityViolationException.class, () -> filmDbStorage.createFilm(film), "Имя не должно быть пустым.");
+        assertThrows(DataIntegrityViolationException.class, () -> filmDbStorage.create(film), "Имя не должно быть пустым.");
     }
 
     @Test
     void testSaveFilmWithLongDescription() {
         Film film = getFilm();
         film.setDescription("Пятеро друзей ( комик-группа «Шарло»), приезжают в город Бризуль. Здесь они хотят " + "разыскать господина Огюста Куглова, который задолжал им деньги, а именно 20 миллионов. о Куглов, " + "который за время «своего отсутствия», стал кандидатом Коломбани.");
-        assertThrows(DataIntegrityViolationException.class, () -> filmDbStorage.createFilm(film), "Описание не должно иметь более 200 символов.");
+        assertThrows(DataIntegrityViolationException.class, () -> filmDbStorage.create(film), "Описание не должно иметь более 200 символов.");
     }
 
     @Test
     void testSaveFilmWithOldReleaseDate() {
         Film film = getFilm();
         film.setReleaseDate(Date.valueOf("1895-12-27").toLocalDate());
-        assertThrows(DataIntegrityViolationException.class, () -> filmDbStorage.createFilm(film), "Дата выхода не может быть раньше 28.12.1895 г.");
+        assertThrows(DataIntegrityViolationException.class, () -> filmDbStorage.create(film), "Дата выхода не может быть раньше 28.12.1895 г.");
     }
 
     @Test
     void testSaveFilmWithNotPositiveDuration() {
         Film film = getFilm();
         film.setDuration(0);
-        assertThrows(DataIntegrityViolationException.class, () -> filmDbStorage.createFilm(film), "Продолжительность должна быть положительной.");
+        assertThrows(DataIntegrityViolationException.class, () -> filmDbStorage.create(film), "Продолжительность должна быть положительной.");
     }
 
     @Test
     void testSaveFilmWithNullMpa() {
         Film film = getFilm();
         film.setMpa(null);
-        assertThrows(NullPointerException.class, () -> filmDbStorage.createFilm(film), "MPA не может быть 'null'.");
+        assertThrows(NullPointerException.class, () -> filmDbStorage.create(film), "MPA не может быть 'null'.");
     }
 
     @Test
     void deleteFilm() {
         Film film = getFilm();
-        filmDbStorage.createFilm(film);
-        filmDbStorage.deleteFilmById(1L);
-        assertEquals(0, filmDbStorage.findAllFilms().size());
+        filmDbStorage.create(film);
+        filmDbStorage.deleteById(1L);
+        assertEquals(0, filmDbStorage.getAll().size());
     }
 
     @Test
     void testUpdateFilm() {
-        Film film = filmDbStorage.createFilm(getFilm());
+        Film film = filmDbStorage.create(getFilm());
         film.setName("testUpdateName");
-        assertEquals(film, filmDbStorage.updateFilm(film));
+        assertEquals(film, filmDbStorage.update(film));
     }
 
     @Test
     void testFindAllFilms() {
-        Film film = filmDbStorage.createFilm(getFilm());
+        Film film = filmDbStorage.create(getFilm());
         List<Film> films = List.of(film);
-        assertEquals(films, filmDbStorage.findAllFilms());
+        assertEquals(films, filmDbStorage.getAll());
     }
 
     @Test
     void testFindFilmById() {
-        Film film = filmDbStorage.createFilm(getFilm());
-        assertEquals(film, filmDbStorage.findFilmById(1L));
+        Film film = filmDbStorage.create(getFilm());
+        assertEquals(film, filmDbStorage.getById(1L));
     }
 
     @Test
     void testFindUnknownFilm() {
-        assertThrows(ObjectNotFoundException.class, () -> filmDbStorage.findFilmById(9999L), "Фильм с id " + 9999 + " не найден.");
+        assertThrows(ObjectNotFoundException.class, () -> filmDbStorage.getById(9999L), "Фильм с id " + 9999 + " не найден.");
     }
 
     @Test
     void testGetEmptyTopFilms() {
-        assertEquals(new ArrayList<>(), filmDbStorage.getTopFilms(10, Optional.empty(), Optional.empty()));
+        assertEquals(new ArrayList<>(), filmDbStorage.getTop(10, Optional.empty(), Optional.empty()));
     }
 
     @Test
     void testDeleteLikesAfterDeletingFilm() {
-        filmDbStorage.createFilm(getFilm());
-        userDbStorage.createUser(getUser());
+        filmDbStorage.create(getFilm());
+        userDbStorage.create(getUser());
         likeDbStorage.addLike(1L, 1L);
         assertEquals(1, likeDbStorage.getLikes(1L, 1L).size());
-        filmDbStorage.deleteFilmById(1L);
+        filmDbStorage.deleteById(1L);
         assertEquals(0, likeDbStorage.getLikes(1L, 1L).size());
     }
 
     @Test
     void testFindTwoPopularFilms() {
-        Film film = filmDbStorage.createFilm(getFilm());
-        Film film2 = filmDbStorage.createFilm(getFilm());
-        assertEquals(List.of(film, film2), filmDbStorage.getTopFilms(10, Optional.empty(), Optional.empty()));
+        Film film = filmDbStorage.create(getFilm());
+        Film film2 = filmDbStorage.create(getFilm());
+        assertEquals(List.of(film, film2), filmDbStorage.getTop(10, Optional.empty(), Optional.empty()));
     }
 
     @Test
     void testUpdateFilmWithGenre() {
-        Film film = filmDbStorage.createFilm(getFilm());
+        Film film = filmDbStorage.create(getFilm());
         LinkedHashSet<Genre> genres = new LinkedHashSet<>();
         genres.add(getGenre());
         film.setGenres(genres);
-        assertEquals(film, filmDbStorage.updateFilm(film));
+        assertEquals(film, filmDbStorage.update(film));
     }
 
     @Test
     void testUpdateFilmWithRepeatedGenres() {
-        Film film = filmDbStorage.createFilm(getFilm());
+        Film film = filmDbStorage.create(getFilm());
         LinkedHashSet<Genre> genres = new LinkedHashSet<>();
         genres.add(getGenre());
         genres.add(Genre.builder().id(1L).name("Комедия").build());
         genres.add(Genre.builder().id(2L).name("Драма").build());
         genres.add(Genre.builder().id(1L).name("Комедия").build());
         film.setGenres(genres);
-        Film updatedFilm = filmDbStorage.updateFilm(film);
+        Film updatedFilm = filmDbStorage.update(film);
         assertEquals(film, updatedFilm);
     }
 }
