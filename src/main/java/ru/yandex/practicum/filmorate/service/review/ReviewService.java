@@ -29,7 +29,7 @@ public class ReviewService {
     FeedService feedService;
 
     public Review createReview(Review review) {
-        filmService.findFilmById(review.getFilmId());
+        filmService.getById(review.getFilmId());
         userService.findUserById(review.getUserId());
         Review reviewToEvent = reviewStorage.createReview(review);
         feedService.saveEvent(Event.createEvent(reviewToEvent.getUserId(), EventType.REVIEW, Operation.ADD,
@@ -38,7 +38,7 @@ public class ReviewService {
     }
 
     public Review updateReview(Review review) {
-        filmService.findFilmById(review.getFilmId());
+        filmService.getById(review.getFilmId());
         userService.findUserById(review.getUserId());
         Review reviewToEvent = findReviewById(review.getReviewId());
         feedService.saveEvent(Event.createEvent(reviewToEvent.getUserId(), EventType.REVIEW, Operation.UPDATE,

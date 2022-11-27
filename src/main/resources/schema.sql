@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS movie
         CHECK (duration > 0),
     CONSTRAINT fk_film_mpa
         FOREIGN KEY (mpa_id)
-            REFERENCES mpa (id)
+            REFERENCES mpa (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS film_genre
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS film_genre
             REFERENCES movie (id) ON DELETE CASCADE,
     CONSTRAINT fk_genre_name_id
         FOREIGN KEY (genre_id)
-            REFERENCES genre (id),
+            REFERENCES genre (id) ON DELETE CASCADE,
     PRIMARY KEY (film_id, genre_id)
 );
 
@@ -99,14 +99,8 @@ CREATE TABLE IF NOT EXISTS directors
 
 CREATE TABLE IF NOT EXISTS film_director
 (
-    film_id     BIGINT NOT NULL,
-    director_id BIGINT NOT NULL,
-    CONSTRAINT IF NOT EXISTS "film_id_foreign"
-        FOREIGN KEY (film_id)
-            REFERENCES movie (id) ON DELETE CASCADE,
-    CONSTRAINT IF NOT EXISTS "director_id_foreign"
-        FOREIGN KEY (director_id)
-            REFERENCES directors (id),
+    film_id     BIGINT NOT NULL REFERENCES movie (id) ON DELETE CASCADE,
+    director_id BIGINT NOT NULL REFERENCES directors (id) ON DELETE CASCADE,
     PRIMARY KEY (film_id, director_id)
 );
 

@@ -37,7 +37,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User createUser(User user) {
+    public User create(User user) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("users")
                 .usingGeneratedKeyColumns("id");

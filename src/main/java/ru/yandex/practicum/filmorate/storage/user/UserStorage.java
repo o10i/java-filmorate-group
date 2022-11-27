@@ -7,7 +7,7 @@ public interface UserStorage {
 
     List<User> findAllUsers();
 
-    User createUser(User user);
+    User create(User user);
 
     User updateUser(User user);
 

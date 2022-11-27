@@ -23,7 +23,7 @@ public class UserService {
 
     public User createUser(User user) {
         validator(user);
-        return userStorage.createUser(user);
+        return userStorage.create(user);
     }
 
     public User updateUser(User user) {

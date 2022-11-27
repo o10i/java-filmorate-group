@@ -23,14 +23,14 @@ public class LikeService {
 
 
     public void addLike(Long userId, Long filmId) {
-        filmService.findFilmById(filmId);
+        filmService.getById(filmId);
         userService.findUserById(userId);
         likeStorage.addLike(userId, filmId);
         feedService.saveEvent(Event.createEvent(userId, EventType.LIKE, Operation.ADD, filmId));
     }
 
     public void deleteLike(Long userId, Long filmId) {
-        filmService.findFilmById(filmId);
+        filmService.getById(filmId);
         userService.findUserById(userId);
         if (likeStorage.getLikes(userId, filmId) == null) {
             throw new ObjectNotFoundException("Like not found");

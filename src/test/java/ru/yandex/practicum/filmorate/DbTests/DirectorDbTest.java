@@ -49,56 +49,56 @@ public class DirectorDbTest {
 
     @Test
     void testFindAllDirectors() {
-        Director director = directorDbStorage.createDirector(getDirector());
+        Director director = directorDbStorage.create(getDirector());
         List<Director> directors = List.of(director);
-        assertEquals(directors, directorDbStorage.findAllDirectors());
+        assertEquals(directors, directorDbStorage.getAll());
     }
 
     @Test
     void testFindDirectorById() {
-        Director director = directorDbStorage.createDirector(getDirector());
-        assertEquals(director, directorDbStorage.findDirectorById(director.getId()));
+        Director director = directorDbStorage.create(getDirector());
+        assertEquals(director, directorDbStorage.getById(director.getId()));
     }
 
     @Test
     void testCreateDirector() {
         Director director = getDirector();
-        Director savedDirector = directorDbStorage.createDirector(director);
+        Director savedDirector = directorDbStorage.create(director);
         director.setId(1L);
         assertEquals(director, savedDirector);
     }
 
     @Test
     void testUpdateDirector() {
-        Director director = directorDbStorage.createDirector(getDirector());
+        Director director = directorDbStorage.create(getDirector());
         director.setName("testUpdateName");
-        assertEquals(director, directorDbStorage.updateDirector(director));
+        assertEquals(director, directorDbStorage.update(director));
     }
 
     @Test
     void testDeleteDirectorById() {
-        Director director = directorDbStorage.createDirector(getDirector());
-        assertEquals(director, directorDbStorage.findDirectorById(director.getId()));
-        directorDbStorage.deleteDirectorById(director.getId());
-        assertEquals(new ArrayList<>(), directorDbStorage.findAllDirectors());
+        Director director = directorDbStorage.create(getDirector());
+        assertEquals(director, directorDbStorage.getById(director.getId()));
+        directorDbStorage.deleteById(director.getId());
+        assertEquals(new ArrayList<>(), directorDbStorage.getAll());
     }
 
     @Test
     void testAddFilmsDirector() {
-        Film film = filmDbStorage.createFilm(getFilm());
+        Film film = filmDbStorage.create(getFilm());
         LinkedHashSet<Director> directors = new LinkedHashSet<>();
-        Director director = directorDbStorage.createDirector(getDirector());
+        Director director = directorDbStorage.create(getDirector());
         directors.add(director);
-        assertDoesNotThrow(() -> directorDbStorage.addFilmsDirector(film.getId(), directors));
+        assertDoesNotThrow(() -> directorDbStorage.addFilmDirectors(film.getId(), directors));
     }
 
     @Test
     void testDeleteFilmsDirector() {
-        Film film = filmDbStorage.createFilm(getFilm());
+        Film film = filmDbStorage.create(getFilm());
         LinkedHashSet<Director> directors = new LinkedHashSet<>();
-        Director director = directorDbStorage.createDirector(getDirector());
+        Director director = directorDbStorage.create(getDirector());
         directors.add(director);
-        assertDoesNotThrow(() -> directorDbStorage.addFilmsDirector(film.getId(), directors));
-        assertDoesNotThrow(() -> directorDbStorage.deleteFilmsDirector(film.getId()));
+        assertDoesNotThrow(() -> directorDbStorage.addFilmDirectors(film.getId(), directors));
+        assertDoesNotThrow(() -> directorDbStorage.deleteFilmDirectors(film.getId()));
     }
 }

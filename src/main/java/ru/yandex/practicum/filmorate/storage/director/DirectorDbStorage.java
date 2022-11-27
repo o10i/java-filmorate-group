@@ -27,13 +27,13 @@ public class DirectorDbStorage implements DirectorStorage {
     JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<Director> findAllDirectors() {
+    public List<Director> getAll() {
         String sqlQuery = "SELECT * FROM DIRECTORS";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToDirector(rs));
     }
 
     @Override
-    public Director findDirectorById(Long id) {
+    public Director getById(Long id) {
         String sqlQuery = "SELECT * FROM DIRECTORS WHERE id = ?";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToDirector(rs), id)
                 .stream()
@@ -42,7 +42,7 @@ public class DirectorDbStorage implements DirectorStorage {
     }
 
     @Override
-    public Director createDirector(Director director) {
+    public Director create(Director director) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("directors")
                 .usingGeneratedKeyColumns("id");
@@ -51,7 +51,7 @@ public class DirectorDbStorage implements DirectorStorage {
     }
 
     @Override
-    public Director updateDirector(Director director) {
+    public Director update(Director director) {
         String sqlQuery = "UPDATE DIRECTORS SET NAME = ? WHERE ID = ?";
         if (jdbcTemplate.update(sqlQuery, director.getName(), director.getId()) == 0) {
             throw new ObjectNotFoundException(String.format("Director with %d id not found", director.getId()));
@@ -60,15 +60,15 @@ public class DirectorDbStorage implements DirectorStorage {
     }
 
     @Override
-    public void deleteDirectorById(Long id) {
-        String sqlQuery = "DELETE FROM FILM_DIRECTOR WHERE DIRECTOR_ID = ?";
-        jdbcTemplate.update(sqlQuery, id);
-        sqlQuery = "DELETE FROM DIRECTORS WHERE ID = ?";
-        jdbcTemplate.update(sqlQuery, id);
+    public void deleteById(Long id) {
+        String sqlQuery = "DELETE FROM DIRECTORS WHERE ID = ?";
+        if (jdbcTemplate.update(sqlQuery, id) == 0) {
+            throw new ObjectNotFoundException(String.format("Director with %d id not found", id));
+        }
     }
 
     @Override
-    public void addFilmsDirector(Long filmId, LinkedHashSet<Director> directors) {
+    public void addFilmDirectors(Long filmId, LinkedHashSet<Director> directors) {
         List<Director> directorList = new ArrayList<>(directors);
         jdbcTemplate.batchUpdate(
                 "MERGE INTO FILM_DIRECTOR KEY (FILM_ID, DIRECTOR_ID) VALUES (?, ?)",
@@ -86,7 +86,7 @@ public class DirectorDbStorage implements DirectorStorage {
     }
 
     @Override
-    public void deleteFilmsDirector(Long filmId) {
+    public void deleteFilmDirectors(Long filmId) {
         String sqlQuery = "DELETE FROM FILM_DIRECTOR WHERE FILM_ID = ?";
         jdbcTemplate.update(sqlQuery, filmId);
     }
