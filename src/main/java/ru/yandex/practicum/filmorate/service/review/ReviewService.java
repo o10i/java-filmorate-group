@@ -29,7 +29,7 @@ public class ReviewService {
 
     public Review create(Review review) {
         filmService.getById(review.getFilmId());
-        userService.findUserById(review.getUserId());
+        userService.getById(review.getUserId());
         Review reviewToEvent = reviewStorage.create(review);
         feedService.saveEvent(Event.createEvent(reviewToEvent.getUserId(), EventType.REVIEW, Operation.ADD,
                 reviewToEvent.getReviewId()));
@@ -37,22 +37,22 @@ public class ReviewService {
     }
 
     public Review update(Review review) {
-        feedService.saveEvent(Event.createEvent(findById(review.getReviewId()).getUserId(), EventType.REVIEW, Operation.UPDATE,
+        feedService.saveEvent(Event.createEvent(getById(review.getReviewId()).getUserId(), EventType.REVIEW, Operation.UPDATE,
                 review.getReviewId()));
         return reviewStorage.update(review);
     }
 
     public void delete(Long reviewId) {
-        feedService.saveEvent(Event.createEvent(findById(reviewId).getUserId(), EventType.REVIEW, Operation.REMOVE,
+        feedService.saveEvent(Event.createEvent(getById(reviewId).getUserId(), EventType.REVIEW, Operation.REMOVE,
                 reviewId));
         reviewStorage.delete(reviewId);
     }
 
-    public Review findById(Long reviewId) {
+    public Review getById(Long reviewId) {
         return reviewStorage.getById(reviewId);
     }
 
-    public Collection<Review> findAll(Optional<Long> filmId, Optional<Integer> count) {
+    public Collection<Review> getAll(Optional<Long> filmId, Optional<Integer> count) {
         if (filmId.isEmpty() && count.isEmpty()) {
             return reviewStorage.getAll();
         }

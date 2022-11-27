@@ -88,16 +88,15 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film update(Film film) {
         String sqlQuery = "UPDATE MOVIE SET " + "NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ? , DURATION = ?, RATE = ?, MPA_ID = ? " + "WHERE ID = ?";
-
-        jdbcTemplate.update(sqlQuery
-                , film.getName()
+        if (jdbcTemplate.update(sqlQuery, film.getName()
                 , film.getDescription()
                 , film.getReleaseDate()
                 , film.getDuration()
                 , film.getRate()
                 , film.getMpa().getId()
-                , film.getId());
-
+                , film.getId()) == 0) {
+            throw new ObjectNotFoundException(String.format("Film with %d id not found", film.getId()));
+        }
         return film;
     }
 

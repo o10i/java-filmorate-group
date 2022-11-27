@@ -3,10 +3,12 @@ package ru.yandex.practicum.filmorate.storage.feed;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.event.Event;
 import ru.yandex.practicum.filmorate.model.event.enums.EventType;
 import ru.yandex.practicum.filmorate.model.event.enums.Operation;
@@ -26,7 +28,13 @@ public class FeedDbStorage implements FeedStorage {
     @Override
     public List<Event> findEventsByUserId(Long userId) {
         String sqlQuery = "SELECT * FROM FEED WHERE USER_ID = ?";
-        return jdbcTemplate.query(sqlQuery, this::makeRowToEvent, userId);
+        List<Event> events;
+        try {
+            events = jdbcTemplate.query(sqlQuery, this::makeRowToEvent, userId);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ObjectNotFoundException("Like not found");
+        }
+        return events;
     }
 
     @Override

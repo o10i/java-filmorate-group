@@ -50,19 +50,22 @@ public class UserDbStorage implements UserStorage {
         String sqlQuery = "UPDATE USERS SET " +
                 "EMAIL = ?, LOGIN = ?, NAME = ? , BIRTHDAY = ?" +
                 "WHERE ID = ?";
-        jdbcTemplate.update(sqlQuery
-                , user.getEmail()
+        if (jdbcTemplate.update(sqlQuery, user.getEmail()
                 , user.getLogin()
                 , user.getName()
                 , user.getBirthday()
-                , user.getId());
+                , user.getId()) == 0) {
+            throw new ObjectNotFoundException(String.format("User with %d id not found", user.getId()));
+        }
         return user;
     }
 
     @Override
     public void deleteUserById(Long userId) {
         String sqlQuery = "DELETE FROM users WHERE id = ?";
-        jdbcTemplate.update(sqlQuery, userId);
+        if (jdbcTemplate.update(sqlQuery, userId) == 0) {
+            throw new ObjectNotFoundException(String.format("User with %d id not found", userId));
+        }
     }
 
     public static User mapRowToUser(ResultSet resultSet) throws SQLException {

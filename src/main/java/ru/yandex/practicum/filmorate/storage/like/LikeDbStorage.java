@@ -3,8 +3,10 @@ package ru.yandex.practicum.filmorate.storage.like;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.film.Like;
 
 import java.sql.ResultSet;
@@ -28,13 +30,22 @@ public class LikeDbStorage implements LikeStorage {
     @Override
     public void deleteLike(Long userId, Long filmId) {
         String sqlQuery = "DELETE FROM LIKES WHERE film_id = ? AND user_id = ?";
-        jdbcTemplate.update(sqlQuery, filmId, userId);
+        if (jdbcTemplate.update(sqlQuery, filmId, userId) == 0) {
+            throw new ObjectNotFoundException(String.format("Like of user with %d and film with %d id not found",
+                    userId, filmId));
+        }
     }
 
     @Override
     public List<Like> getLikes(Long userId, Long filmId) {
         String sqlQuery = "SELECT * FROM LIKES WHERE USER_ID = ? AND FILM_ID = ?";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToLike, userId, filmId);
+        List<Like> likes;
+        try {
+            likes = jdbcTemplate.query(sqlQuery, this::mapRowToLike, userId, filmId);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ObjectNotFoundException("Like not found");
+        }
+        return likes;
     }
 
     private Like mapRowToLike(ResultSet resultSet, int nowNum) throws SQLException {

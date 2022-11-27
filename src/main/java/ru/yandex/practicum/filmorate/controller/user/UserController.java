@@ -3,11 +3,13 @@ package ru.yandex.practicum.filmorate.controller.user;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.model.groupInterfaces.Create;
+import ru.yandex.practicum.filmorate.model.groupInterfaces.Update;
 import ru.yandex.practicum.filmorate.model.user.User;
 import ru.yandex.practicum.filmorate.service.user.UserService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 
@@ -20,27 +22,27 @@ public class UserController {
     UserService userService;
 
     @GetMapping
-    public List<User> findAllUsers() {
-        return userService.findAllUsers();
+    public List<User> getAll() {
+        return userService.getAll();
     }
 
     @PostMapping
-    public User createUser(@Valid @RequestBody User user) {
-        return userService.createUser(user);
+    public User create(@Validated(Create.class) @RequestBody User user) {
+        return userService.create(user);
     }
 
     @PutMapping
-    public User updateUser(@Valid @RequestBody User user) {
-        return userService.updateUser(user);
+    public User update(@Validated(Update.class) @RequestBody User user) {
+        return userService.update(user);
     }
 
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable("id") Long id) {
-        return userService.findUserById(id);
+    public User getById(@PathVariable("id") Long id) {
+        return userService.getById(id);
     }
 
     @DeleteMapping("{userId}")
-    public void deleteUserById(@PathVariable("userId") Long id) {
-        userService.deleteUserById(id);
+    public void delete(@PathVariable("userId") Long id) {
+        userService.delete(id);
     }
 }

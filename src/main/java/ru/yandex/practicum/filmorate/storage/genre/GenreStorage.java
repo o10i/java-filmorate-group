@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface GenreStorage {
 
-    List<Genre> findAllGenres();
+    List<Genre> getAll();
 
-    Genre findGenreById(Long genreId);
+    Genre getById(Long genreId);
 
     void addGenresToFilm(Long filmId, LinkedHashSet<Genre> genres);
 

@@ -41,7 +41,7 @@ public class ReviewDbTest {
 
     @BeforeAll
     public void beforeAll() {
-        userService.createUser(User.builder()
+        userService.create(User.builder()
                 .email("1@ya.ru")
                 .login("bot")
                 .name("Vova")
@@ -131,7 +131,7 @@ public class ReviewDbTest {
     @Test
     public void testAddReviewLikeAndDelete() {
         var review = reviewStorage.create(getReview());
-        var user = userService.findUserById(1L);
+        var user = userService.getById(1L);
 
         likeStorage.addLike(review.getReviewId(), user.getId());
 
@@ -145,7 +145,7 @@ public class ReviewDbTest {
     @Test
     public void testAddReviewDislikeAndDelete() {
         var review = reviewStorage.create(getReview());
-        var user = userService.findUserById(1L);
+        var user = userService.getById(1L);
 
         likeStorage.addDislike(review.getReviewId(), user.getId());
 

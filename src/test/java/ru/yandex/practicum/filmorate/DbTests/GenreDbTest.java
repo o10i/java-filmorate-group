@@ -23,17 +23,17 @@ public class GenreDbTest {
 
     @Test
     void testFindGenreById() {
-        assertEquals(Genre.builder().id(1L).name("Комедия").build(), genreDbStorage.findGenreById(1L));
+        assertEquals(Genre.builder().id(1L).name("Комедия").build(), genreDbStorage.getById(1L));
     }
 
     @Test
     void testFindUnknownGenre() {
-        assertThrows(ObjectNotFoundException.class, () -> genreDbStorage.findGenreById(-1L), "Genre с id -1 не найден.");
+        assertThrows(ObjectNotFoundException.class, () -> genreDbStorage.getById(-1L), "Genre с id -1 не найден.");
     }
 
     @Test
     void testFindAllGenres() {
-        assertEquals(Genre.builder().id(1L).name("Комедия").build(), genreDbStorage.findAllGenres().get(0));
-        assertEquals(6, genreDbStorage.findAllGenres().size());
+        assertEquals(Genre.builder().id(1L).name("Комедия").build(), genreDbStorage.getAll().get(0));
+        assertEquals(6, genreDbStorage.getAll().size());
     }
 }

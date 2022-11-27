@@ -19,12 +19,12 @@ public class GenreService {
 
     GenreStorage genreStorage;
 
-    public List<Genre> findAllGenres() {
-        return genreStorage.findAllGenres();
+    public List<Genre> getAll() {
+        return genreStorage.getAll();
     }
 
-    public Genre findGenreById(Long genreId) {
-        return genreStorage.findGenreById(genreId);
+    public Genre getById(Long genreId) {
+        return genreStorage.getById(genreId);
     }
 
     public void addGenresToFilm(Long filmId, LinkedHashSet<Genre> genres) {

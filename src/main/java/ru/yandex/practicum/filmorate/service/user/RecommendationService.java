@@ -21,7 +21,7 @@ public class RecommendationService {
     DirectorService directorService;
 
     public List<Film> getRecommendations(Long userId) {
-        userService.findUserById(userId);
+        userService.getById(userId);
         List<Film> films = recommendationStorage.getRecommendations(userId);
         genreService.loadGenres(films);
         directorService.loadDirectors(films);

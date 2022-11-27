@@ -6,8 +6,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.film.Director;
-import ru.yandex.practicum.filmorate.model.film.groupInterfaces.Create;
-import ru.yandex.practicum.filmorate.model.film.groupInterfaces.Update;
+import ru.yandex.practicum.filmorate.model.groupInterfaces.Create;
+import ru.yandex.practicum.filmorate.model.groupInterfaces.Update;
 import ru.yandex.practicum.filmorate.service.film.DirectorService;
 
 import java.util.List;

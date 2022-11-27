@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.user.User;
 
 import java.util.List;
@@ -27,7 +28,9 @@ public class FollowDbStorage implements FollowStorage {
     @Override
     public void deleteFriend(Long userId, Long friendId) {
         String sqlQuery = "DELETE FROM FOLLOW WHERE USER_ID = ? AND FRIEND_ID = ?";
-        jdbcTemplate.update(sqlQuery, userId, friendId);
+        if (jdbcTemplate.update(sqlQuery, userId, friendId ) == 0) {
+            throw new ObjectNotFoundException(String.format("Friends with %d and %d id not found", userId, friendId));
+        }
     }
 
     @Override

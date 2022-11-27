@@ -51,7 +51,6 @@ public class FilmService {
 
     public Film update(Film film) {
         validator(film);
-        filmStorage.getById(film.getId());
         genreService.deleteFilmGenres(film.getId());
         directorService.deleteFilmDirectors(film.getId());
         if (film.getGenres() != null) {

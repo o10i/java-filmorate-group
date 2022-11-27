@@ -17,27 +17,25 @@ import java.util.List;
 public class UserService {
     UserStorage userStorage;
 
-    public List<User> findAllUsers() {
+    public List<User> getAll() {
         return userStorage.findAllUsers();
     }
 
-    public User createUser(User user) {
+    public User create(User user) {
         validator(user);
         return userStorage.create(user);
     }
 
-    public User updateUser(User user) {
+    public User update(User user) {
         validator(user);
-        findUserById(user.getId());
         return userStorage.updateUser(user);
     }
 
-    public User findUserById(Long userId) {
+    public User getById(Long userId) {
         return userStorage.findUserById(userId);
     }
 
-    public void deleteUserById(Long userId) {
-        userStorage.findUserById(userId);
+    public void delete(Long userId) {
         userStorage.deleteUserById(userId);
     }
 

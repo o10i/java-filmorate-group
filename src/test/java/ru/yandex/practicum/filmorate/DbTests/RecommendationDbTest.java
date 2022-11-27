@@ -3,10 +3,12 @@ package ru.yandex.practicum.filmorate.DbTests;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Mpa;
 import ru.yandex.practicum.filmorate.model.user.User;
@@ -31,8 +33,17 @@ public class RecommendationDbTest {
     UserDbStorage userDbStorage;
     FilmDbStorage filmDbStorage;
     LikeDbStorage likeDbStorage;
+    JdbcTemplate jdbcTemplate;
 
-/*    @Test
+    @BeforeEach
+    void tearDown() {
+        jdbcTemplate.update("DELETE FROM USERS");
+        jdbcTemplate.update("DELETE FROM MOVIE");
+        jdbcTemplate.update("ALTER TABLE USERS ALTER COLUMN ID RESTART WITH 1");
+        jdbcTemplate.update("ALTER TABLE MOVIE ALTER COLUMN ID RESTART WITH 1");
+    }
+
+    @Test
     void testGetRecommendations() {
         final Film film = filmDbStorage.create(Film.builder()
                 .name("testName")
@@ -74,6 +85,6 @@ public class RecommendationDbTest {
         List<Film> emptyFilms = recommendationDbStorage.getRecommendations(secondUser.getId());
 
         assertTrue(emptyFilms.isEmpty(), "List recommendation isn't empty.");
-    }*/
+    }
 }
 

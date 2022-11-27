@@ -5,11 +5,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.DirectorSortBy;
+import ru.yandex.practicum.filmorate.model.film.Film;
+import ru.yandex.practicum.filmorate.model.groupInterfaces.Create;
+import ru.yandex.practicum.filmorate.model.groupInterfaces.Update;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.Optional;
@@ -35,12 +36,12 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film create(@Valid @RequestBody Film film) {
+    public Film create(@Validated(Create.class) @RequestBody Film film) {
         return filmService.create(film);
     }
 
     @PutMapping
-    public Film update(@Valid @RequestBody Film film) {
+    public Film update(@Validated(Update.class) @RequestBody Film film) {
         return filmService.update(film);
     }
 
@@ -73,5 +74,4 @@ public class FilmController {
                                        @RequestParam String by) {
         return filmService.searchTopFilmsBy(query, by);
     }
-
 }

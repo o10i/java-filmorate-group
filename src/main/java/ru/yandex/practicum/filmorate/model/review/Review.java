@@ -1,10 +1,12 @@
 package ru.yandex.practicum.filmorate.model.review;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import ru.yandex.practicum.filmorate.model.review.validation.OnCreate;
-import ru.yandex.practicum.filmorate.model.review.validation.OnUpdate;
+import ru.yandex.practicum.filmorate.model.groupInterfaces.Create;
+import ru.yandex.practicum.filmorate.model.groupInterfaces.Update;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -15,16 +17,16 @@ import java.util.Map;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Review {
-    @NotNull(groups = OnUpdate.class)
+    @NotNull(groups = Update.class)
     Long reviewId;
-    @NotBlank(groups = {OnCreate.class, OnUpdate.class})
+    @NotBlank(groups = {Create.class, Update.class})
     String content;
     @JsonProperty("isPositive")
-    @NotNull(groups = {OnCreate.class, OnUpdate.class})
+    @NotNull(groups = {Create.class, Update.class})
     Boolean positive;
-    @NotNull(groups = OnCreate.class)
+    @NotNull(groups = Create.class)
     Long filmId;
-    @NotNull(groups = OnCreate.class)
+    @NotNull(groups = Create.class)
     Long userId;
     Long useful;
 

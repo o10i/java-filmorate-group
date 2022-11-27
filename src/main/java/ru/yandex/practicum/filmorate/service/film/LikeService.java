@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.event.Event;
 import ru.yandex.practicum.filmorate.model.event.enums.EventType;
 import ru.yandex.practicum.filmorate.model.event.enums.Operation;
@@ -24,17 +23,12 @@ public class LikeService {
 
     public void addLike(Long userId, Long filmId) {
         filmService.getById(filmId);
-        userService.findUserById(userId);
+        userService.getById(userId);
         likeStorage.addLike(userId, filmId);
         feedService.saveEvent(Event.createEvent(userId, EventType.LIKE, Operation.ADD, filmId));
     }
 
     public void deleteLike(Long userId, Long filmId) {
-        filmService.getById(filmId);
-        userService.findUserById(userId);
-        if (likeStorage.getLikes(userId, filmId) == null) {
-            throw new ObjectNotFoundException("Like not found");
-        }
         likeStorage.deleteLike(userId, filmId);
         feedService.saveEvent(Event.createEvent(userId, EventType.LIKE, Operation.REMOVE, filmId));
     }

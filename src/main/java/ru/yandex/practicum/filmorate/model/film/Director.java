@@ -4,8 +4,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import ru.yandex.practicum.filmorate.model.film.groupInterfaces.Create;
-import ru.yandex.practicum.filmorate.model.film.groupInterfaces.Update;
+import ru.yandex.practicum.filmorate.model.groupInterfaces.Create;
+import ru.yandex.practicum.filmorate.model.groupInterfaces.Update;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

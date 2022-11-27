@@ -22,27 +22,25 @@ public class FollowService {
     FeedService feedService;
 
     public void addFriend(Long userId, Long friendId) {
-        userService.findUserById(userId);
-        userService.findUserById(friendId);
+        userService.getById(userId);
+        userService.getById(friendId);
         followStorage.addFriend(userId, friendId);
         feedService.saveEvent(Event.createEvent(userId, EventType.FRIEND, Operation.ADD, friendId));
     }
 
     public void deleteFriend(Long userId, Long friendId) {
-        userService.findUserById(userId);
-        userService.findUserById(friendId);
         followStorage.deleteFriend(userId, friendId);
         feedService.saveEvent(Event.createEvent(userId, EventType.FRIEND, Operation.REMOVE, friendId));
     }
 
     public List<User> getAllFriends(Long userId) {
-        userService.findUserById(userId);
+        userService.getById(userId);
         return followStorage.getAllFriends(userId);
     }
 
     public List<User> getCommonFriends(Long userId, Long friendId) {
-        userService.findUserById(userId);
-        userService.findUserById(friendId);
+        userService.getById(userId);
+        userService.getById(friendId);
         return followStorage.getCommonFriends(userId, friendId);
     }
 }
