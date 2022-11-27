@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.review.Review;
 import ru.yandex.practicum.filmorate.storage.review.ReviewStorage;
-import ru.yandex.practicum.filmorate.storage.review.ReviewLikeStorage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,32 +20,39 @@ import java.util.Collection;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ReviewDbStorage implements ReviewStorage {
     JdbcTemplate jdbcTemplate;
-    ReviewLikeStorage reviewLikeStorage;
 
     @Override
-    public Review createReview(Review review) {
+    public Review create(Review review) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("reviews")
-                .usingGeneratedKeyColumns("id");
+                .withTableName("REVIEWS")
+                .usingGeneratedKeyColumns("ID");
         review.setReviewId(simpleJdbcInsert.executeAndReturnKey(review.toMap()).longValue());
         return review;
     }
 
     @Override
-    public Review updateReview(Review review) {
-        String sqlQuery = "UPDATE reviews SET " +
-                "content = ?, is_positive = ? " +
-                "WHERE id = ?";
-        jdbcTemplate.update(sqlQuery,
+    public Review update(Review review) {
+        String sqlQuery = "UPDATE REVIEWS SET " +
+                "CONTENT = ?, IS_POSITIVE = ? " +
+                "WHERE ID = ?";
+        if (jdbcTemplate.update(sqlQuery,
                 review.getContent(),
                 review.getPositive(),
-                review.getReviewId());
+                review.getReviewId())
+                == 0) {
+            throw new ObjectNotFoundException(
+                    String.format("Review with %d id not found.", review.getReviewId()));
+        }
         return review;
     }
 
     @Override
-    public Review findReviewById(Long reviewId) {
-        String sqlQuery = "SELECT * FROM reviews WHERE id = ?";
+    public Review getById(Long reviewId) {
+        String sqlQuery = "SELECT R.*, SUM(RL.IS_POSITIVE) AS USEFUL " +
+                "FROM REVIEWS AS R " +
+                "LEFT JOIN REVIEW_LIKE RL on R.ID = RL.REVIEW_ID " +
+                "WHERE R.ID = ? " +
+                "GROUP BY R.ID";
         return jdbcTemplate.query(sqlQuery, this::mapRowToReview, reviewId)
                 .stream()
                 .findFirst()
@@ -54,34 +60,52 @@ public class ReviewDbStorage implements ReviewStorage {
     }
 
     @Override
-    public Collection<Review> findAllReviews() {
-        String sqlQuery = "SELECT * FROM reviews";
+    public Collection<Review> getAll() {
+        String sqlQuery = "SELECT R.*, IFNULL(SUM(RL.IS_POSITIVE), 0) AS USEFUL " +
+                "FROM REVIEWS AS R " +
+                "LEFT JOIN REVIEW_LIKE RL on R.ID = RL.REVIEW_ID " +
+                "GROUP BY R.ID " +
+                "ORDER BY USEFUL DESC";
         return jdbcTemplate.query(sqlQuery, this::mapRowToReview);
     }
 
     @Override
-    public void deleteReview(Long reviewId) {
-        String sqlQuery = "DELETE FROM reviews WHERE id = ?";
-        jdbcTemplate.update(sqlQuery, reviewId);
+    public void delete(Long reviewId) {
+        String sqlQuery = "DELETE FROM REVIEWS WHERE ID = ?";
+        if (jdbcTemplate.update(sqlQuery, reviewId) == 0) {
+            throw new ObjectNotFoundException(
+                    String.format("Review with %d id not found.", reviewId));
+        }
     }
 
     @Override
-    public Collection<Review> findAllReviews(Long filmId, Integer count) {
+    public Collection<Review> getAll(Long filmId, Integer count) {
         if (filmId == -1) {
-            String sqlQuery = "SELECT * FROM reviews LIMIT ?";
+            String sqlQuery = "SELECT R.*, IFNULL(SUM(RL.IS_POSITIVE), 0) AS USEFUL " +
+                    "FROM REVIEWS AS R " +
+                    "LEFT JOIN REVIEW_LIKE RL on R.ID = RL.REVIEW_ID " +
+                    "GROUP BY R.ID " +
+                    "ORDER BY USEFUL DESC " +
+                    "LIMIT ?";
             return jdbcTemplate.query(sqlQuery, this::mapRowToReview, count);
         }
-        String sqlQuery = "SELECT * FROM reviews WHERE film_id = ? LIMIT ?";
+        String sqlQuery = "SELECT R.*, IFNULL(SUM(RL.IS_POSITIVE), 0) AS USEFUL " +
+                "FROM REVIEWS AS R " +
+                "LEFT JOIN REVIEW_LIKE RL on R.ID = RL.REVIEW_ID " +
+                "WHERE R.FILM_ID = ?" +
+                "GROUP BY R.ID " +
+                "ORDER BY USEFUL DESC " +
+                "LIMIT ?";
         return new ArrayList<>(jdbcTemplate.query(sqlQuery, this::mapRowToReview, filmId, count));
     }
 
     private Review mapRowToReview(ResultSet rs, int rowNum) throws SQLException {
-        return Review.builder().reviewId(rs.getLong("id"))
-                .content(rs.getString("content"))
-                .positive(rs.getBoolean("is_positive"))
-                .filmId(rs.getLong("film_id"))
-                .userId(rs.getLong("user_id"))
-                .useful(reviewLikeStorage.getUseful(rs.getLong("id")))
+        return Review.builder().reviewId(rs.getLong("ID"))
+                .content(rs.getString("CONTENT"))
+                .positive(rs.getBoolean("IS_POSITIVE"))
+                .filmId(rs.getLong("FILM_ID"))
+                .userId(rs.getLong("USER_ID"))
+                .useful(rs.getLong("USEFUL"))
                 .build();
     }
 }

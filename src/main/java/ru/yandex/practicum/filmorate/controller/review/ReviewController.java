@@ -23,28 +23,28 @@ public class ReviewController {
 
     @PostMapping
     public Review createReview(@Valid @RequestBody Review review) {
-        return reviewService.createReview(review);
+        return reviewService.create(review);
     }
 
     @PutMapping
     public Review updateReview(@Valid @RequestBody Review review) {
-        return reviewService.updateReview(review);
+        return reviewService.update(review);
     }
 
     @DeleteMapping("/{reviewId}")
     public void deleteReview(@Positive @PathVariable("reviewId") Long reviewId) {
-        reviewService.deleteReview(reviewId);
+        reviewService.delete(reviewId);
     }
 
     @GetMapping("/{reviewId}")
     public Review getReview(@Positive @PathVariable("reviewId") Long reviewId) {
-        return reviewService.findReviewById(reviewId);
+        return reviewService.findById(reviewId);
     }
 
     @GetMapping
     public Collection<Review> getAllReviews(@RequestParam(name = "filmId", required = false) Optional<Long> filmId,
                                             @RequestParam(name = "count", required = false) Optional<Integer> count) {
-        return reviewService.findAllReviews(filmId, count);
+        return reviewService.findAll(filmId, count);
     }
 
     @PutMapping("/{reviewId}/like/{userId}")
