@@ -38,7 +38,7 @@ public class FeedDbStorage implements FeedStorage {
     }
 
     @Override
-    public Event saveEvent(Event event) {
+    public Event addEvent(Event event) {
         String sqlQuery = "INSERT INTO FEED (creation_time, user_id, event_type, operation, entity_id) " +
                 "VALUES (?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();

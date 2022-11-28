@@ -29,8 +29,8 @@ public class FilmController {
     }
 
     @GetMapping("/{id}")
-    public Film getById(@Positive @PathVariable("id") Long filmId) {
-        return filmService.getById(filmId);
+    public Film getById(@Positive @PathVariable("id") Long id) {
+        return filmService.getById(id);
     }
 
     @PostMapping

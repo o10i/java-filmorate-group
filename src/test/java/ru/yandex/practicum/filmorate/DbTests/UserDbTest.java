@@ -87,7 +87,7 @@ public class UserDbTest {
     void testUpdateUser() {
         User user = userDbStorage.create(getUser());
         user.setLogin("testUpdateLogin");
-        assertEquals(user, userDbStorage.updateUser(user));
+        assertEquals(user, userDbStorage.update(user));
     }
 
     @Test
@@ -101,11 +101,11 @@ public class UserDbTest {
     void testFindUserById() {
         User user = userDbStorage.create(getUser());
         user.setId(1L);
-        assertEquals(user, userDbStorage.findUserById(1L));
+        assertEquals(user, userDbStorage.getById(1L));
     }
 
     @Test
     void testFindUnknownUser() {
-        assertThrows(ObjectNotFoundException.class, () -> userDbStorage.findUserById(9999L), "Пользователь с id " + 9999 + " не найден.");
+        assertThrows(ObjectNotFoundException.class, () -> userDbStorage.getById(9999L), "Пользователь с id " + 9999 + " не найден.");
     }
 }

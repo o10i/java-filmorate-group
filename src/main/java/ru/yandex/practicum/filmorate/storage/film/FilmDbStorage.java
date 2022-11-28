@@ -54,15 +54,15 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Film getById(Long filmId) {
+    public Film getById(Long id) {
         String sqlQuery = "SELECT * FROM MOVIE AS m " +
                 "INNER JOIN MPA ON m.mpa_id = MPA.id " +
                 "WHERE m.id = ?";
 
-        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), filmId)
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), id)
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Film with %d id not found", filmId)));
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Film with %d id not found", id)));
 
     }
 

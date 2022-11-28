@@ -25,12 +25,12 @@ public class FollowService {
         userService.getById(id);
         userService.getById(friendId);
         followStorage.addFriend(id, friendId);
-        feedService.saveEvent(Event.createEvent(id, EventType.FRIEND, Operation.ADD, friendId));
+        feedService.addEvent(Event.createEvent(id, EventType.FRIEND, Operation.ADD, friendId));
     }
 
     public void deleteFriend(Long id, Long friendId) {
         followStorage.deleteFriend(id, friendId);
-        feedService.saveEvent(Event.createEvent(id, EventType.FRIEND, Operation.REMOVE, friendId));
+        feedService.addEvent(Event.createEvent(id, EventType.FRIEND, Operation.REMOVE, friendId));
     }
 
     public List<User> getFriends(Long id) {

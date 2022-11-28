@@ -4,8 +4,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import org.springframework.format.annotation.DateTimeFormat;
 import ru.yandex.practicum.filmorate.model.Marker;
+import ru.yandex.practicum.filmorate.validation.film.FilmReleaseDateConstraint;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -27,7 +27,7 @@ public class Film {
     @Size(max = 200)
     String description;
     @NotNull(groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @FilmReleaseDateConstraint
     LocalDate releaseDate;
     @Positive(groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
     int duration;

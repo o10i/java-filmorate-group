@@ -27,7 +27,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User findUserById(Long userId) {
+    public User getById(Long userId) {
         String sqlQuery = "SELECT * FROM USERS WHERE id = ?";
 
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToUser(rs), userId)
@@ -46,7 +46,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User updateUser(User user) {
+    public User update(User user) {
         String sqlQuery = "UPDATE USERS SET " +
                 "EMAIL = ?, LOGIN = ?, NAME = ? , BIRTHDAY = ?" +
                 "WHERE ID = ?";

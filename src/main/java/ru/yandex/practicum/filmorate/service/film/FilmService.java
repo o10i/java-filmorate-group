@@ -4,13 +4,11 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.film.DirectorSortBy;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.search.SearchSortBy;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +16,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class FilmService {
-    static LocalDate FILM_BIRTH = LocalDate.of(1895, 12, 28);
     FilmStorage filmStorage;
     GenreService genreService;
     DirectorService directorService;
@@ -30,15 +27,14 @@ public class FilmService {
         return films;
     }
 
-    public Film getById(Long filmId) {
-        Film film = filmStorage.getById(filmId);
+    public Film getById(Long id) {
+        Film film = filmStorage.getById(id);
         genreService.loadGenres(List.of(film));
         directorService.loadDirectors(List.of(film));
         return film;
     }
 
     public Film create(Film film) {
-        validator(film);
         Film filmWithId = filmStorage.create(film);
         if (film.getGenres() != null) {
             genreService.addGenresToFilm(filmWithId.getId(), film.getGenres());
@@ -50,7 +46,6 @@ public class FilmService {
     }
 
     public Film update(Film film) {
-        validator(film);
         genreService.deleteFilmGenres(film.getId());
         directorService.deleteFilmDirectors(film.getId());
         if (film.getGenres() != null) {
@@ -96,12 +91,6 @@ public class FilmService {
         genreService.loadGenres(films);
         directorService.loadDirectors(films);
         return films;
-    }
-
-    private void validator(Film film) {
-        if (film.getReleaseDate().isBefore(FILM_BIRTH)) {
-            throw new ValidationException("December 28, 1895 is considered the birthday of cinema.");
-        }
     }
 }
 

@@ -19,7 +19,7 @@ public class FeedService {
         return feedStorage.getEventsByUserId(id);
     }
 
-    public Event saveEvent(Event event) {
-        return feedStorage.saveEvent(event);
+    public Event addEvent(Event event) {
+        return feedStorage.addEvent(event);
     }
 }
