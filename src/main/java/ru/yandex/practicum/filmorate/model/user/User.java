@@ -1,10 +1,11 @@
 package ru.yandex.practicum.filmorate.model.user;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import org.springframework.format.annotation.DateTimeFormat;
-import ru.yandex.practicum.filmorate.model.groupInterfaces.Create;
-import ru.yandex.practicum.filmorate.model.groupInterfaces.Update;
+import ru.yandex.practicum.filmorate.model.Marker;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -18,15 +19,15 @@ import java.util.Map;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
-    @NotNull(groups = Update.class)
+    @NotNull(groups = Marker.OnUpdate.class)
     Long id;
-    @NotBlank(groups = {Create.class, Update.class})
+    @NotBlank(groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
     @Email
     String email;
-    @NotBlank(groups = {Create.class, Update.class})
+    @NotBlank(groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
     String login;
     String name;
-    @PastOrPresent(groups = {Create.class, Update.class})
+    @PastOrPresent(groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     LocalDate birthday;
 

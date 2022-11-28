@@ -5,7 +5,7 @@ import ru.yandex.practicum.filmorate.model.event.Event;
 import java.util.List;
 
 public interface FeedStorage {
-    List<Event> findEventsByUserId(Long userId);
+    List<Event> getEventsByUserId(Long id);
 
     Event saveEvent(Event event);
 }

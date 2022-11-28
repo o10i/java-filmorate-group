@@ -21,7 +21,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class FilmController {
-
     FilmService filmService;
 
     @GetMapping
@@ -30,7 +29,7 @@ public class FilmController {
     }
 
     @GetMapping("/{id}")
-    public Film getById(@PathVariable("id") Long filmId) {
+    public Film getById(@Positive @PathVariable("id") Long filmId) {
         return filmService.getById(filmId);
     }
 
@@ -45,32 +44,32 @@ public class FilmController {
     }
 
     @DeleteMapping("{filmId}")
-    public void deleteById(@PathVariable("filmId") Long filmId) {
+    public void deleteById(@Positive @PathVariable("filmId") Long filmId) {
         filmService.deleteById(filmId);
     }
 
     @GetMapping("/popular")
-    public List<Film> getTop(@RequestParam(defaultValue = "10") @Positive Integer count,
+    public List<Film> getTop(@Positive @RequestParam(defaultValue = "10") Integer count,
                              @RequestParam(required = false) Optional<Integer> genreId,
                              @RequestParam(required = false) Optional<Integer> year) {
         return filmService.getTop(count, genreId, year);
     }
 
     @GetMapping("/common")
-    public List<Film> getCommon(@RequestParam(value = "userId") Long userId,
-                                @RequestParam(value = "friendId") Long friendId) {
+    public List<Film> getCommon(@Positive @RequestParam(value = "userId") Long userId,
+                                @Positive @RequestParam(value = "friendId") Long friendId) {
         return filmService.getCommon(userId, friendId);
     }
 
     @GetMapping("/director/{directorId}")
-    public List<Film> getDirectorFilmsBy(@PathVariable("directorId") Long directorId,
+    public List<Film> getDirectorFilmsBy(@Positive @PathVariable("directorId") Long directorId,
                                          @RequestParam DirectorSortBy sortBy) {
         return filmService.getDirectorFilmsBy(directorId, sortBy);
     }
 
     @GetMapping("/search")
-    public List<Film> searchTopFilmsBy(@RequestParam String query,
-                                       @RequestParam String by) {
-        return filmService.searchTopFilmsBy(query, by);
+    public List<Film> getSearchedTopFilmsBy(@RequestParam(value = "query") String query,
+                                            @RequestParam(value = "by") String by) {
+        return filmService.getSearchedTopFilmsBy(query, by);
     }
 }

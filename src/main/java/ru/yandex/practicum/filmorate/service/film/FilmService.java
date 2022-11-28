@@ -88,11 +88,11 @@ public class FilmService {
         return films;
     }
 
-    public List<Film> searchTopFilmsBy(String query, String by) {
+    public List<Film> getSearchedTopFilmsBy(String query, String by) {
         by = by.toLowerCase();
         boolean searchByFilmName = by.contains(SearchSortBy.title.name());
         boolean searchByDirectorName = by.contains(SearchSortBy.director.name());
-        List<Film> films = filmStorage.searchTopFilmsBy(query, searchByFilmName, searchByDirectorName);
+        List<Film> films = filmStorage.getSearchedTopFilmsBy(query, searchByFilmName, searchByDirectorName);
         genreService.loadGenres(films);
         directorService.loadDirectors(films);
         return films;

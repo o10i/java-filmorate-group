@@ -5,8 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.model.groupInterfaces.Create;
-import ru.yandex.practicum.filmorate.model.groupInterfaces.Update;
+import ru.yandex.practicum.filmorate.model.Marker;
 import ru.yandex.practicum.filmorate.model.user.User;
 import ru.yandex.practicum.filmorate.service.user.UserService;
 
@@ -18,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserController {
-
     UserService userService;
 
     @GetMapping
@@ -26,23 +24,23 @@ public class UserController {
         return userService.getAll();
     }
 
-    @PostMapping
-    public User create(@Validated(Create.class) @RequestBody User user) {
-        return userService.create(user);
-    }
-
-    @PutMapping
-    public User update(@Validated(Update.class) @RequestBody User user) {
-        return userService.update(user);
-    }
-
     @GetMapping("/{id}")
     public User getById(@PathVariable("id") Long id) {
         return userService.getById(id);
     }
 
+    @PostMapping
+    public User create(@Validated(Marker.OnCreate.class) @RequestBody User user) {
+        return userService.create(user);
+    }
+
+    @PutMapping
+    public User update(@Validated(Marker.OnUpdate.class) @RequestBody User user) {
+        return userService.update(user);
+    }
+
     @DeleteMapping("{userId}")
-    public void delete(@PathVariable("userId") Long id) {
-        userService.delete(id);
+    public void deleteById(@PathVariable("userId") Long userId) {
+        userService.deleteById(userId);
     }
 }

@@ -20,7 +20,7 @@ public class RecommendationDbStorage implements RecommendationStorage {
     JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<Film> getRecommendations(Long userId) {
+    public List<Film> getUserRecommendations(Long id) {
         List<Film> recommendations = new ArrayList<>();
         String sqlQueryForSimilarUser = "SELECT user_id, COUNT(film_id) AS same_film_count " +
                 "FROM likes " +
@@ -30,7 +30,7 @@ public class RecommendationDbStorage implements RecommendationStorage {
                 "GROUP BY user_id " +
                 "ORDER BY same_film_count DESC " +
                 "LIMIT 1";
-        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sqlQueryForSimilarUser, userId, userId);
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sqlQueryForSimilarUser, id, id);
         if (!rowSet.next()) {
             return recommendations;
         }
@@ -44,6 +44,6 @@ public class RecommendationDbStorage implements RecommendationStorage {
                 "WHERE user_id = ?) AND l.user_id = ? ";
         return jdbcTemplate.query(sqlQueryForRecommendations,
                 (rs, rowNum) -> mapRowToFilm(rs),
-                userId, similarUserId);
+                id, similarUserId);
     }
 }

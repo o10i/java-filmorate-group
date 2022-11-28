@@ -64,7 +64,7 @@ public class FollowDbTest {
         user.setLogin("testLogin1");
         User savedUser = userDbStorage.create(user);
         followDbStorage.addFriend(1L, 2L);
-        assertEquals(List.of(savedUser), followDbStorage.getAllFriends(1L));
+        assertEquals(List.of(savedUser), followDbStorage.getFriends(1L));
     }
 
     @Test
@@ -81,7 +81,7 @@ public class FollowDbTest {
 
         followDbStorage.addFriend(1L, 2L);
         followDbStorage.addFriend(1L, 3L);
-        assertEquals(List.of(savedUser, savedUser2), followDbStorage.getAllFriends(1L));
+        assertEquals(List.of(savedUser, savedUser2), followDbStorage.getFriends(1L));
     }
 
     @Test
@@ -92,7 +92,7 @@ public class FollowDbTest {
         user.setLogin("testLogin1");
         userDbStorage.create(user);
         followDbStorage.addFriend(1L, 2L);
-        assertEquals(new ArrayList<>(), followDbStorage.getAllFriends(2L));
+        assertEquals(new ArrayList<>(), followDbStorage.getFriends(2L));
     }
 
     @Test

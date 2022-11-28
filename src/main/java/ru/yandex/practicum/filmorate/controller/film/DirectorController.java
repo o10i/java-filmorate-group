@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.model.Marker;
 import ru.yandex.practicum.filmorate.model.film.Director;
 import ru.yandex.practicum.filmorate.service.film.DirectorService;
 
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
@@ -24,7 +25,7 @@ public class DirectorController {
     }
 
     @GetMapping("/{id}")
-    public Director getById(@PathVariable Long id) {
+    public Director getById(@Positive @PathVariable("id") Long id) {
         return directorService.getById(id);
     }
 

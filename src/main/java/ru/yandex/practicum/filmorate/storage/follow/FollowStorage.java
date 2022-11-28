@@ -7,11 +7,11 @@ import java.util.List;
 public interface FollowStorage {
 
 
-    void addFriend(Long userId, Long friendId);
+    void addFriend(Long id, Long friendId);
 
-    void deleteFriend(Long userId, Long friendId);
+    void deleteFriend(Long id, Long friendId);
 
-    List<User> getAllFriends(Long userId);
+    List<User> getFriends(Long id);
 
-    List<User> getCommonFriends(Long userId, Long friendId);
+    List<User> getCommonFriends(Long id, Long otherId);
 }

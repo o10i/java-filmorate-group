@@ -23,17 +23,17 @@ public class MpaDbTest {
 
     @Test
     void testFindMpaById() {
-        assertEquals(Mpa.builder().id(1L).name("G").build(), mpaDbStorage.findMPAById(1L));
+        assertEquals(Mpa.builder().id(1L).name("G").build(), mpaDbStorage.getById(1L));
     }
 
     @Test
     void testFindUnknownMpa() {
-        assertThrows(ObjectNotFoundException.class, () -> mpaDbStorage.findMPAById(-1L), "Mpa с id -1 не найден.");
+        assertThrows(ObjectNotFoundException.class, () -> mpaDbStorage.getById(-1L), "Mpa с id -1 не найден.");
     }
 
     @Test
     void testFindAllMpa() {
-        assertEquals(Mpa.builder().id(1L).name("G").build(), mpaDbStorage.findAllMPA().get(0));
-        assertEquals(5, mpaDbStorage.findAllMPA().size());
+        assertEquals(Mpa.builder().id(1L).name("G").build(), mpaDbStorage.getAll().get(0));
+        assertEquals(5, mpaDbStorage.getAll().size());
     }
 }

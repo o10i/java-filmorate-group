@@ -26,11 +26,11 @@ public class FeedDbStorage implements FeedStorage {
     JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<Event> findEventsByUserId(Long userId) {
+    public List<Event> getEventsByUserId(Long id) {
         String sqlQuery = "SELECT * FROM FEED WHERE USER_ID = ?";
         List<Event> events;
         try {
-            events = jdbcTemplate.query(sqlQuery, this::makeRowToEvent, userId);
+            events = jdbcTemplate.query(sqlQuery, this::makeRowToEvent, id);
         } catch (EmptyResultDataAccessException e) {
             throw new ObjectNotFoundException("Like not found");
         }

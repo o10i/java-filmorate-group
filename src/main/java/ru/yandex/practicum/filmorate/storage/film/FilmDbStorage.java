@@ -205,7 +205,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> searchTopFilmsBy(String query, boolean searchByFilmName, boolean searchByDirectorName) {
+    public List<Film> getSearchedTopFilmsBy(String query, boolean searchByFilmName, boolean searchByDirectorName) {
         String search = "%" + query.toLowerCase() + "%";
         String sqlQuery;
         if (searchByFilmName && searchByDirectorName) {

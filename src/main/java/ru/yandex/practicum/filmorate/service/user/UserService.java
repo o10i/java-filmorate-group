@@ -35,8 +35,8 @@ public class UserService {
         return userStorage.findUserById(userId);
     }
 
-    public void delete(Long userId) {
-        userStorage.deleteUserById(userId);
+    public void deleteById(Long userId) {
+        userStorage.deleteById(userId);
     }
 
     private void validator(User user) {

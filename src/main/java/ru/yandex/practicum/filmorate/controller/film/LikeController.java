@@ -11,7 +11,6 @@ import ru.yandex.practicum.filmorate.service.film.LikeService;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class LikeController {
-
     LikeService likeService;
 
     @PutMapping

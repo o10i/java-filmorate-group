@@ -5,8 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import ru.yandex.practicum.filmorate.model.groupInterfaces.Create;
-import ru.yandex.practicum.filmorate.model.groupInterfaces.Update;
+import ru.yandex.practicum.filmorate.model.Marker;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -17,16 +16,16 @@ import java.util.Map;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Review {
-    @NotNull(groups = Update.class)
+    @NotNull(groups = Marker.OnUpdate.class)
     Long reviewId;
-    @NotBlank(groups = {Create.class, Update.class})
+    @NotBlank(groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
     String content;
     @JsonProperty("isPositive")
-    @NotNull(groups = {Create.class, Update.class})
+    @NotNull(groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
     Boolean positive;
-    @NotNull(groups = Create.class)
+    @NotNull(groups = Marker.OnCreate.class)
     Long filmId;
-    @NotNull(groups = Create.class)
+    @NotNull(groups = Marker.OnCreate.class)
     Long userId;
     Long useful;
 

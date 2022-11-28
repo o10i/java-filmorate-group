@@ -67,16 +67,16 @@ public class FeedDBTest {
     void testFindEventsByUserId(){
         final User user = userDbStorage.create(makeUser());
 
-        assertTrue(feedDbStorage.findEventsByUserId(user.getId()).isEmpty(), "List Event don't empty.");
+        assertTrue(feedDbStorage.getEventsByUserId(user.getId()).isEmpty(), "List Event don't empty.");
 
         feedDbStorage.saveEvent(Event.createEvent(user.getId(), EventType.LIKE, Operation.ADD, 3L));
-        final List<Event> events = feedDbStorage.findEventsByUserId(user.getId());
+        final List<Event> events = feedDbStorage.getEventsByUserId(user.getId());
 
         assertNotNull(events, "Event don't save.");
         assertEquals(1, events.size(), "Size of list events don't match.");
 
         feedDbStorage.saveEvent(Event.createEvent(user.getId(), EventType.LIKE, Operation.ADD, 5L));
-        final List<Event> eventsForTwo = feedDbStorage.findEventsByUserId(user.getId());
+        final List<Event> eventsForTwo = feedDbStorage.getEventsByUserId(user.getId());
 
         assertNotNull(eventsForTwo, "Event don't save.");
         assertEquals(2, eventsForTwo.size(), "Size of list events don't match.");

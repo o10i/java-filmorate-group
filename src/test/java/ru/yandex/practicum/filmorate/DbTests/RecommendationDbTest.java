@@ -76,13 +76,13 @@ public class RecommendationDbTest {
         likeDbStorage.addLike(user.getId(), film.getId());
         likeDbStorage.addLike(user.getId(), secondFilm.getId());
         likeDbStorage.addLike(secondUser.getId(), film.getId());
-        List<Film> films = recommendationDbStorage.getRecommendations(secondUser.getId());
+        List<Film> films = recommendationDbStorage.getUserRecommendations(secondUser.getId());
 
         assertNotNull(films, "List recommendation is empty.");
         assertEquals(secondFilm, films.get(0), "Recommendation film don't match.");
 
         likeDbStorage.deleteLike(user.getId(), secondFilm.getId());
-        List<Film> emptyFilms = recommendationDbStorage.getRecommendations(secondUser.getId());
+        List<Film> emptyFilms = recommendationDbStorage.getUserRecommendations(secondUser.getId());
 
         assertTrue(emptyFilms.isEmpty(), "List recommendation isn't empty.");
     }
