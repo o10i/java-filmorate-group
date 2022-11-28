@@ -6,7 +6,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Marker;
-import ru.yandex.practicum.filmorate.model.film.DirectorSortBy;
+import ru.yandex.practicum.filmorate.model.film.enums.DirectorSortBy;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
 

@@ -11,13 +11,13 @@ import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-@Builder
 @Data
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Director {
     @NotNull(groups = {Marker.OnUpdate.class})
     Long id;
-    @NotBlank(groups = {Marker.OnCreate.class, Marker.OnUpdate.class}, message = "Имя режиссёра не может быть пустым.")
+    @NotBlank(groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
     String name;
 
     public Map<String, Object> toMap() {

@@ -5,11 +5,10 @@ import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.NotNull;
 
-@Builder
 @Data
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Like {
-
     @NotNull
     Long filmId;
     @NotNull

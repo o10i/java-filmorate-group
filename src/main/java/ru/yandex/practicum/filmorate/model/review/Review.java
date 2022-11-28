@@ -12,8 +12,8 @@ import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-@Builder
 @Data
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Review {
     @NotNull(groups = Marker.OnUpdate.class)

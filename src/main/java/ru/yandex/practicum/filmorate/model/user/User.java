@@ -11,8 +11,8 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
-@Builder
 @Data
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
     @NotNull(groups = Marker.OnUpdate.class)

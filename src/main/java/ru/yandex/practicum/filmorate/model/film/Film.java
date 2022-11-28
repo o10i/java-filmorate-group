@@ -14,20 +14,19 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 
-
-@Builder
 @Data
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Film {
     @NotNull(groups = {Marker.OnUpdate.class})
     Long id;
-    @NotBlank(groups = {Marker.OnCreate.class, Marker.OnUpdate.class}, message = "Название фильма не может быть пустым.")
+    @NotBlank(groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
     String name;
     @NotNull(groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
-    @Size(max = 200)
+    @Size(groups = {Marker.OnCreate.class, Marker.OnUpdate.class}, max = 200)
     String description;
     @NotNull(groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
-    @FilmReleaseDateConstraint
+    @FilmReleaseDateConstraint(groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
     LocalDate releaseDate;
     @Positive(groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
     int duration;

@@ -4,9 +4,9 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.model.film.DirectorSortBy;
+import ru.yandex.practicum.filmorate.model.film.enums.DirectorSortBy;
 import ru.yandex.practicum.filmorate.model.film.Film;
-import ru.yandex.practicum.filmorate.model.search.SearchSortBy;
+import ru.yandex.practicum.filmorate.model.film.enums.SearchSortBy;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.util.List;

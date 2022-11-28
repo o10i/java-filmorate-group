@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
 import ru.yandex.practicum.filmorate.model.film.Film;
-import ru.yandex.practicum.filmorate.model.film.DirectorSortBy;
+import ru.yandex.practicum.filmorate.model.film.enums.DirectorSortBy;
 
 import java.util.List;
 import java.util.Optional;
