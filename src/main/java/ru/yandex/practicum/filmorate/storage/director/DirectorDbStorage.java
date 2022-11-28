@@ -23,7 +23,6 @@ import static java.util.function.UnaryOperator.identity;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class DirectorDbStorage implements DirectorStorage {
-
     JdbcTemplate jdbcTemplate;
 
     @Override

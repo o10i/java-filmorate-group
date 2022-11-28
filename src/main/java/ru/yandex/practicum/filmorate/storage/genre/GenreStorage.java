@@ -7,14 +7,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 public interface GenreStorage {
-
     List<Genre> getAll();
-
     Genre getById(Long genreId);
-
     void addGenresToFilm(Long filmId, LinkedHashSet<Genre> genres);
-
-    void loadGenres(List<Film> films);
     void deleteFilmGenres(Long filmId);
+    void loadGenres(List<Film> films);
 
 }

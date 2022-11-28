@@ -56,7 +56,7 @@ public class ReviewService {
     public void deleteById(Long reviewId) {
         feedService.addEvent(Event.createEvent(getById(reviewId).getUserId(), EventType.REVIEW, Operation.REMOVE,
                 reviewId));
-        reviewStorage.delete(reviewId);
+        reviewStorage.deleteById(reviewId);
     }
 
     public void addLike(Long reviewId, Long userId) {
@@ -68,10 +68,10 @@ public class ReviewService {
     }
 
     public void deleteLike(Long reviewId, Long userId) {
-        likeStorage.removeLike(reviewId, userId);
+        likeStorage.deleteLike(reviewId, userId);
     }
 
     public void deleteDislike(Long reviewId, Long userId) {
-        likeStorage.removeDislike(reviewId, userId);
+        likeStorage.deleteDislike(reviewId, userId);
     }
 }

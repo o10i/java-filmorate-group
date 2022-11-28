@@ -17,11 +17,20 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserDbStorage implements UserStorage {
-
     JdbcTemplate jdbcTemplate;
 
+    public static User mapRowToUser(ResultSet resultSet) throws SQLException {
+        return User.builder()
+                .id(resultSet.getLong("id"))
+                .email(resultSet.getString("email"))
+                .login(resultSet.getString("login"))
+                .name(resultSet.getString("name"))
+                .birthday(resultSet.getDate("birthday").toLocalDate())
+                .build();
+    }
+
     @Override
-    public List<User> findAllUsers() {
+    public List<User> getAll() {
         String sqlQuery = "SELECT * FROM USERS";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToUser(rs));
     }
@@ -66,15 +75,5 @@ public class UserDbStorage implements UserStorage {
         if (jdbcTemplate.update(sqlQuery, userId) == 0) {
             throw new ObjectNotFoundException(String.format("User with %d id not found", userId));
         }
-    }
-
-    public static User mapRowToUser(ResultSet resultSet) throws SQLException {
-        return User.builder()
-                .id(resultSet.getLong("id"))
-                .email(resultSet.getString("email"))
-                .login(resultSet.getString("login"))
-                .name(resultSet.getString("name"))
-                .birthday(resultSet.getDate("birthday").toLocalDate())
-                .build();
     }
 }

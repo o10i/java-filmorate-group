@@ -6,6 +6,5 @@ import java.util.List;
 
 public interface FeedStorage {
     List<Event> getEventsByUserId(Long id);
-
     Event addEvent(Event event);
 }

@@ -9,7 +9,7 @@ import ru.yandex.practicum.filmorate.model.event.enums.EventType;
 import ru.yandex.practicum.filmorate.model.event.enums.Operation;
 import ru.yandex.practicum.filmorate.model.user.User;
 import ru.yandex.practicum.filmorate.service.feed.FeedService;
-import ru.yandex.practicum.filmorate.storage.follow.FollowStorage;
+import ru.yandex.practicum.filmorate.storage.like.follow.FollowStorage;
 
 import java.util.List;
 

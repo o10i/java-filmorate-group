@@ -22,12 +22,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-
 @Repository("filmStorage")
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class FilmDbStorage implements FilmStorage {
-
     JdbcTemplate jdbcTemplate;
 
     public static Film mapRowToFilm(ResultSet resultSet) throws SQLException {

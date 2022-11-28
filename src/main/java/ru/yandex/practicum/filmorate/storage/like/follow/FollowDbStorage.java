@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage.follow;
+package ru.yandex.practicum.filmorate.storage.like.follow;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

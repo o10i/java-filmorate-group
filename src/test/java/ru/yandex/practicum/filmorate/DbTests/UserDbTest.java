@@ -94,7 +94,7 @@ public class UserDbTest {
     void testFindAllUsers() {
         User user = userDbStorage.create(getUser());
         List<User> users = List.of(user);
-        assertEquals(users, userDbStorage.findAllUsers());
+        assertEquals(users, userDbStorage.getAll());
     }
 
     @Test
