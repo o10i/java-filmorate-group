@@ -15,7 +15,7 @@ import java.util.List;
 public class FeedService {
     FeedStorage feedStorage;
 
-    public List<Event> findEventsByUserId(Long userId) {
+    public List<Event> getEventsByUserId(Long userId) {
         return feedStorage.findEventsByUserId(userId);
     }
 

@@ -5,8 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import org.springframework.format.annotation.DateTimeFormat;
-import ru.yandex.practicum.filmorate.model.groupInterfaces.Create;
-import ru.yandex.practicum.filmorate.model.groupInterfaces.Update;
+import ru.yandex.practicum.filmorate.model.Marker;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -20,20 +19,20 @@ import java.util.LinkedHashSet;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Film {
-    @NotNull(groups = {Update.class})
+    @NotNull(groups = {Marker.OnUpdate.class})
     Long id;
-    @NotBlank(groups = {Create.class, Update.class}, message = "Название фильма не может быть пустым.")
+    @NotBlank(groups = {Marker.OnCreate.class, Marker.OnUpdate.class}, message = "Название фильма не может быть пустым.")
     String name;
-    @NotNull(groups = {Create.class, Update.class})
+    @NotNull(groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
     @Size(max = 200)
     String description;
-    @NotNull(groups = {Create.class, Update.class})
+    @NotNull(groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     LocalDate releaseDate;
-    @Positive(groups = {Create.class, Update.class})
+    @Positive(groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
     int duration;
     int rate;
-    @NotNull(groups = {Create.class, Update.class})
+    @NotNull(groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
     Mpa mpa;
     LinkedHashSet<Genre> genres;
     LinkedHashSet<Director> directors;

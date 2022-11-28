@@ -5,10 +5,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.model.Marker;
 import ru.yandex.practicum.filmorate.model.film.DirectorSortBy;
 import ru.yandex.practicum.filmorate.model.film.Film;
-import ru.yandex.practicum.filmorate.model.groupInterfaces.Create;
-import ru.yandex.practicum.filmorate.model.groupInterfaces.Update;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
 
 import javax.validation.constraints.Positive;
@@ -36,12 +35,12 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film create(@Validated(Create.class) @RequestBody Film film) {
+    public Film create(@Validated(Marker.OnCreate.class) @RequestBody Film film) {
         return filmService.create(film);
     }
 
     @PutMapping
-    public Film update(@Validated(Update.class) @RequestBody Film film) {
+    public Film update(@Validated(Marker.OnUpdate.class) @RequestBody Film film) {
         return filmService.update(film);
     }
 

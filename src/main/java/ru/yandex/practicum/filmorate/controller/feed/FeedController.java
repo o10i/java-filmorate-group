@@ -20,7 +20,7 @@ public class FeedController {
     FeedService feedService;
 
     @GetMapping
-    public List<Event> findEventsByUserId(@PathVariable("id") Long userId) {
-        return feedService.findEventsByUserId(userId);
+    public List<Event> getEventsByUserId(@PathVariable("id") Long userId) {
+        return feedService.getEventsByUserId(userId);
     }
 }

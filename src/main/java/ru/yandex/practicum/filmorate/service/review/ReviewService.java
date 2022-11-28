@@ -42,7 +42,7 @@ public class ReviewService {
         return reviewStorage.update(review);
     }
 
-    public void delete(Long reviewId) {
+    public void deleteById(Long reviewId) {
         feedService.saveEvent(Event.createEvent(getById(reviewId).getUserId(), EventType.REVIEW, Operation.REMOVE,
                 reviewId));
         reviewStorage.delete(reviewId);
@@ -67,11 +67,11 @@ public class ReviewService {
         likeStorage.addDislike(reviewId, userId);
     }
 
-    public void removeLike(Long reviewId, Long userId) {
+    public void deleteLike(Long reviewId, Long userId) {
         likeStorage.removeLike(reviewId, userId);
     }
 
-    public void removeDislike(Long reviewId, Long userId) {
+    public void deleteDislike(Long reviewId, Long userId) {
         likeStorage.removeDislike(reviewId, userId);
     }
 }
