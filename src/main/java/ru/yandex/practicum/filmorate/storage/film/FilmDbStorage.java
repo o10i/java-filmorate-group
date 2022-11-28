@@ -9,7 +9,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
-import ru.yandex.practicum.filmorate.model.film.DirectorSortBy;
+import ru.yandex.practicum.filmorate.model.film.enums.DirectorSortBy;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Mpa;
 
@@ -22,12 +22,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-
 @Repository("filmStorage")
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class FilmDbStorage implements FilmStorage {
-
     JdbcTemplate jdbcTemplate;
 
     public static Film mapRowToFilm(ResultSet resultSet) throws SQLException {
@@ -54,15 +52,15 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Film getById(Long filmId) {
+    public Film getById(Long id) {
         String sqlQuery = "SELECT * FROM MOVIE AS m " +
                 "INNER JOIN MPA ON m.mpa_id = MPA.id " +
                 "WHERE m.id = ?";
 
-        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), filmId)
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToFilm(rs), id)
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Film with %d id not found", filmId)));
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Film with %d id not found", id)));
 
     }
 
@@ -205,7 +203,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> searchTopFilmsBy(String query, boolean searchByFilmName, boolean searchByDirectorName) {
+    public List<Film> getSearchedTopFilmsBy(String query, boolean searchByFilmName, boolean searchByDirectorName) {
         String search = "%" + query.toLowerCase() + "%";
         String sqlQuery;
         if (searchByFilmName && searchByDirectorName) {

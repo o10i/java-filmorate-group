@@ -25,7 +25,6 @@ public class Event {
     @NotNull
     Long entityId;
 
-
     public static Event createEvent(Long userId, EventType eventType, Operation operation, Long entityId) {
         return Event.builder()
                 .timestamp(System.currentTimeMillis())

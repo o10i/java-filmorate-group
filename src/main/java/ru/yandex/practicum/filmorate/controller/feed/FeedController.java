@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.event.Event;
 import ru.yandex.practicum.filmorate.service.feed.FeedService;
 
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
@@ -20,7 +21,7 @@ public class FeedController {
     FeedService feedService;
 
     @GetMapping
-    public List<Event> findEventsByUserId(@PathVariable("id") Long userId) {
-        return feedService.findEventsByUserId(userId);
+    public List<Event> getEventsByUserId(@Positive @PathVariable("id") Long id) {
+        return feedService.getEventsByUserId(id);
     }
 }

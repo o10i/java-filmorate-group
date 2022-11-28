@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage.follow;
+package ru.yandex.practicum.filmorate.storage.like.follow;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -19,34 +19,34 @@ public class FollowDbStorage implements FollowStorage {
     JdbcTemplate jdbcTemplate;
 
     @Override
-    public void addFriend(Long userId, Long friendId) {
+    public void addFriend(Long id, Long friendId) {
         String sqlQuery = "INSERT INTO FOLLOW(USER_ID, FRIEND_ID) " +
                 "values (?, ?)";
-        jdbcTemplate.update(sqlQuery, userId, friendId);
+        jdbcTemplate.update(sqlQuery, id, friendId);
     }
 
     @Override
-    public void deleteFriend(Long userId, Long friendId) {
+    public void deleteFriend(Long id, Long friendId) {
         String sqlQuery = "DELETE FROM FOLLOW WHERE USER_ID = ? AND FRIEND_ID = ?";
-        if (jdbcTemplate.update(sqlQuery, userId, friendId ) == 0) {
-            throw new ObjectNotFoundException(String.format("Friends with %d and %d id not found", userId, friendId));
+        if (jdbcTemplate.update(sqlQuery, id, friendId ) == 0) {
+            throw new ObjectNotFoundException(String.format("Friends with %d and %d id not found", id, friendId));
         }
     }
 
     @Override
-    public List<User> getAllFriends(Long userId) {
+    public List<User> getFriends(Long id) {
         String sqlQuery = "SELECT * " +
                 "FROM USERS AS U " +
                 "INNER JOIN FOLLOW AS F ON U.ID = F.FRIEND_ID " +
                 "WHERE F.USER_ID = ?";
-        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToUser(rs), userId);
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToUser(rs), id);
     }
 
     @Override
-    public List<User> getCommonFriends(Long userId, Long friendId) {
+    public List<User> getCommonFriends(Long id, Long otherId) {
         String sqlQuery = "SELECT * FROM USERS AS U " +
                 "INNER JOIN FOLLOW AS F ON U.ID = F.FRIEND_ID " +
                 "WHERE USER_ID = ? AND FRIEND_ID IN (SELECT FRIEND_ID FROM FOLLOW WHERE USER_ID = ?) ";
-        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToUser(rs), userId, friendId);
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToUser(rs), id, otherId);
     }
 }

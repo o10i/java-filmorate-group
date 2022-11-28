@@ -9,7 +9,7 @@ import ru.yandex.practicum.filmorate.model.event.enums.EventType;
 import ru.yandex.practicum.filmorate.model.event.enums.Operation;
 import ru.yandex.practicum.filmorate.model.user.User;
 import ru.yandex.practicum.filmorate.service.feed.FeedService;
-import ru.yandex.practicum.filmorate.storage.follow.FollowStorage;
+import ru.yandex.practicum.filmorate.storage.like.follow.FollowStorage;
 
 import java.util.List;
 
@@ -21,26 +21,26 @@ public class FollowService {
     UserService userService;
     FeedService feedService;
 
-    public void addFriend(Long userId, Long friendId) {
-        userService.getById(userId);
+    public void addFriend(Long id, Long friendId) {
+        userService.getById(id);
         userService.getById(friendId);
-        followStorage.addFriend(userId, friendId);
-        feedService.saveEvent(Event.createEvent(userId, EventType.FRIEND, Operation.ADD, friendId));
+        followStorage.addFriend(id, friendId);
+        feedService.addEvent(Event.createEvent(id, EventType.FRIEND, Operation.ADD, friendId));
     }
 
-    public void deleteFriend(Long userId, Long friendId) {
-        followStorage.deleteFriend(userId, friendId);
-        feedService.saveEvent(Event.createEvent(userId, EventType.FRIEND, Operation.REMOVE, friendId));
+    public void deleteFriend(Long id, Long friendId) {
+        followStorage.deleteFriend(id, friendId);
+        feedService.addEvent(Event.createEvent(id, EventType.FRIEND, Operation.REMOVE, friendId));
     }
 
-    public List<User> getAllFriends(Long userId) {
-        userService.getById(userId);
-        return followStorage.getAllFriends(userId);
+    public List<User> getFriends(Long id) {
+        userService.getById(id);
+        return followStorage.getFriends(id);
     }
 
-    public List<User> getCommonFriends(Long userId, Long friendId) {
-        userService.getById(userId);
-        userService.getById(friendId);
-        return followStorage.getCommonFriends(userId, friendId);
+    public List<User> getCommonFriends(Long id, Long otherId) {
+        userService.getById(id);
+        userService.getById(otherId);
+        return followStorage.getCommonFriends(id, otherId);
     }
 }

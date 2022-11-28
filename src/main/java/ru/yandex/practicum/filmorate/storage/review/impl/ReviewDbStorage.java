@@ -22,6 +22,50 @@ public class ReviewDbStorage implements ReviewStorage {
     JdbcTemplate jdbcTemplate;
 
     @Override
+    public Collection<Review> getAll() {
+        String sqlQuery = "SELECT R.*, IFNULL(SUM(RL.IS_POSITIVE), 0) AS USEFUL " +
+                "FROM REVIEWS AS R " +
+                "LEFT JOIN REVIEW_LIKE RL on R.ID = RL.REVIEW_ID " +
+                "GROUP BY R.ID " +
+                "ORDER BY USEFUL DESC";
+        return jdbcTemplate.query(sqlQuery, this::mapRowToReview);
+    }
+
+    @Override
+    public Collection<Review> getAll(Long filmId, Integer count) {
+        if (filmId == -1) {
+            String sqlQuery = "SELECT R.*, IFNULL(SUM(RL.IS_POSITIVE), 0) AS USEFUL " +
+                    "FROM REVIEWS AS R " +
+                    "LEFT JOIN REVIEW_LIKE RL on R.ID = RL.REVIEW_ID " +
+                    "GROUP BY R.ID " +
+                    "ORDER BY USEFUL DESC " +
+                    "LIMIT ?";
+            return jdbcTemplate.query(sqlQuery, this::mapRowToReview, count);
+        }
+        String sqlQuery = "SELECT R.*, IFNULL(SUM(RL.IS_POSITIVE), 0) AS USEFUL " +
+                "FROM REVIEWS AS R " +
+                "LEFT JOIN REVIEW_LIKE RL on R.ID = RL.REVIEW_ID " +
+                "WHERE R.FILM_ID = ?" +
+                "GROUP BY R.ID " +
+                "ORDER BY USEFUL DESC " +
+                "LIMIT ?";
+        return new ArrayList<>(jdbcTemplate.query(sqlQuery, this::mapRowToReview, filmId, count));
+    }
+
+    @Override
+    public Review getById(Long reviewId) {
+        String sqlQuery = "SELECT R.*, SUM(RL.IS_POSITIVE) AS USEFUL " +
+                "FROM REVIEWS AS R " +
+                "LEFT JOIN REVIEW_LIKE RL on R.ID = RL.REVIEW_ID " +
+                "WHERE R.ID = ? " +
+                "GROUP BY R.ID";
+        return jdbcTemplate.query(sqlQuery, this::mapRowToReview, reviewId)
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new ObjectNotFoundException("Review not found."));
+    }
+
+    @Override
     public Review create(Review review) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("REVIEWS")
@@ -47,56 +91,12 @@ public class ReviewDbStorage implements ReviewStorage {
     }
 
     @Override
-    public Review getById(Long reviewId) {
-        String sqlQuery = "SELECT R.*, SUM(RL.IS_POSITIVE) AS USEFUL " +
-                "FROM REVIEWS AS R " +
-                "LEFT JOIN REVIEW_LIKE RL on R.ID = RL.REVIEW_ID " +
-                "WHERE R.ID = ? " +
-                "GROUP BY R.ID";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToReview, reviewId)
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new ObjectNotFoundException("Review not found."));
-    }
-
-    @Override
-    public Collection<Review> getAll() {
-        String sqlQuery = "SELECT R.*, IFNULL(SUM(RL.IS_POSITIVE), 0) AS USEFUL " +
-                "FROM REVIEWS AS R " +
-                "LEFT JOIN REVIEW_LIKE RL on R.ID = RL.REVIEW_ID " +
-                "GROUP BY R.ID " +
-                "ORDER BY USEFUL DESC";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToReview);
-    }
-
-    @Override
-    public void delete(Long reviewId) {
+    public void deleteById(Long reviewId) {
         String sqlQuery = "DELETE FROM REVIEWS WHERE ID = ?";
         if (jdbcTemplate.update(sqlQuery, reviewId) == 0) {
             throw new ObjectNotFoundException(
                     String.format("Review with %d id not found.", reviewId));
         }
-    }
-
-    @Override
-    public Collection<Review> getAll(Long filmId, Integer count) {
-        if (filmId == -1) {
-            String sqlQuery = "SELECT R.*, IFNULL(SUM(RL.IS_POSITIVE), 0) AS USEFUL " +
-                    "FROM REVIEWS AS R " +
-                    "LEFT JOIN REVIEW_LIKE RL on R.ID = RL.REVIEW_ID " +
-                    "GROUP BY R.ID " +
-                    "ORDER BY USEFUL DESC " +
-                    "LIMIT ?";
-            return jdbcTemplate.query(sqlQuery, this::mapRowToReview, count);
-        }
-        String sqlQuery = "SELECT R.*, IFNULL(SUM(RL.IS_POSITIVE), 0) AS USEFUL " +
-                "FROM REVIEWS AS R " +
-                "LEFT JOIN REVIEW_LIKE RL on R.ID = RL.REVIEW_ID " +
-                "WHERE R.FILM_ID = ?" +
-                "GROUP BY R.ID " +
-                "ORDER BY USEFUL DESC " +
-                "LIMIT ?";
-        return new ArrayList<>(jdbcTemplate.query(sqlQuery, this::mapRowToReview, filmId, count));
     }
 
     private Review mapRowToReview(ResultSet rs, int rowNum) throws SQLException {

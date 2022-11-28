@@ -5,11 +5,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.model.Marker;
 import ru.yandex.practicum.filmorate.model.film.Director;
-import ru.yandex.practicum.filmorate.model.groupInterfaces.Create;
-import ru.yandex.practicum.filmorate.model.groupInterfaces.Update;
 import ru.yandex.practicum.filmorate.service.film.DirectorService;
 
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
@@ -25,17 +25,17 @@ public class DirectorController {
     }
 
     @GetMapping("/{id}")
-    public Director getById(@PathVariable Long id) {
+    public Director getById(@Positive @PathVariable("id") Long id) {
         return directorService.getById(id);
     }
 
     @PostMapping
-    public Director create(@Validated(Create.class) @RequestBody Director director) {
+    public Director create(@Validated(Marker.OnCreate.class) @RequestBody Director director) {
         return directorService.create(director);
     }
 
     @PutMapping
-    public Director update(@Validated(Update.class) @RequestBody Director director) {
+    public Director update(@Validated(Marker.OnUpdate.class) @RequestBody Director director) {
         return directorService.update(director);
     }
 

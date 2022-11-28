@@ -15,11 +15,11 @@ import java.util.List;
 public class FeedService {
     FeedStorage feedStorage;
 
-    public List<Event> findEventsByUserId(Long userId) {
-        return feedStorage.findEventsByUserId(userId);
+    public List<Event> getEventsByUserId(Long id) {
+        return feedStorage.getEventsByUserId(id);
     }
 
-    public Event saveEvent(Event event) {
-        return feedStorage.saveEvent(event);
+    public void addEvent(Event event) {
+        feedStorage.addEvent(event);
     }
 }

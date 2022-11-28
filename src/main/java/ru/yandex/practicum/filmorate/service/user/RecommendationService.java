@@ -20,9 +20,9 @@ public class RecommendationService {
     GenreService genreService;
     DirectorService directorService;
 
-    public List<Film> getRecommendations(Long userId) {
-        userService.getById(userId);
-        List<Film> films = recommendationStorage.getRecommendations(userId);
+    public List<Film> getUserRecommendations(Long id) {
+        userService.getById(id);
+        List<Film> films = recommendationStorage.getUserRecommendations(id);
         genreService.loadGenres(films);
         directorService.loadDirectors(films);
         return films;

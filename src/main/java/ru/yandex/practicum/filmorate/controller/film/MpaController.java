@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.film.Mpa;
 import ru.yandex.practicum.filmorate.service.film.MpaService;
 
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
@@ -17,7 +18,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class MpaController {
-
     MpaService mpaService;
 
     @GetMapping
@@ -26,7 +26,7 @@ public class MpaController {
     }
 
     @GetMapping("/{id}")
-    public Mpa getById(@PathVariable("id") Long mpaId) {
-        return mpaService.getById(mpaId);
+    public Mpa getById(@Positive @PathVariable("id") Long id) {
+        return mpaService.getById(id);
     }
 }

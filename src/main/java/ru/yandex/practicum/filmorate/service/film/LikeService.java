@@ -20,16 +20,15 @@ public class LikeService {
     FilmService filmService;
     FeedService feedService;
 
-
     public void addLike(Long userId, Long filmId) {
         filmService.getById(filmId);
         userService.getById(userId);
         likeStorage.addLike(userId, filmId);
-        feedService.saveEvent(Event.createEvent(userId, EventType.LIKE, Operation.ADD, filmId));
+        feedService.addEvent(Event.createEvent(userId, EventType.LIKE, Operation.ADD, filmId));
     }
 
     public void deleteLike(Long userId, Long filmId) {
         likeStorage.deleteLike(userId, filmId);
-        feedService.saveEvent(Event.createEvent(userId, EventType.LIKE, Operation.REMOVE, filmId));
+        feedService.addEvent(Event.createEvent(userId, EventType.LIKE, Operation.REMOVE, filmId));
     }
 }

@@ -13,14 +13,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class MpaService {
-
     MpaStorage mpaStorage;
-
     public List<Mpa> getAll() {
-        return mpaStorage.findAllMPA();
+        return mpaStorage.getAll();
     }
-
-    public Mpa getById(Long MPAId) {
-        return mpaStorage.findMPAById(MPAId);
+    public Mpa getById(Long id) {
+        return mpaStorage.getById(id);
     }
 }

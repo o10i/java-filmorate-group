@@ -4,21 +4,20 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import ru.yandex.practicum.filmorate.model.groupInterfaces.Create;
-import ru.yandex.practicum.filmorate.model.groupInterfaces.Update;
+import ru.yandex.practicum.filmorate.model.Marker;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-@Builder
 @Data
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Director {
-    @NotNull(groups = {Update.class})
+    @NotNull(groups = {Marker.OnUpdate.class})
     Long id;
-    @NotBlank(groups = {Create.class, Update.class}, message = "Имя режиссёра не может быть пустым.")
+    @NotBlank(groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
     String name;
 
     public Map<String, Object> toMap() {

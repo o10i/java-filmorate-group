@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.service.user.RecommendationService;
 
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
@@ -20,7 +21,7 @@ public class RecommendationController {
     RecommendationService recommendationService;
 
     @GetMapping
-    public List<Film> getRecommendations(@PathVariable("id") Long userId) {
-        return recommendationService.getRecommendations(userId);
+    public List<Film> getUserRecommendations(@Positive @PathVariable("id") Long id) {
+        return recommendationService.getUserRecommendations(id);
     }
 }

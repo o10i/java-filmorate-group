@@ -17,11 +17,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class GenreController {
-
     GenreService genreService;
 
     @GetMapping
-    public List<Genre> findAll() {
+    public List<Genre> getAll() {
         return genreService.getAll();
     }
 

@@ -97,7 +97,7 @@ public class ReviewDbTest {
     public void testDeleteReview() {
         var review = getReview();
         reviewStorage.create(review);
-        reviewStorage.delete(review.getReviewId());
+        reviewStorage.deleteById(review.getReviewId());
         assertEquals(0, reviewStorage.getAll().size());
         assertThrows(ObjectNotFoundException.class, () -> reviewStorage.getById(review.getReviewId()));
     }
@@ -137,7 +137,7 @@ public class ReviewDbTest {
 
         assertEquals(1, reviewStorage.getById(1L).getUseful());
 
-        likeStorage.removeLike(review.getReviewId(), user.getId());
+        likeStorage.deleteLike(review.getReviewId(), user.getId());
 
         assertEquals(0, reviewStorage.getById(1L).getUseful());
     }
@@ -151,7 +151,7 @@ public class ReviewDbTest {
 
         assertEquals(-1, reviewStorage.getById(1L).getUseful());
 
-        likeStorage.removeDislike(review.getReviewId(), user.getId());
+        likeStorage.deleteDislike(review.getReviewId(), user.getId());
 
         assertEquals(0, reviewStorage.getById(1L).getUseful());
     }

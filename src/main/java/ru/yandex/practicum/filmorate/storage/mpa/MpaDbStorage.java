@@ -19,18 +19,18 @@ public class MpaDbStorage implements MpaStorage {
     JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<Mpa> findAllMPA() {
+    public List<Mpa> getAll() {
         String sqlQuery = "SELECT * FROM MPA";
         return jdbcTemplate.query(sqlQuery, this::mapRowToMPA);
     }
 
     @Override
-    public Mpa findMPAById(Long mpaId) {
+    public Mpa getById(Long id) {
         String sqlQuery = "SELECT * FROM MPA WHERE id = ?";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToMPA, mpaId)
+        return jdbcTemplate.query(sqlQuery, this::mapRowToMPA, id)
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("MPA with %d id not found", mpaId)));
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("MPA with %d id not found", id)));
     }
 
     private Mpa mapRowToMPA(ResultSet resultSet, int nowNum) throws SQLException {

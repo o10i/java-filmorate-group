@@ -37,12 +37,12 @@ public class DirectorService {
         directorStorage.deleteById(id);
     }
 
-    public void deleteFilmDirectors(Long filmId) {
-        directorStorage.deleteFilmDirectors(filmId);
-    }
-
     public void addFilmDirectors(Long filmId, LinkedHashSet<Director> directors) {
         directorStorage.addFilmDirectors(filmId, directors);
+    }
+
+    public void deleteFilmDirectors(Long filmId) {
+        directorStorage.deleteFilmDirectors(filmId);
     }
 
     public void loadDirectors(List<Film> films) {

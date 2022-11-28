@@ -17,17 +17,26 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserDbStorage implements UserStorage {
-
     JdbcTemplate jdbcTemplate;
 
+    public static User mapRowToUser(ResultSet resultSet) throws SQLException {
+        return User.builder()
+                .id(resultSet.getLong("id"))
+                .email(resultSet.getString("email"))
+                .login(resultSet.getString("login"))
+                .name(resultSet.getString("name"))
+                .birthday(resultSet.getDate("birthday").toLocalDate())
+                .build();
+    }
+
     @Override
-    public List<User> findAllUsers() {
+    public List<User> getAll() {
         String sqlQuery = "SELECT * FROM USERS";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToUser(rs));
     }
 
     @Override
-    public User findUserById(Long userId) {
+    public User getById(Long userId) {
         String sqlQuery = "SELECT * FROM USERS WHERE id = ?";
 
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRowToUser(rs), userId)
@@ -46,7 +55,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User updateUser(User user) {
+    public User update(User user) {
         String sqlQuery = "UPDATE USERS SET " +
                 "EMAIL = ?, LOGIN = ?, NAME = ? , BIRTHDAY = ?" +
                 "WHERE ID = ?";
@@ -61,20 +70,10 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public void deleteUserById(Long userId) {
+    public void deleteById(Long userId) {
         String sqlQuery = "DELETE FROM users WHERE id = ?";
         if (jdbcTemplate.update(sqlQuery, userId) == 0) {
             throw new ObjectNotFoundException(String.format("User with %d id not found", userId));
         }
-    }
-
-    public static User mapRowToUser(ResultSet resultSet) throws SQLException {
-        return User.builder()
-                .id(resultSet.getLong("id"))
-                .email(resultSet.getString("email"))
-                .login(resultSet.getString("login"))
-                .name(resultSet.getString("name"))
-                .birthday(resultSet.getDate("birthday").toLocalDate())
-                .build();
     }
 }
