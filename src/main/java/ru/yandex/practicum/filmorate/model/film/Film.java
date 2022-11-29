@@ -29,8 +29,8 @@ public class Film {
     @FilmReleaseDateConstraint(groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
     LocalDate releaseDate;
     @Positive(groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
-    int duration;
-    int rate;
+    Integer duration;
+    Double rate;
     @NotNull(groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
     Mpa mpa;
     LinkedHashSet<Genre> genres;

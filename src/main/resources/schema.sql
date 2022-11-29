@@ -50,7 +50,6 @@ CREATE TABLE IF NOT EXISTS movie
     description  VARCHAR(200),
     release_date DATE    NOT NULL,
     duration     BIGINT  NOT NULL,
-    rate         BIGINT  NOT NULL,
     mpa_id       BIGINT,
     CONSTRAINT m_name_check
         CHECK (name NOT LIKE ''),
@@ -84,6 +83,20 @@ CREATE TABLE IF NOT EXISTS likes
         FOREIGN KEY (film_id)
             REFERENCES movie (id) ON DELETE CASCADE,
     CONSTRAINT fk_like_user_id
+        FOREIGN KEY (user_id)
+            REFERENCES users (id) ON DELETE CASCADE,
+    PRIMARY KEY (film_id, user_id)
+);
+
+CREATE TABLE IF NOT EXISTS marks
+(
+    film_id BIGINT  NOT NULL,
+    user_id BIGINT  NOT NULL,
+    mark    INTEGER NOT NULL,
+    CONSTRAINT film_id_fk
+        FOREIGN KEY (film_id)
+            REFERENCES movie (id) ON DELETE CASCADE,
+    CONSTRAINT user_id_fk
         FOREIGN KEY (user_id)
             REFERENCES users (id) ON DELETE CASCADE,
     PRIMARY KEY (film_id, user_id)
