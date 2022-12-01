@@ -24,7 +24,7 @@ public class User {
             regexp = "^\\S*$", message = "Your login must not contains space symbols.")
     String login;
     String name;
-    @PastOrPresent(groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
+    @NotNull(groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
     @PastOrPresent(groups = {Marker.OnCreate.class, Marker.OnUpdate.class},
             message = "Birthday must not be in future.")
     LocalDate birthday;
